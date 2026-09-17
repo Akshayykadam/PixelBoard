@@ -10,7 +10,7 @@
   </a>
   &nbsp;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard-18.3.1.apk">
-    <img src="https://img.shields.io/badge/🧪_Direct_Download-v18.3.1_Beta_(78_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Beta APK"/>
+    <img src="https://img.shields.io/badge/🧪_Direct_Download-v18.3.1_Beta_(82_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Beta APK"/>
   </a>
 </p>
 
@@ -156,7 +156,7 @@ GBoardMod/
 │   └── gboard.apk             # Base stock Gboard APK (v18.0.3)
 ├── output/
 │   ├── PixelBoard.apk         # Ready-to-install signed Stable APK (v18.0.3, 79 MB)
-│   ├── PixelBoard-18.3.1.apk  # Ready-to-install signed Beta APK (v18.3.1, 78 MB)
+│   ├── PixelBoard-18.3.1.apk  # Ready-to-install signed Beta APK (v18.3.1, 82 MB)
 │   ├── gboard-patched.apk     # Patched binary alias
 │   └── patching-result.json   # Patch verification report
 ├── tools/

@@ -8,11 +8,13 @@ build/
 
 # Temporary & intermediate patcher files
 tools/patcher-data/
-output/patching-result.json
+tools/APKEditor*.jar
+output/patching-result*.json
 output/gboard-patched.apk
 
 # Local input files (do not commit stock APKs)
 input/*.apk
+input/splits*/
 !input/.gitkeep
 *.apk.idsig
 
