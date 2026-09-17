@@ -2,12 +2,17 @@
 
 <div align="center">
 
-**Supercharged Gboard Mod featuring Google Pixel 11 serise's Rambler Voice Typing & AI Writing Assistant [No Root].**
+**Supercharged Gboard Mod featuring Google Pixel 11 series's Rambler Voice Typing & AI Writing Assistant [No Root].**
 
-<a href="https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk">
-  <img src="https://img.shields.io/badge/📥_Direct_Download_APK-v18.0.3_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard APK"/>
-  
-</a>
+<p>
+  <a href="https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk">
+    <img src="https://img.shields.io/badge/📥_Direct_Download-v18.0.3_Stable_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Stable APK"/>
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard-18.3.1.apk">
+    <img src="https://img.shields.io/badge/🧪_Direct_Download-v18.3.1_Beta_(78_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Beta APK"/>
+  </a>
+</p>
 
 </div>
 
@@ -112,7 +117,9 @@ PixelBoard features a clean, minimal preference screen modeled directly after st
 ## Installation Guide
 
 ### Option A: Direct Download on Your Phone (Easiest)
-1. Download [**PixelBoard.apk**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk) (Direct Download) or transfer `output/PixelBoard.apk` from this repository to your device.
+1. Download directly to your device:
+   - [**PixelBoard Stable (v18.0.3)**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk) — recommended for daily use.
+   - [**PixelBoard Beta (v18.3.1)**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard-18.3.1.apk) — latest features & newer Gboard base.
 2. Tap the downloaded `.apk` in your notification drawer or File Manager (e.g., **Files by Google**).
 3. If prompted, toggle **"Allow from this source"** to permit installation.
 4. Tap **Install**.
@@ -120,7 +127,11 @@ PixelBoard features a clean, minimal preference screen modeled directly after st
 ### Option B: Sideload via ADB (For Developers)
 Connect your Android phone via USB with USB Debugging enabled:
 ```bash
+# Install Stable (v18.0.3)
 adb install -r output/PixelBoard.apk
+
+# Or install Beta (v18.3.1)
+adb install -r output/PixelBoard-18.3.1.apk
 ```
 
 ### First-Time Setup on Device
@@ -144,7 +155,8 @@ GBoardMod/
 ├── input/
 │   └── gboard.apk             # Base stock Gboard APK (v18.0.3)
 ├── output/
-│   ├── PixelBoard.apk         # Ready-to-install signed APK (79 MB, optimized)
+│   ├── PixelBoard.apk         # Ready-to-install signed Stable APK (v18.0.3, 79 MB)
+│   ├── PixelBoard-18.3.1.apk  # Ready-to-install signed Beta APK (v18.3.1, 78 MB)
 │   ├── gboard-patched.apk     # Patched binary alias
 │   └── patching-result.json   # Patch verification report
 ├── tools/

@@ -51,7 +51,10 @@ class GboardPublishedPatchCatalogContractTest {
         }
         assertTrue(aiWriting.get("use").asBoolean)
         assertEquals(
-            listOf("18.0.3.954559732-release-arm64-v8a"),
+            listOf(
+                "18.0.3.954559732-release-arm64-v8a",
+                "18.3.1.977415014-beta-arm64-v8a",
+            ),
             aiWriting.getAsJsonObject("compatiblePackages")
                 .getAsJsonArray("com.google.android.inputmethod.latin")
                 .map { version -> version.asString },

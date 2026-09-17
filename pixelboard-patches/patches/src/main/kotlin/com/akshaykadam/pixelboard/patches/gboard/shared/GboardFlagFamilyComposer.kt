@@ -50,10 +50,19 @@ internal data class GboardFlagFamilyFeatureSpec(
 )
 
 internal fun interface GboardFlagFamilyTransformation {
-    fun apply(method: MutableMethod, selectedFeatures: Collection<GboardFlagFamilyFeatureSpec>)
+    fun apply(
+        method: MutableMethod,
+        selectedFeatures: Collection<GboardFlagFamilyFeatureSpec>,
+        targetField: GboardFieldTarget,
+    )
+
+    fun apply(
+        method: MutableMethod,
+        selectedFeatures: Collection<GboardFlagFamilyFeatureSpec>,
+    ) = apply(method, selectedFeatures, GboardVersionBindings.flagNameField)
 }
 
-internal val gboardFlagFamilyTransformation = GboardFlagFamilyTransformation { method, specs ->
+internal val gboardFlagFamilyTransformation = GboardFlagFamilyTransformation { method, specs, targetField ->
     if (specs.isEmpty()) return@GboardFlagFamilyTransformation
 
     val selected = specs.associateBy { spec -> spec.feature }
@@ -63,12 +72,12 @@ internal val gboardFlagFamilyTransformation = GboardFlagFamilyTransformation { m
         left.feature.compositionOrder < right.feature.compositionOrder
     }) { "Duplicate flag-family composition order" }
 
-    val plan = GboardFlagFamilyTransformationPlan.preflight(method, ordered)
+    val plan = GboardFlagFamilyTransformationPlan.preflight(method, ordered, targetField)
     if (plan.state == GboardFlagFamilyTransformationState.PATCHED) {
         return@GboardFlagFamilyTransformation
     }
     plan.apply(method)
-    GboardFlagFamilyTransformationPlan.preflight(method, ordered).also { verified ->
+    GboardFlagFamilyTransformationPlan.preflight(method, ordered, targetField).also { verified ->
         check(verified.state == GboardFlagFamilyTransformationState.PATCHED) {
             "Flag-family transformation did not produce the selected exact call chain"
         }
@@ -87,10 +96,35 @@ private val gboardFlagFamilyComposerPatch = bytecodePatch(
         val selected = GboardFlagFamilyFeatureSelections.take(this)
         if (selected.isEmpty()) return@finalize
 
-        mutableFieldOrThrow(GboardVersionBindings.flagNameField)
+        val targetMethod1803 = GboardVersionBindings.flagBoolGetter
+        val targetField1803 = GboardVersionBindings.flagNameField
+        val targetMethod1831 = GboardMethodTarget(
+            classType = "Lacps;",
+            name = "g",
+            parameterTypes = emptyList(),
+            returnType = "Ljava/lang/Object;",
+        )
+        val targetField1831 = GboardFieldTarget(
+            classType = "Lacps;",
+            name = "a",
+            type = "Ljava/lang/String;",
+        )
+
+        val (targetMethod, targetField) = when {
+            findMutableMethodOrNull(targetMethod1803) != null && mutableFieldOrNull(targetField1803) != null -> {
+                targetMethod1803 to targetField1803
+            }
+            findMutableMethodOrNull(targetMethod1831) != null && mutableFieldOrNull(targetField1831) != null -> {
+                targetMethod1831 to targetField1831
+            }
+            else -> error("Unsupported Gboard flag getter target")
+        }
+
+        mutableFieldOrThrow(targetField)
         gboardFlagFamilyTransformation.apply(
-            findMutableMethodOrThrow(GboardVersionBindings.flagBoolGetter),
+            findMutableMethodOrThrow(targetMethod),
             selected,
+            targetField,
         )
     }
 }
@@ -162,6 +196,7 @@ private data class GboardFlagFamilyTransformationPlan(
         fun preflight(
             method: MutableMethod,
             selected: List<GboardFlagFamilyFeatureSpec>,
+            targetField: GboardFieldTarget = GboardVersionBindings.flagNameField,
         ): GboardFlagFamilyTransformationPlan {
             check(method.parameterTypes.isEmpty()) {
                 "Flag-family composition requires the zero-argument flag getter"
@@ -218,7 +253,7 @@ private data class GboardFlagFamilyTransformationPlan(
                 val resultRegister = resultRegistersByReturn.getValue(returnIndex)
                 GboardFlagFamilyReturnPlan(
                     returnIndex = returnIndex,
-                    delegate = buildFlagFamilyDelegate(selected, resultRegister, registers),
+                    delegate = buildFlagFamilyDelegate(selected, resultRegister, registers, targetField),
                 )
             }
 
@@ -245,6 +280,7 @@ private data class GboardFlagFamilyTransformationPlan(
                         familyCallIndices = familyCallIndices,
                         registers = registers,
                         resultMaterializationIndex = resultMaterializationIndex,
+                        targetField = targetField,
                     ) -> GboardFlagFamilyTransformationState.PATCHED
                 else -> error(
                     "Malformed or extraneous flag-family transformation before mutation: " +
@@ -305,10 +341,11 @@ private fun buildFlagFamilyDelegate(
     selected: List<GboardFlagFamilyFeatureSpec>,
     resultRegister: Int,
     registers: GboardFlagFamilyRegisterPlan,
+    targetField: GboardFieldTarget = GboardVersionBindings.flagNameField,
 ): String = buildString {
     registers.flagNameScratch?.let { scratch ->
         append("iget-object v$scratch, v${registers.receiver}, ")
-        append(GboardVersionBindings.flagNameField.reference)
+        append(targetField.reference)
         append("\n\n")
     }
     append(selected.joinToString("\n\n") { spec -> spec.delegate(resultRegister, registers) })
@@ -322,6 +359,7 @@ private fun List<com.android.tools.smali.dexlib2.iface.instruction.Instruction>
         familyCallIndices: List<Int>,
         registers: GboardFlagFamilyRegisterPlan,
         resultMaterializationIndex: Int,
+        targetField: GboardFieldTarget = GboardVersionBindings.flagNameField,
     ): Boolean {
     val callsBySegment = returnIndices.mapIndexed { ordinal, returnIndex ->
         val segmentStart = if (ordinal == 0) 0 else returnIndices[ordinal - 1] + 1
@@ -330,7 +368,7 @@ private fun List<com.android.tools.smali.dexlib2.iface.instruction.Instruction>
     if (familyCallIndices.any { index -> index > returnIndices.last() }) return false
     if (callsBySegment.flatten() != familyCallIndices) return false
 
-    val flagLoads = indices.filter { index -> get(index).isExactFlagNameLoad(registers) }
+    val flagLoads = indices.filter { index -> get(index).isExactFlagNameLoad(registers, targetField) }
     val expectedFlagLoads = if (registers.flagNameScratch == null) {
         emptyList()
     } else {
@@ -394,18 +432,22 @@ private fun com.android.tools.smali.dexlib2.iface.instruction.Instruction
     return opcode.name.normalized() == "IGET_OBJECT" &&
         load.registerA == receiverRegister &&
         load.registerB == FLAG_NAME_SCRATCH_REGISTER &&
-        field.definingClass == "Lnyf;" && field.name == "c" &&
+        (field.definingClass == "Lnyf;" && field.name == "c" ||
+            field.definingClass == "Lacqf;" && field.name == "a") &&
         field.type == "Ljava/lang/Object;"
 }
 
 private fun com.android.tools.smali.dexlib2.iface.instruction.Instruction
-    .isExactFlagNameLoad(registers: GboardFlagFamilyRegisterPlan): Boolean {
+    .isExactFlagNameLoad(
+        registers: GboardFlagFamilyRegisterPlan,
+        targetField: GboardFieldTarget = GboardVersionBindings.flagNameField,
+    ): Boolean {
     val scratch = registers.flagNameScratch ?: return false
     val load = this as? TwoRegisterInstruction ?: return false
     val field = (load as? ReferenceInstruction)?.reference as? FieldReference ?: return false
     return opcode.name.normalized() == "IGET_OBJECT" &&
         load.registerA == scratch && load.registerB == registers.receiver &&
-        GboardVersionBindings.flagNameField.matches(field)
+        targetField.matches(field)
 }
 
 private fun List<com.android.tools.smali.dexlib2.iface.instruction.Instruction>

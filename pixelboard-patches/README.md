@@ -14,9 +14,17 @@
 
 **You don't need to build from source unless you want to customize patches:**
 
-[![Download APK](https://img.shields.io/badge/📥_Download_PixelBoard_APK-v18.0.3_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk)
+<p>
+  <a href="https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk">
+    <img src="https://img.shields.io/badge/📥_Download_Stable_APK-v18.0.3_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Stable APK"/>
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard-18.3.1.apk">
+    <img src="https://img.shields.io/badge/🧪_Download_Beta_APK-v18.3.1_(78_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Beta APK"/>
+  </a>
+</p>
 
-[**⬇️ Direct Download PixelBoard.apk**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk) • [**📦 View GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
+[**⬇️ Direct Download Stable (v18.0.3)**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk) • [**⬇️ Direct Download Beta (v18.3.1)**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard-18.3.1.apk) • [**📦 View GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
 
 ---
 
@@ -28,7 +36,7 @@ This repository contains the patch definitions and extension bytecode for **Pixe
 
 - **App Label**: `PixelBoard`
 - **Package ID**: `com.akshaykadam.pixelboard`
-- **Target App**: Google Keyboard (Gboard) `v18.0.3`
+- **Target App**: Google Keyboard (Gboard) `v18.0.3` (Stable) & `v18.3.1` (Beta)
 
 ---
 

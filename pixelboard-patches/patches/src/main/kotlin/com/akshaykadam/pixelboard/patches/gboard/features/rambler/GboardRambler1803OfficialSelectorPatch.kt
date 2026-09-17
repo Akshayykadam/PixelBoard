@@ -13,6 +13,7 @@ import com.akshaykadam.pixelboard.patches.shared.MutableMethod
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.akshaykadam.pixelboard.patches.gboard.shared.GboardMethodTarget
 import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrThrow
+import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrNull
 import com.akshaykadam.pixelboard.patches.gboard.shared.gboardPatchesExtensionCarrierPatch
 import com.akshaykadam.pixelboard.patches.gboard.shared.isMethodReference
 import com.akshaykadam.pixelboard.patches.gboard.shared.returnInstructionIndices
@@ -24,11 +25,20 @@ import com.akshaykadam.pixelboard.patches.shared.Constants.COMPATIBILITY_GBOARD
 private const val VOICE_SETTINGS =
     "Lcom/google/android/apps/inputmethod/latin/preference/VoiceSettingsFragment;"
 
-private object GboardRambler1803Targets {
-    val layout = method(VOICE_SETTINGS, "aB", emptyList(), "I")
-    val setup = method(VOICE_SETTINGS, "ac", emptyList(), "V")
-    val create = method(VOICE_SETTINGS, "f", listOf("Landroid/os/Bundle;"), "V")
-    val selectionWrite = method(
+private data class RamblerTargets(
+    val layout: GboardMethodTarget,
+    val setup: GboardMethodTarget,
+    val create: GboardMethodTarget,
+    val selectionWrite: GboardMethodTarget,
+    val selectionRead: GboardMethodTarget,
+    val defaultSelection: GboardMethodTarget,
+)
+
+private val RAMBLER_1803_TARGETS = RamblerTargets(
+    layout = method(VOICE_SETTINGS, "aB", emptyList(), "I"),
+    setup = method(VOICE_SETTINGS, "ac", emptyList(), "V"),
+    create = method(VOICE_SETTINGS, "f", listOf("Landroid/os/Bundle;"), "V"),
+    selectionWrite = method(
         VOICE_SETTINGS,
         "aD",
         listOf(
@@ -40,45 +50,71 @@ private object GboardRambler1803Targets {
                 "CustomSelectorWithWidgetPreference;",
         ),
         "V",
-    )
-    val selectionRead = method("Lmqk;", "a", listOf("Landroid/content/Context;"), "Z")
-    val defaultSelection = method("Lfbl;", "hN", emptyList(), "V")
+    ),
+    selectionRead = method("Lmqk;", "a", listOf("Landroid/content/Context;"), "Z"),
+    defaultSelection = method("Lfbl;", "hN", emptyList(), "V"),
+)
 
-    private fun method(
-        owner: String,
-        name: String,
-        parameters: List<String>,
-        returnType: String,
-    ) = GboardMethodTarget(owner, name, parameters, returnType)
-}
+private val RAMBLER_1831_TARGETS = RamblerTargets(
+    layout = method(VOICE_SETTINGS, "aD", emptyList(), "I"),
+    setup = method(VOICE_SETTINGS, "ac", emptyList(), "V"),
+    create = method(VOICE_SETTINGS, "f", listOf("Landroid/os/Bundle;"), "V"),
+    selectionWrite = method(
+        VOICE_SETTINGS,
+        "aF",
+        listOf(
+            "Z",
+            "Lahbz;",
+            "Lcom/google/android/libraries/inputmethod/preferencewidgets/" +
+                "CustomSelectorWithWidgetPreference;",
+            "Lcom/google/android/libraries/inputmethod/preferencewidgets/" +
+                "CustomSelectorWithWidgetPreference;",
+        ),
+        "V",
+    ),
+    selectionRead = method("Laaeo;", "a", listOf("Landroid/content/Context;"), "Z"),
+    defaultSelection = method("Lkcm;", "ge", emptyList(), "V"),
+)
+
+private fun method(
+    owner: String,
+    name: String,
+    parameters: List<String>,
+    returnType: String,
+) = GboardMethodTarget(owner, name, parameters, returnType)
 
 internal val gboardRambler1803OfficialSelectorPatch = bytecodePatch(
-    description = "Allow 18.0.3 Rambler capability only in official Voice typing selector scope.",
+    description = "Allow Rambler capability only in official Voice typing selector scope.",
 ) {
     compatibleWith(COMPATIBILITY_GBOARD)
     dependsOn(gboardPatchesExtensionCarrierPatch)
 
     execute {
-        findMutableMethodOrThrow(GboardRambler1803Targets.layout)
+        val targets = when {
+            findMutableMethodOrNull(RAMBLER_1803_TARGETS.layout) != null -> RAMBLER_1803_TARGETS
+            findMutableMethodOrNull(RAMBLER_1831_TARGETS.layout) != null -> RAMBLER_1831_TARGETS
+            else -> return@execute
+        }
+        findMutableMethodOrThrow(targets.layout)
             .applyScope(
                 RuntimeCallId.RAMBLER_RUNTIME_ENTER_VOICE_SETTINGS_SCOPE,
                 RuntimeCallId.RAMBLER_RUNTIME_EXIT_VOICE_SETTINGS_SCOPE,
             )
-        findMutableMethodOrThrow(GboardRambler1803Targets.setup)
+        findMutableMethodOrThrow(targets.setup)
             .applyScope(
                 RuntimeCallId.RAMBLER_RUNTIME_ENTER_VOICE_SETTINGS_SCOPE,
                 RuntimeCallId.RAMBLER_RUNTIME_EXIT_VOICE_SETTINGS_SCOPE,
             )
-        findMutableMethodOrThrow(GboardRambler1803Targets.create)
+        findMutableMethodOrThrow(targets.create)
             .applyScope(
                 RuntimeCallId.RAMBLER_RUNTIME_ENTER_VOICE_SETTINGS_SCOPE,
                 RuntimeCallId.RAMBLER_RUNTIME_EXIT_VOICE_SETTINGS_SCOPE,
             )
-        findMutableMethodOrThrow(GboardRambler1803Targets.selectionWrite)
+        findMutableMethodOrThrow(targets.selectionWrite)
             .applySelectionWriteObserver()
-        findMutableMethodOrThrow(GboardRambler1803Targets.selectionRead)
+        findMutableMethodOrThrow(targets.selectionRead)
             .applySelectionReadObserver()
-        findMutableMethodOrThrow(GboardRambler1803Targets.defaultSelection)
+        findMutableMethodOrThrow(targets.defaultSelection)
             .applyScope(
                 RuntimeCallId.RAMBLER_RUNTIME_ENTER_DEFAULT_SELECTION_SUPPRESSION,
                 RuntimeCallId.RAMBLER_RUNTIME_EXIT_DEFAULT_SELECTION_SUPPRESSION,

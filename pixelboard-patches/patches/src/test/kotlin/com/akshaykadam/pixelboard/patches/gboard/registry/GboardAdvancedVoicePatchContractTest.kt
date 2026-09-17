@@ -26,7 +26,7 @@ class GboardAdvancedVoicePatchContractTest {
         val compatiblePackages = row.getAsJsonObject("compatiblePackages")
         assertEquals(setOf(GBOARD_PACKAGE), compatiblePackages.keySet())
         assertEquals(
-            listOf(GBOARD_VERSION),
+            listOf(GBOARD_VERSION, GBOARD_VERSION_1831),
             compatiblePackages.getAsJsonArray(GBOARD_PACKAGE).map { it.asString },
         )
     }
@@ -74,5 +74,6 @@ class GboardAdvancedVoicePatchContractTest {
     private companion object {
         const val GBOARD_PACKAGE = "com.google.android.inputmethod.latin"
         const val GBOARD_VERSION = "18.0.3.954559732-release-arm64-v8a"
+        const val GBOARD_VERSION_1831 = "18.3.1.977415014-beta-arm64-v8a"
     }
 }

@@ -43,6 +43,92 @@ private fun applyManifestPackageOverride() = with(context) {
             }
         }
     }
+    sanitizeMissingSplitResources()
+}
+
+context(context: ResourcePatchContext)
+private fun sanitizeMissingSplitResources() = with(context) {
+    val resDir = try {
+        this.get("res")
+    } catch (_: Throwable) {
+        return@with
+    }
+    if (!resDir.exists() || !resDir.isDirectory) return@with
+
+    val xmlFiles = resDir.walkTopDown()
+        .filter { it.isFile && it.extension == "xml" && it.name != "public.xml" }
+        .toList()
+
+    val hexPattern = Regex("""@0x7f08[0-9a-fA-F]{4}""")
+    val missingHexRefs = mutableSetOf<String>()
+    for (file in xmlFiles) {
+        val text = file.readText()
+        hexPattern.findAll(text).forEach { match ->
+            missingHexRefs.add(match.value)
+        }
+    }
+    if (missingHexRefs.isEmpty()) return@with
+
+    val publicFile = this.get("res/values/public.xml")
+    val drawablesFile = this.get("res/values/drawables.xml")
+    if (!drawablesFile.exists()) {
+        drawablesFile.parentFile?.mkdirs()
+        drawablesFile.writeText("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>\n")
+    }
+
+    var publicText = publicFile.readText()
+    var drawablesText = drawablesFile.readText()
+    val newPublic = mutableListOf<String>()
+    val newDrawables = mutableListOf<String>()
+
+    val fallbackDrawable = when {
+        publicText.contains("name=\"drawable_0x7f0804a5\"") -> "@drawable/drawable_0x7f0804a5"
+        publicText.contains("name=\"drawable_0x7f080000\"") -> "@drawable/drawable_0x7f080000"
+        else -> "@null"
+    }
+
+    for (ref in missingHexRefs.sorted()) {
+        val hexId = ref.substring(1).lowercase()
+        val drawableName = "drawable_$hexId"
+        if (!publicText.contains("id=\"$hexId\"")) {
+            newPublic.add("  <public id=\"$hexId\" type=\"drawable\" name=\"$drawableName\" />")
+        }
+        if (!drawablesText.contains("name=\"$drawableName\"")) {
+            newDrawables.add("  <drawable name=\"$drawableName\">$fallbackDrawable</drawable>")
+        }
+    }
+
+    if (newPublic.isNotEmpty()) {
+        val closeTag = "</resources>"
+        val index = publicText.lastIndexOf(closeTag)
+        if (index != -1) {
+            publicText = publicText.substring(0, index) + newPublic.joinToString("\n") + "\n" + closeTag + publicText.substring(index + closeTag.length)
+            publicFile.writeText(publicText)
+        }
+    }
+    if (newDrawables.isNotEmpty()) {
+        val closeTag = "</resources>"
+        val index = drawablesText.lastIndexOf(closeTag)
+        if (index != -1) {
+            drawablesText = drawablesText.substring(0, index) + newDrawables.joinToString("\n") + "\n" + closeTag + drawablesText.substring(index + closeTag.length)
+            drawablesFile.writeText(drawablesText)
+        }
+    }
+
+    for (file in xmlFiles) {
+        var content = file.readText()
+        var modified = false
+        for (ref in missingHexRefs) {
+            if (content.contains(ref)) {
+                val hexId = ref.substring(1).lowercase()
+                content = content.replace(ref, "@drawable/drawable_$hexId")
+                modified = true
+            }
+        }
+        if (modified) {
+            file.writeText(content)
+        }
+    }
 }
 
 internal data class GboardPackageRenameMapping(
@@ -176,6 +262,21 @@ internal val GBOARD_PACKAGE_RENAME_MAPPINGS = listOf(
     ),
 )
 
+internal val GBOARD_OPTIONAL_PACKAGE_RENAME_MAPPINGS = listOf(
+    androidMapping(
+        "provider",
+        "authorities",
+        "$GBOARD_PACKAGE_NAME.androidx-startup",
+        "$GBOARD_PATCHED_PACKAGE_NAME.androidx-startup",
+    ),
+    androidMapping(
+        "provider",
+        "authorities",
+        "$GBOARD_PACKAGE_NAME.train.androidx-startup",
+        "$GBOARD_PATCHED_PACKAGE_NAME.train.androidx-startup",
+    ),
+)
+
 internal fun applyGboardPackageRename(
     manifestDocument: Document,
     settingsDocuments: List<Document>,
@@ -239,14 +340,46 @@ internal fun applyGboardPackageRename(
         expectedMatches.single()
     }
 
+    val selectedOptionalAttributes = GBOARD_OPTIONAL_PACKAGE_RENAME_MAPPINGS.mapNotNull { mapping ->
+        val matchingElements = manifestDocument.getElementsByTagName("*")
+            .elements()
+            .filter { element -> element.localElementName() == mapping.elementName }
+        val originalMatches = matchingElements.mapNotNull { element ->
+            element.attribute(mapping)?.takeIf { attribute ->
+                attribute.value == mapping.originalValue
+            }
+        }.toList()
+        val renamedMatches = matchingElements.mapNotNull { element ->
+            element.attribute(mapping)?.takeIf { attribute ->
+                attribute.value == mapping.renamedValue
+            }
+        }.toList()
+
+        val expectedMatches = when (state) {
+            PackageState.ORIGINAL -> originalMatches
+            PackageState.RENAMED -> renamedMatches
+        }
+        val oppositeMatches = when (state) {
+            PackageState.ORIGINAL -> renamedMatches
+            PackageState.RENAMED -> originalMatches
+        }
+        check(expectedMatches.size <= 1 && oppositeMatches.isEmpty()) {
+            "Expected at most one ${state.label} ${mapping.elementName} " +
+                "${mapping.qualifiedAttributeName} mapping from '${mapping.originalValue}' " +
+                "to '${mapping.renamedValue}', found original=${originalMatches.size}, " +
+                "renamed=${renamedMatches.size}"
+        }
+        expectedMatches.singleOrNull()?.let { attribute -> attribute to mapping }
+    }
+
     val settingsIdentity = validateSettingsIdentity(
         manifestDocument = manifestDocument,
         settingsDocuments = settingsDocuments,
         state = state,
     )
-    val allowedPackageAttributes = selectedAttributes + listOfNotNull(
-        settingsIdentity.providerAuthority,
-    )
+    val allowedPackageAttributes = selectedAttributes +
+        selectedOptionalAttributes.map { it.first } +
+        listOfNotNull(settingsIdentity.providerAuthority)
     val unexpectedPackageAttribute = allManifestAttributes.firstOrNull { (_, attribute) ->
         attribute.nodeValue.contains(GBOARD_PACKAGE_NAME) &&
             allowedPackageAttributes.none { allowed -> allowed === attribute }
@@ -263,6 +396,9 @@ internal fun applyGboardPackageRename(
 
     sanitizeStandaloneSplitManifest(manifestDocument)
     selectedAttributes.zip(GBOARD_PACKAGE_RENAME_MAPPINGS).forEach { (attribute, mapping) ->
+        attribute.value = mapping.renamedValue
+    }
+    selectedOptionalAttributes.forEach { (attribute, mapping) ->
         attribute.value = mapping.renamedValue
     }
     settingsIdentity.providerAuthority?.value =

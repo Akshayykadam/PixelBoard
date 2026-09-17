@@ -52,5 +52,29 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.ENABLE_AGENTIC_DICTATION_FLAG,
                         Boolean.FALSE));
+        Assert.assertSame(Boolean.FALSE,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.CONFIG_AGENTIC_DICTATION_FLAG,
+                        Boolean.FALSE));
+        Assert.assertSame(Boolean.FALSE,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.ENABLE_JETSON_IN_TOOLBAR_FLAG,
+                        Boolean.FALSE));
+
+        GboardRambler1803OfficialSelectionRuntime.exitDefaultSelectionSuppression();
+        Assert.assertSame(Boolean.TRUE,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.CONFIG_AGENTIC_DICTATION_FLAG,
+                        Boolean.FALSE));
+        Assert.assertSame(Boolean.TRUE,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.ENABLE_JETSON_IN_TOOLBAR_FLAG,
+                        Boolean.FALSE));
+        Assert.assertTrue(
+                GboardRambler1803StockPolicy.isTargetFlagName(
+                        GboardRambler1803StockPolicy.ENABLE_JETSON_IN_TOOLBAR_FLAG));
+        Assert.assertTrue(
+                GboardRambler1803StockPolicy.isTargetFlagName(
+                        GboardRambler1803StockPolicy.CONFIG_AGENTIC_DICTATION_FLAG));
     }
 }

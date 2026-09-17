@@ -53,6 +53,7 @@ JAVA_BIN=""
 for candidate in \
     "${JAVA_HOME:-}/bin/java" \
     "/opt/homebrew/opt/openjdk@21/bin/java" \
+    /opt/homebrew/Cellar/openjdk@21/*/libexec/openjdk.jdk/Contents/Home/bin/java \
     "/opt/homebrew/opt/openjdk/bin/java" \
     "$(/usr/libexec/java_home -v 21 2>/dev/null)/bin/java" \
     "$(which java 2>/dev/null)"; do

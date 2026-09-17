@@ -23,6 +23,11 @@ internal class GboardMethodTarget(
     fun resolve(context: BytecodePatchContext): MutableMethod =
         resolve(context.mutableClass(owner))
 
+    fun resolveOrNull(context: BytecodePatchContext): MutableMethod? {
+        val ownerClass = context.mutableClassDefByOrNull(owner) ?: return null
+        return ownerClass.methods.firstOrNull(::matches)
+    }
+
     fun resolve(ownerClass: MutableClass): MutableMethod = ownerClass.methods.firstOrNull(::matches)
         ?: error("Could not find $reference")
 
@@ -68,6 +73,11 @@ internal class GboardFieldTarget(
     fun resolve(context: BytecodePatchContext): MutableField =
         context.mutableClass(owner).fields.firstOrNull(::matches)
             ?: error("Could not find $reference")
+
+    fun resolveOrNull(context: BytecodePatchContext): MutableField? {
+        val ownerClass = context.mutableClassDefByOrNull(owner) ?: return null
+        return ownerClass.fields.firstOrNull(::matches)
+    }
 
     fun matches(field: FieldReference): Boolean =
         field.definingClass == owner && field.name == name && field.type == type

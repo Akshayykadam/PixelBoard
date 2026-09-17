@@ -85,14 +85,66 @@ public final class GboardRambler1803OfficialSelectionRuntime {
             if (!(application instanceof Context)) {
                 return null;
             }
-            ClassLoader loader = application.getClass().getClassLoader();
-            Class<?> support = Class.forName("mqk", false, loader);
-            Method selection = support.getDeclaredMethod("a", Context.class);
-            selection.setAccessible(true);
-            Object value = selection.invoke(null, application);
-            if (value instanceof Boolean) {
-                officialRamblerSelected = (Boolean) value;
-                return (Boolean) value;
+            Context context = (Context) application;
+            ClassLoader loader = context.getClassLoader();
+
+            // 1. In 18.3.1+: check aaeo.a(Context)
+            try {
+                Class<?> support = Class.forName("aaeo", false, loader);
+                Method selection = support.getDeclaredMethod("a", Context.class);
+                selection.setAccessible(true);
+                Object value = selection.invoke(null, context);
+                if (value instanceof Boolean) {
+                    boolean explicit = false;
+                    try {
+                        Class<?> prefsClass = Class.forName("ahbz", false, loader);
+                        Method getInstance = prefsClass.getDeclaredMethod("I", Context.class);
+                        getInstance.setAccessible(true);
+                        Object prefs = getInstance.invoke(null, context);
+                        if (prefs != null) {
+                            Method ak = prefsClass.getMethod("ak", int.class);
+                            ak.setAccessible(true);
+                            Object contains = ak.invoke(prefs, 0x7f140950);
+                            if (contains instanceof Boolean) {
+                                explicit = ((Boolean) contains).booleanValue();
+                            }
+                        }
+                    } catch (Throwable ignored) {
+                    }
+                    boolean result = explicit ? ((Boolean) value).booleanValue() : true;
+                    officialRamblerSelected = Boolean.valueOf(result);
+                    return officialRamblerSelected;
+                }
+            } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+            }
+
+            // 2. In 18.0.3: check mqk.a(Context)
+            try {
+                Class<?> support = Class.forName("mqk", false, loader);
+                Method selection = support.getDeclaredMethod("a", Context.class);
+                selection.setAccessible(true);
+                Object value = selection.invoke(null, context);
+                if (value instanceof Boolean) {
+                    officialRamblerSelected = (Boolean) value;
+                    return (Boolean) value;
+                }
+            } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+            }
+
+            // 3. Fallback: direct SharedPreferences check for "enable_jetson"
+            try {
+                android.content.SharedPreferences prefs =
+                        android.preference.PreferenceManager.getDefaultSharedPreferences(context);
+                if (prefs != null) {
+                    if (prefs.contains("enable_jetson")) {
+                        boolean val = prefs.getBoolean("enable_jetson", true);
+                        officialRamblerSelected = Boolean.valueOf(val);
+                        return officialRamblerSelected;
+                    }
+                    officialRamblerSelected = Boolean.TRUE;
+                    return Boolean.TRUE;
+                }
+            } catch (Throwable ignored) {
             }
         } catch (Throwable ignored) {
             // Application or the exact formal selector may not be ready yet.

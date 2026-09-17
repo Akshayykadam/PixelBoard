@@ -6,6 +6,7 @@ import com.akshaykadam.pixelboard.patches.shared.MutableMethod
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.akshaykadam.pixelboard.patches.gboard.shared.GboardMethodTarget
 import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrThrow
+import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrNull
 import com.akshaykadam.pixelboard.patches.gboard.shared.gboardPatchesExtensionCarrierPatch
 import com.akshaykadam.pixelboard.patches.gboard.shared.isMethodReference
 import com.akshaykadam.pixelboard.patches.gboard.shared.returnInstructionIndices
@@ -58,6 +59,9 @@ internal val gboardAdvancedVoice1803ZhTwPatch = bytecodePatch(
     dependsOn(gboardPatchesExtensionCarrierPatch)
 
     execute {
+        if (findMutableMethodOrNull(GboardAdvancedVoice1803Targets.nativeSplitReadiness) == null) {
+            return@execute
+        }
         findMutableMethodOrThrow(GboardAdvancedVoice1803Targets.nativeSplitReadiness)
             .applyNativeSplitReadiness()
         findMutableMethodOrThrow(GboardAdvancedVoice1803Targets.eligibilityConstructor)
