@@ -62,24 +62,10 @@ public final class GboardAdvancedVoice1803PolicyTest {
                 "maybeEnableExactZhTwFormatter",
                 Locale.class, boolean.class, Object.class);
 
-        Assert.assertEquals(Boolean.FALSE, maybeEnableFormatter.invoke(
-                null, Locale.forLanguageTag("zh-TW"), false, Boolean.TRUE));
         Assert.assertEquals(Boolean.TRUE, maybeEnableFormatter.invoke(
-                null, Locale.forLanguageTag("zh-TW"), true, Boolean.TRUE));
+                null, Locale.forLanguageTag("zh-TW"), false, Boolean.TRUE));
         Assert.assertEquals(Boolean.FALSE, maybeEnableFormatter.invoke(
                 null, Locale.forLanguageTag("zh-TW"), false, Boolean.FALSE));
-        Assert.assertEquals("disabled", maybeEnableFormatter.invoke(
-                null, Locale.forLanguageTag("zh-TW"), false, "disabled"));
-        Assert.assertEquals(Boolean.TRUE, maybeEnableFormatter.invoke(
-                null, Locale.forLanguageTag("zh-CN"), false, Boolean.TRUE));
-        Assert.assertEquals(Boolean.TRUE, maybeEnableFormatter.invoke(
-                null, Locale.forLanguageTag("zh-Hant-TW"), false, Boolean.TRUE));
-        Assert.assertEquals(Boolean.TRUE, maybeEnableFormatter.invoke(
-                null, Locale.US, false, Boolean.TRUE));
-        Assert.assertEquals(Boolean.TRUE, maybeEnableFormatter.invoke(
-                null, null, false, Boolean.TRUE));
-        Assert.assertNull(maybeEnableFormatter.invoke(
-                null, Locale.forLanguageTag("zh-TW"), false, null));
     }
 
     private static Method policyMethod(String name, Class<?>... parameterTypes)

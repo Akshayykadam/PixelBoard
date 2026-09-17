@@ -102,9 +102,6 @@
     <string name="gboard_patches_language_english_label">
         <translation locale="en">English</translation>
     </string>
-    <string name="gboard_patches_language_traditional_chinese_label">
-        <translation locale="en">Traditional Chinese</translation>
-    </string>
     <string name="gboard_patches_language_system_value">
         <translation locale="en">System default (%1$s)</translation>
     </string>
@@ -181,7 +178,7 @@
         <translation locale="en">Controls whether Advanced Voice Typing is forced on.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_header_summary">
-        <translation locale="en">Voice typing -&gt; Advanced features、 Add punctuation</translation>
+        <translation locale="en">Voice typing -&gt; Advanced features, Add punctuation</translation>
     </string>
     <string name="gboard_patches_advanced_voice_error_title">
         <translation locale="en">Advanced Voice Typing unavailable</translation>
@@ -194,12 +191,6 @@
     </string>
     <string name="gboard_patches_advanced_voice_enabled_summary">
         <translation locale="en">Activate Pixel Rambler voice dictation for fast on-device speech-to-text with automatic punctuation. Restart Gboard to apply changes.</translation>
-    </string>
-    <string name="gboard_patches_advanced_voice_zh_tw_punctuation_title">
-        <translation locale="en">Automatically Add Punctuation to Chinese Input</translation>
-    </string>
-    <string name="gboard_patches_advanced_voice_zh_tw_punctuation_summary">
-        <translation locale="en">Force-stop and restart Gboard for changes to take effect.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_section_behavior">
         <translation locale="en">Behavior</translation>

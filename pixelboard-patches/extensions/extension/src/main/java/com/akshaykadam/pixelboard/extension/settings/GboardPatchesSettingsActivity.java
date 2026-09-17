@@ -106,8 +106,6 @@ public final class GboardPatchesSettingsActivity extends Activity
             "18.0.3.954559732-release-arm64-v8a";
     private static final String GBOARD_PACKAGE_STABLE =
             "com.google.android.inputmethod.latin";
-    private static final String GBOARD_PACKAGE_JASON_DEV =
-            "com.google.android.inputmethod.latin.jason.dev";
     private static final String GBOARD_PACKAGE_REVERSED_DEV =
             "com.akshaykadam.pixelboard";
     private static final String LIVE_TRANSCRIBE_PACKAGE_NAME =
@@ -429,7 +427,6 @@ public final class GboardPatchesSettingsActivity extends Activity
             packageNames.add(currentPackage);
         }
         packageNames.add(GBOARD_PACKAGE_STABLE);
-        packageNames.add(GBOARD_PACKAGE_JASON_DEV);
         packageNames.add(GBOARD_PACKAGE_REVERSED_DEV);
         return new ArrayList<String>(packageNames);
     }
@@ -440,7 +437,6 @@ public final class GboardPatchesSettingsActivity extends Activity
 
     private static boolean isSupportedTargetPackage(String packageName) {
         return GBOARD_PACKAGE_STABLE.equals(packageName)
-                || GBOARD_PACKAGE_JASON_DEV.equals(packageName)
                 || GBOARD_PACKAGE_REVERSED_DEV.equals(packageName);
     }
 
@@ -2954,14 +2950,11 @@ public final class GboardPatchesSettingsActivity extends Activity
                         GboardSettingsText.get(context,
                                 R.string.gboard_patches_language_system_label),
                         GboardSettingsText.get(context,
-                                R.string.gboard_patches_language_english_label),
-                        GboardSettingsText.get(context,
-                                R.string.gboard_patches_language_traditional_chinese_label)
+                                R.string.gboard_patches_language_english_label)
                 },
                 new String[] {
                         GboardSettingsLocaleManager.LANGUAGE_SYSTEM,
-                        GboardSettingsLocaleManager.LANGUAGE_ENGLISH,
-                        GboardSettingsLocaleManager.LANGUAGE_TRADITIONAL_CHINESE
+                        GboardSettingsLocaleManager.LANGUAGE_ENGLISH
                 },
                 context == null
                         ? GboardSettingsLocaleManager.LANGUAGE_SYSTEM
@@ -2988,26 +2981,14 @@ public final class GboardPatchesSettingsActivity extends Activity
                 ? null
                 : GboardPatchesSettings.preferences(context);
         String preference = GboardSettingsLocaleManager.readLanguagePreference(preferences);
-        if (GboardSettingsLocaleManager.LANGUAGE_TRADITIONAL_CHINESE.equals(preference)) {
-            return GboardSettingsText.get(context,
-                    R.string.gboard_patches_language_traditional_chinese_label);
-        }
         if (GboardSettingsLocaleManager.LANGUAGE_ENGLISH.equals(preference)) {
             return GboardSettingsText.get(context,
                     R.string.gboard_patches_language_english_label);
         }
-        String effectiveLanguage = GboardSettingsLocaleManager.resolveEffectiveLanguageTag(
-                preference,
-                Locale.getDefault());
-        String effectiveLabel =
-                GboardSettingsLocaleManager.LANGUAGE_TRADITIONAL_CHINESE.equals(effectiveLanguage)
-                        ? GboardSettingsText.get(context,
-                                R.string.gboard_patches_language_traditional_chinese_label)
-                        : GboardSettingsText.get(context,
-                                R.string.gboard_patches_language_english_label);
         return GboardSettingsText.format(context,
                 R.string.gboard_patches_language_system_value,
-                effectiveLabel);
+                GboardSettingsText.get(context,
+                        R.string.gboard_patches_language_english_label));
     }
 
     private GboardPatchesSettingsContract.Screen buildFeatureErrorScreen(

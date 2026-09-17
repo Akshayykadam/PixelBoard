@@ -475,7 +475,7 @@
     },
     {
       "name": "Zhuyin Quick Traditional/Simplified Toggle",
-      "description": "Swipe up on Zhuyin ㄥ to quickly toggle Traditional and Simplified Chinese.",
+      "description": "Swipe up on Zhuyin key to quickly toggle Traditional and Simplified Chinese.",
       "use": true,
       "dependencies": [
         "Zhuyin Slide Input"

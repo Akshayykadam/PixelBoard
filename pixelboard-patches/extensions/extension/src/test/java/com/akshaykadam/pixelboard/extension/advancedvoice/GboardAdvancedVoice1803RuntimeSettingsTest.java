@@ -23,16 +23,12 @@ public final class GboardAdvancedVoice1803RuntimeSettingsTest {
                 GboardAdvancedVoice1803RuntimeSettings.snapshotFromPreferences(null);
         Assert.assertTrue(nullSnapshot.enabled);
         Assert.assertEquals(GboardVoiceInputMode.ADVANCED, nullSnapshot.effectiveMode);
-        Assert.assertFalse(nullSnapshot.zhTwPunctuationEnabled);
-        Assert.assertFalse(nullSnapshot.isZhTwPunctuationInterventionEnabled());
 
         GboardAdvancedVoice1803RuntimeSettings.Snapshot emptySnapshot =
                 GboardAdvancedVoice1803RuntimeSettings.snapshotFromPreferences(
                         new TestSharedPreferences());
         Assert.assertTrue(emptySnapshot.enabled);
         Assert.assertEquals(GboardVoiceInputMode.ADVANCED, emptySnapshot.effectiveMode);
-        Assert.assertFalse(emptySnapshot.zhTwPunctuationEnabled);
-        Assert.assertFalse(emptySnapshot.isZhTwPunctuationInterventionEnabled());
     }
 
     @Test
@@ -49,27 +45,17 @@ public final class GboardAdvancedVoice1803RuntimeSettingsTest {
     }
 
     @Test
-    public void zhTwPunctuationInterventionRequiresBothSettings() {
-        Assert.assertFalse(snapshot(false, false).isZhTwPunctuationInterventionEnabled());
-        Assert.assertFalse(snapshot(false, true).isZhTwPunctuationInterventionEnabled());
-        Assert.assertFalse(snapshot(true, false).isZhTwPunctuationInterventionEnabled());
-        Assert.assertTrue(snapshot(true, true).isZhTwPunctuationInterventionEnabled());
-    }
-
-    @Test
     public void legacyBackendPreferenceNoLongerOverridesTheOfficialSelector() {
         Assert.assertEquals(GboardVoiceInputMode.STANDARD,
-                snapshot(false, true, GboardAdvancedVoiceSettings.BACKEND_RAMBLER)
+                snapshot(false, GboardAdvancedVoiceSettings.BACKEND_RAMBLER)
                         .effectiveMode);
         Assert.assertEquals(GboardVoiceInputMode.ADVANCED,
-                snapshot(true, true, GboardAdvancedVoiceSettings.BACKEND_ADVANCED)
+                snapshot(true, GboardAdvancedVoiceSettings.BACKEND_ADVANCED)
                         .effectiveMode);
         GboardAdvancedVoice1803RuntimeSettings.Snapshot rambler = snapshot(
                 true,
-                true,
                 GboardAdvancedVoiceSettings.BACKEND_RAMBLER);
         Assert.assertEquals(GboardVoiceInputMode.ADVANCED, rambler.effectiveMode);
-        Assert.assertTrue(rambler.isZhTwPunctuationInterventionEnabled());
     }
 
     @Test
@@ -91,19 +77,6 @@ public final class GboardAdvancedVoice1803RuntimeSettingsTest {
     }
 
     @Test
-    public void zhTwPunctuationInvalidValueFailsClosed() {
-        TestSharedPreferences preferences = new TestSharedPreferences();
-        preferences.values.put(ENABLED_KEY, Boolean.TRUE);
-        preferences.values.put(ZH_TW_PUNCTUATION_KEY, "not-a-boolean");
-
-        GboardAdvancedVoice1803RuntimeSettings.Snapshot snapshot =
-                GboardAdvancedVoice1803RuntimeSettings.snapshotFromPreferences(preferences);
-        Assert.assertTrue(snapshot.enabled);
-        Assert.assertFalse(snapshot.zhTwPunctuationEnabled);
-        Assert.assertFalse(snapshot.isZhTwPunctuationInterventionEnabled());
-    }
-
-    @Test
     public void publicAccessorHonorsTestOverride() {
         GboardAdvancedVoice1803RuntimeSettings.clearEnabledOverrideForTest();
         try {
@@ -117,25 +90,6 @@ public final class GboardAdvancedVoice1803RuntimeSettingsTest {
                     GboardAdvancedVoiceSettings.BACKEND_RAMBLER);
             Assert.assertTrue(GboardAdvancedVoice1803RuntimeSettings.isEnabled());
             Assert.assertFalse(GboardAdvancedVoice1803RuntimeSettings.isRamblerEnabled());
-
-            GboardAdvancedVoice1803RuntimeSettings
-                    .setZhTwPunctuationEnabledOverrideForTest(false);
-            Assert.assertFalse(GboardAdvancedVoice1803RuntimeSettings
-                    .isZhTwPunctuationInterventionEnabled());
-
-            GboardAdvancedVoice1803RuntimeSettings
-                    .setZhTwPunctuationEnabledOverrideForTest(true);
-            Assert.assertTrue(GboardAdvancedVoice1803RuntimeSettings
-                    .isZhTwPunctuationInterventionEnabled());
-
-            GboardAdvancedVoice1803RuntimeSettings.setBackendOverrideForTest(
-                    GboardAdvancedVoiceSettings.BACKEND_ADVANCED);
-            Assert.assertTrue(GboardAdvancedVoice1803RuntimeSettings
-                    .isZhTwPunctuationInterventionEnabled());
-
-            GboardAdvancedVoice1803RuntimeSettings.setEnabledOverrideForTest(false);
-            Assert.assertFalse(GboardAdvancedVoice1803RuntimeSettings
-                    .isZhTwPunctuationInterventionEnabled());
         } finally {
             GboardAdvancedVoice1803RuntimeSettings.clearEnabledOverrideForTest();
         }
@@ -161,23 +115,10 @@ public final class GboardAdvancedVoice1803RuntimeSettingsTest {
 
     private static GboardAdvancedVoice1803RuntimeSettings.Snapshot snapshot(
             boolean enabled,
-            boolean zhTwPunctuationEnabled) {
-        return snapshot(
-                enabled,
-                zhTwPunctuationEnabled,
-                GboardAdvancedVoiceSettings.BACKEND_ADVANCED);
-    }
-
-    private static GboardAdvancedVoice1803RuntimeSettings.Snapshot snapshot(
-            boolean enabled,
-            boolean zhTwPunctuationEnabled,
             String backend) {
         TestSharedPreferences preferences = new TestSharedPreferences();
         preferences.values.put(ENABLED_KEY, Boolean.valueOf(enabled));
         preferences.values.put(BACKEND_KEY, backend);
-        preferences.values.put(
-                ZH_TW_PUNCTUATION_KEY,
-                Boolean.valueOf(zhTwPunctuationEnabled));
         return GboardAdvancedVoice1803RuntimeSettings.snapshotFromPreferences(preferences);
     }
 

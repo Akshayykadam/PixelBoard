@@ -19,7 +19,6 @@ public final class GboardAdvancedVoice1803RuntimeSettings {
     private static volatile Snapshot cachedSnapshot;
     private static volatile Boolean enabledOverrideForTest;
     private static volatile String backendOverrideForTest;
-    private static volatile Boolean zhTwPunctuationEnabledOverrideForTest;
     private static volatile Context applicationContext;
 
     private GboardAdvancedVoice1803RuntimeSettings() {
@@ -50,15 +49,7 @@ public final class GboardAdvancedVoice1803RuntimeSettings {
     }
 
     public static boolean isZhTwPunctuationInterventionEnabled() {
-        try {
-            Boolean punctuationOverride = zhTwPunctuationEnabledOverrideForTest;
-            boolean punctuationEnabled = punctuationOverride != null
-                    ? punctuationOverride.booleanValue()
-                    : snapshot().zhTwPunctuationEnabled;
-            return isEnabled() && punctuationEnabled;
-        } catch (Throwable ignored) {
-            return false;
-        }
+        return false;
     }
 
     static Snapshot snapshot() {
@@ -88,7 +79,6 @@ public final class GboardAdvancedVoice1803RuntimeSettings {
             return new Snapshot(
                     GboardAdvancedVoiceSettings.readEnabled(preferences),
                     GboardAdvancedVoiceSettings.readBackend(preferences),
-                    GboardAdvancedVoiceSettings.readZhTwPunctuationEnabled(preferences),
                     "local");
         } catch (Throwable failure) {
             logFailure("failed to parse settings", failure);
@@ -100,9 +90,6 @@ public final class GboardAdvancedVoice1803RuntimeSettings {
         enabledOverrideForTest = Boolean.valueOf(enabled);
     }
 
-    public static void setZhTwPunctuationEnabledOverrideForTest(boolean enabled) {
-        zhTwPunctuationEnabledOverrideForTest = Boolean.valueOf(enabled);
-    }
 
     public static void setBackendOverrideForTest(String backend) {
         backendOverrideForTest = backend;
@@ -111,7 +98,6 @@ public final class GboardAdvancedVoice1803RuntimeSettings {
     public static void clearEnabledOverrideForTest() {
         enabledOverrideForTest = null;
         backendOverrideForTest = null;
-        zhTwPunctuationEnabledOverrideForTest = null;
         cachedSnapshot = null;
         applicationContext = null;
         FAILURE_LOG_COUNT.set(0);
@@ -164,7 +150,6 @@ public final class GboardAdvancedVoice1803RuntimeSettings {
         return new Snapshot(
                 GboardAdvancedVoiceSettings.DEFAULT_ENABLED,
                 GboardAdvancedVoiceSettings.DEFAULT_BACKEND,
-                GboardAdvancedVoiceSettings.DEFAULT_ZH_TW_PUNCTUATION_ENABLED,
                 source);
     }
 
@@ -215,23 +200,20 @@ public final class GboardAdvancedVoice1803RuntimeSettings {
         final boolean enabled;
         final String backend;
         final GboardVoiceInputMode effectiveMode;
-        final boolean zhTwPunctuationEnabled;
         final String source;
 
-        Snapshot(boolean enabled, String backend, boolean zhTwPunctuationEnabled,
-                String source) {
+        Snapshot(boolean enabled, String backend, String source) {
             this.enabled = enabled;
             this.backend = backend == null
                     ? GboardAdvancedVoiceSettings.DEFAULT_BACKEND : backend;
             this.effectiveMode = enabled
                     ? GboardVoiceInputMode.ADVANCED
                     : GboardVoiceInputMode.STANDARD;
-            this.zhTwPunctuationEnabled = zhTwPunctuationEnabled;
             this.source = source == null ? "unknown" : source;
         }
 
         boolean isZhTwPunctuationInterventionEnabled() {
-            return enabled && zhTwPunctuationEnabled;
+            return false;
         }
     }
 }

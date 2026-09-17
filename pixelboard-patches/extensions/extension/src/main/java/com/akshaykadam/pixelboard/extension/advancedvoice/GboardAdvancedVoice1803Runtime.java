@@ -30,7 +30,6 @@ public final class GboardAdvancedVoice1803Runtime {
     private static final int ADVANCED_VOICE_PREFERENCE_KEY = 0x7f140971;
     private static final int AUTO_PUNCTUATION_PREFERENCE_KEY = 0x7f140972;
 
-    private static final AtomicBoolean ZH_TW_MDD_REQUESTED = new AtomicBoolean(false);
     private static final AtomicInteger INFO_LOG_COUNT = new AtomicInteger();
     private static final AtomicInteger ERROR_LOG_COUNT = new AtomicInteger();
     private static final ConcurrentHashMap<Class<?>, Field> FLAG_NAME_FIELDS =
@@ -118,26 +117,6 @@ public final class GboardAdvancedVoice1803Runtime {
     }
 
     public static void afterMddProviderConstructed(Object provider) {
-        if (!GboardAdvancedVoice1803RuntimeSettings
-                .isZhTwPunctuationInterventionEnabled()
-                || provider == null) {
-            return;
-        }
-        try {
-            Handles handles = handles(provider.getClass().getClassLoader());
-            if (maybeRequestExactZhTwMdd(
-                    true,
-                    null,
-                    ZH_TW_MDD_REQUESTED,
-                    provider,
-                    handles.mddScopeField,
-                    handles.mddRequestDownloadConstructor,
-                    handles.mddCoroutineLaunchMethod)) {
-                logInfo("requested stock zh-TW MDD provisioning group=mdd.zh");
-            }
-        } catch (Throwable failure) {
-            logError("zh-TW MDD request failed", failure);
-        }
     }
 
     /**
@@ -167,49 +146,14 @@ public final class GboardAdvancedVoice1803Runtime {
     }
 
     public static Object includeExactZhTwSupportedLocale(Object stockLocales) {
-        if (!GboardAdvancedVoice1803RuntimeSettings
-                .isZhTwPunctuationInterventionEnabled()
-                || !(stockLocales instanceof Set<?>)) {
-            return stockLocales;
-        }
-        Locale zhTw = Locale.forLanguageTag("zh-TW");
-        Set<?> stock = (Set<?>) stockLocales;
-        if (stock.contains(zhTw)) {
-            return stockLocales;
-        }
-        LinkedHashSet<Object> expanded = new LinkedHashSet<Object>(stock);
-        expanded.add(zhTw);
-        return expanded;
+        return stockLocales;
     }
 
     public static boolean beforeFormatterConstructed(
             Locale locale,
             Object orationContext,
             boolean formatterDisabled) {
-        if (!formatterDisabled
-                || !GboardAdvancedVoice1803RuntimeSettings
-                        .isZhTwPunctuationInterventionEnabled()) {
-            return formatterDisabled;
-        }
-        try {
-            Handles handles = handles(orationContext == null
-                    ? runtimeClassLoader()
-                    : orationContext.getClass().getClassLoader());
-            Object[] args = new Object[] {
-                    locale, orationContext, null, null, Boolean.valueOf(formatterDisabled)
-            };
-            if (maybeEnableExactZhTwFormatter(
-                    args,
-                    handles.orationConfigurationField,
-                    handles.defaultConfigurationField,
-                    handles.disableAdvancedFeaturesField)) {
-                logInfo("enabled stock formatter locale=zh-TW");
-            }
-            return ((Boolean) args[4]).booleanValue();
-        } catch (Throwable failure) {
-            logError("zh-TW formatter gate failed", failure);
-            return formatterDisabled;
-        }
+        return formatterDisabled;
     }
 
     static String readFlagName(Object receiver) throws ReflectiveOperationException {
@@ -258,80 +202,16 @@ public final class GboardAdvancedVoice1803Runtime {
             Object dataProvider,
             Field scopeField,
             Constructor<?> requestDownloadConstructor,
-            Method coroutineLaunchMethod) throws Throwable {
-        if (!enabled
-                || constructorFailure != null
-                || requestGuard == null
-                || dataProvider == null
-                || scopeField == null
-                || requestDownloadConstructor == null
-                || coroutineLaunchMethod == null
-                || !requestGuard.compareAndSet(false, true)) {
-            return false;
-        }
-        try {
-            Object scope = scopeField.get(dataProvider);
-            if (scope == null) {
-                throw new IllegalStateException("qzh.d MDD scope is null");
-            }
-            Object request = requestDownloadConstructor.newInstance(
-                    dataProvider,
-                    Locale.forLanguageTag("zh-TW"),
-                    null);
-            Object future = coroutineLaunchMethod.invoke(
-                    null,
-                    scope,
-                    null,
-                    request,
-                    3);
-            if (future == null) {
-                throw new IllegalStateException(
-                        "aavi.aq returned null for zh-TW MDD request");
-            }
-            return true;
-        } catch (Throwable throwable) {
-            requestGuard.set(false);
-            throw throwable;
-        }
+            Method coroutineLaunchMethod) {
+        return false;
     }
 
     static boolean maybeEnableExactZhTwFormatter(
             Object[] args,
             Field orationConfigurationField,
             Field defaultConfigurationField,
-            Field disableAdvancedFeaturesField)
-            throws ReflectiveOperationException {
-        if (args == null
-                || args.length <= 4
-                || !(args[0] instanceof Locale)
-                || args[1] == null
-                || orationConfigurationField == null
-                || defaultConfigurationField == null
-                || disableAdvancedFeaturesField == null) {
-            return false;
-        }
-        Locale locale = (Locale) args[0];
-        Object configurationData = orationConfigurationField.get(args[1]);
-        if (configurationData == null) {
-            configurationData = defaultConfigurationField.get(null);
-        }
-        if (configurationData == null) {
-            return false;
-        }
-        boolean stockAdvancedFeaturesDisabled =
-                disableAdvancedFeaturesField.getBoolean(configurationData);
-        Object originalFormatterDisabled = args[4];
-        Object enforcedFormatterDisabled =
-                GboardAdvancedVoice1803Policy.maybeEnableExactZhTwFormatter(
-                        locale,
-                        stockAdvancedFeaturesDisabled,
-                        originalFormatterDisabled);
-        if (!Boolean.TRUE.equals(originalFormatterDisabled)
-                || !Boolean.FALSE.equals(enforcedFormatterDisabled)) {
-            return false;
-        }
-        args[4] = Boolean.FALSE;
-        return true;
+            Field disableAdvancedFeaturesField) {
+        return false;
     }
 
     static boolean maybeRestoreInitialVoiceSettings(

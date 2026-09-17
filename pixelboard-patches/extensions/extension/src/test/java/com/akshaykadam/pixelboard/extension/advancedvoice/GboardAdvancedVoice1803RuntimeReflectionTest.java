@@ -72,32 +72,10 @@ public final class GboardAdvancedVoice1803RuntimeReflectionTest {
                 Locale.forLanguageTag("zh-TW"),
                 new FakeOrationContext(new FakeConfiguration(false)),
                 Boolean.TRUE);
-        Assert.assertEquals(Boolean.TRUE, maybeEnableFormatter.invoke(
+        Assert.assertEquals(Boolean.FALSE, maybeEnableFormatter.invoke(
                 null, zhTwArgs, configurationData, defaultConfiguration,
                 disableAdvancedFeatures));
-        Assert.assertEquals(Boolean.FALSE, zhTwArgs[4]);
-
-        Object[] stockDisabledArgs = formatterArgs(
-                Locale.forLanguageTag("zh-TW"),
-                new FakeOrationContext(new FakeConfiguration(true)),
-                Boolean.TRUE);
-        Assert.assertEquals(Boolean.FALSE, maybeEnableFormatter.invoke(
-                null, stockDisabledArgs, configurationData, defaultConfiguration,
-                disableAdvancedFeatures));
-        Assert.assertEquals(Boolean.TRUE, stockDisabledArgs[4]);
-
-        Object[] zhCnArgs = formatterArgs(
-                Locale.forLanguageTag("zh-CN"),
-                new FakeOrationContext(new FakeConfiguration(false)),
-                Boolean.TRUE);
-        Assert.assertEquals(Boolean.FALSE, maybeEnableFormatter.invoke(
-                null, zhCnArgs, configurationData, defaultConfiguration,
-                disableAdvancedFeatures));
-        Assert.assertEquals(Boolean.TRUE, zhCnArgs[4]);
-
-        Assert.assertEquals(Boolean.FALSE, maybeEnableFormatter.invoke(
-                null, new Object[0], configurationData, defaultConfiguration,
-                disableAdvancedFeatures));
+        Assert.assertEquals(Boolean.TRUE, zhTwArgs[4]);
     }
 
     @Test
@@ -324,7 +302,7 @@ public final class GboardAdvancedVoice1803RuntimeReflectionTest {
     }
 
     @Test
-    public void requestsStockZhTwMddOnlyOnceWithTheProviderScope() throws Exception {
+    public void requestsStockZhTwMddIsDisabled() throws Exception {
         Method requestZhTwMdd = hookMethod(
                 "maybeRequestExactZhTwMdd",
                 boolean.class,
@@ -350,15 +328,6 @@ public final class GboardAdvancedVoice1803RuntimeReflectionTest {
         AtomicBoolean guard = new AtomicBoolean(false);
         FakeCoroutineLauncher.reset();
 
-        Assert.assertEquals(Boolean.TRUE, requestZhTwMdd.invoke(
-                null,
-                true,
-                null,
-                guard,
-                provider,
-                scopeField,
-                requestConstructor,
-                launchMethod));
         Assert.assertEquals(Boolean.FALSE, requestZhTwMdd.invoke(
                 null,
                 true,
@@ -368,106 +337,7 @@ public final class GboardAdvancedVoice1803RuntimeReflectionTest {
                 scopeField,
                 requestConstructor,
                 launchMethod));
-
-        Assert.assertEquals(1, FakeCoroutineLauncher.launchCount.get());
-        Assert.assertSame(provider.d, FakeCoroutineLauncher.scope);
-        Assert.assertNull(FakeCoroutineLauncher.context);
-        Assert.assertEquals(3, FakeCoroutineLauncher.mode);
-        Assert.assertSame(provider, FakeCoroutineLauncher.request.provider);
-        Assert.assertEquals("zh-TW",
-                FakeCoroutineLauncher.request.locale.toLanguageTag());
-        Assert.assertNull(FakeCoroutineLauncher.request.continuation);
-
-        AtomicBoolean disabledGuard = new AtomicBoolean(false);
-        Assert.assertEquals(Boolean.FALSE, requestZhTwMdd.invoke(
-                null,
-                false,
-                null,
-                disabledGuard,
-                provider,
-                scopeField,
-                requestConstructor,
-                launchMethod));
-        Assert.assertFalse(disabledGuard.get());
-        Assert.assertEquals(1, FakeCoroutineLauncher.launchCount.get());
-
-        AtomicBoolean failedConstructorGuard = new AtomicBoolean(false);
-        Assert.assertEquals(Boolean.FALSE, requestZhTwMdd.invoke(
-                null,
-                true,
-                new IllegalStateException("qzh constructor failed"),
-                failedConstructorGuard,
-                provider,
-                scopeField,
-                requestConstructor,
-                launchMethod));
-        Assert.assertFalse(failedConstructorGuard.get());
-        Assert.assertEquals(1, FakeCoroutineLauncher.launchCount.get());
-    }
-
-    @Test
-    public void synchronousMddLaunchFailureLeavesTheGuardRetryable() throws Exception {
-        Method requestZhTwMdd = hookMethod(
-                "maybeRequestExactZhTwMdd",
-                boolean.class,
-                Throwable.class,
-                AtomicBoolean.class,
-                Object.class,
-                Field.class,
-                Constructor.class,
-                Method.class);
-        FakeMddProvider provider = new FakeMddProvider();
-        Field scopeField = FakeMddProvider.class.getDeclaredField("d");
-        scopeField.setAccessible(true);
-        Constructor<?> requestConstructor = FakeMddRequest.class.getDeclaredConstructor(
-                FakeMddProvider.class, Locale.class, FakeContinuation.class);
-        requestConstructor.setAccessible(true);
-        Method failingLaunchMethod = FakeFailingCoroutineLauncher.class.getDeclaredMethod(
-                "aq",
-                FakeMddScope.class,
-                FakeCoroutineContext.class,
-                FakeMddRequest.class,
-                int.class);
-        failingLaunchMethod.setAccessible(true);
-        AtomicBoolean guard = new AtomicBoolean(false);
-
-        try {
-            requestZhTwMdd.invoke(
-                    null,
-                    true,
-                    null,
-                    guard,
-                    provider,
-                    scopeField,
-                    requestConstructor,
-                    failingLaunchMethod);
-            Assert.fail("expected stock coroutine launch failure");
-        } catch (InvocationTargetException expected) {
-            Assert.assertTrue(expected.getCause() instanceof InvocationTargetException);
-            Assert.assertTrue(expected.getCause().getCause()
-                    instanceof IllegalStateException);
-        }
-        Assert.assertFalse(guard.get());
-
-        Method workingLaunchMethod = FakeCoroutineLauncher.class.getDeclaredMethod(
-                "aq",
-                FakeMddScope.class,
-                FakeCoroutineContext.class,
-                FakeMddRequest.class,
-                int.class);
-        workingLaunchMethod.setAccessible(true);
-        FakeCoroutineLauncher.reset();
-        Assert.assertEquals(Boolean.TRUE, requestZhTwMdd.invoke(
-                null,
-                true,
-                null,
-                guard,
-                provider,
-                scopeField,
-                requestConstructor,
-                workingLaunchMethod));
-        Assert.assertTrue(guard.get());
-        Assert.assertEquals(1, FakeCoroutineLauncher.launchCount.get());
+        Assert.assertEquals(0, FakeCoroutineLauncher.launchCount.get());
     }
 
     private static Object[] formatterArgs(

@@ -37,13 +37,7 @@ public final class GboardAdvancedVoice1803Policy {
             Locale locale,
             boolean stockAdvancedFeaturesDisabled,
             Object originalFormatterDisabled) {
-        if (locale == null
-                || !"zh-TW".equals(locale.toLanguageTag())
-                || stockAdvancedFeaturesDisabled
-                || !Boolean.TRUE.equals(originalFormatterDisabled)) {
-            return originalFormatterDisabled;
-        }
-        return Boolean.FALSE;
+        return originalFormatterDisabled;
     }
 
     private static boolean isAdvancedVoiceFlag(String flagName) {

@@ -65,7 +65,7 @@ class GboardPackageRenameTransformTest {
     fun `application display name accepts safe unicode and rejects unsafe values`() {
         listOf(
             "Gboard Dev",
-            "Jason 鍵盤",
+            "PixelBoard Keyboard",
             "Keyboard 🚀",
             "x".repeat(MAX_GBOARD_APP_DISPLAY_NAME_CODE_POINTS),
         ).forEach { value ->

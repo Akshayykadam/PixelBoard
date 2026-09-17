@@ -12,13 +12,10 @@ public final class GboardAdvancedVoiceSettings {
             "pref_advanced_voice_typing_enabled";
     public static final String PREF_KEY_BACKEND =
             "pref_advanced_voice_backend";
-    public static final String PREF_KEY_ZH_TW_PUNCTUATION_ENABLED =
-            "pref_advanced_voice_zh_tw_punctuation_enabled";
     public static final String BACKEND_ADVANCED = "advanced";
     public static final String BACKEND_RAMBLER = "rambler";
     public static final boolean DEFAULT_ENABLED = true;
     public static final String DEFAULT_BACKEND = BACKEND_ADVANCED;
-    public static final boolean DEFAULT_ZH_TW_PUNCTUATION_ENABLED = false;
 
     private GboardAdvancedVoiceSettings() {
     }
@@ -43,12 +40,6 @@ public final class GboardAdvancedVoiceSettings {
             editor.putString(PREF_KEY_BACKEND, DEFAULT_BACKEND);
             changed = true;
         }
-        if (!preferences.contains(PREF_KEY_ZH_TW_PUNCTUATION_ENABLED)) {
-            editor.putBoolean(
-                    PREF_KEY_ZH_TW_PUNCTUATION_ENABLED,
-                    DEFAULT_ZH_TW_PUNCTUATION_ENABLED);
-            changed = true;
-        }
         if (changed) {
             if (editor.commit()) {
                 GboardAdvancedVoice1803RuntimeSettings.invalidateCachedSnapshot();
@@ -60,12 +51,6 @@ public final class GboardAdvancedVoiceSettings {
         return readBooleanStrict(preferences, PREF_KEY_ENABLED, DEFAULT_ENABLED);
     }
 
-    public static boolean readZhTwPunctuationEnabled(SharedPreferences preferences) {
-        return readBooleanStrict(
-                preferences,
-                PREF_KEY_ZH_TW_PUNCTUATION_ENABLED,
-                DEFAULT_ZH_TW_PUNCTUATION_ENABLED);
-    }
 
     public static String readBackend(SharedPreferences preferences) {
         if (preferences == null) {
@@ -100,19 +85,6 @@ public final class GboardAdvancedVoiceSettings {
         return committed;
     }
 
-    public static boolean writeZhTwPunctuationEnabled(Context context, boolean enabled) {
-        return context != null
-                && writeZhTwPunctuationEnabled(preferences(context), enabled);
-    }
-
-    public static boolean writeZhTwPunctuationEnabled(
-            SharedPreferences preferences,
-            boolean enabled) {
-        return writeBoolean(
-                preferences,
-                PREF_KEY_ZH_TW_PUNCTUATION_ENABLED,
-                enabled);
-    }
 
     private static boolean readBooleanStrict(
             SharedPreferences preferences,
