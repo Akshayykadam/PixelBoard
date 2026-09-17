@@ -1,0 +1,503 @@
+{
+  "version": "3.10.0",
+  "patches": [
+    {
+      "name": "AI Writing Tools",
+      "description": "Enable AI writing tools with support for all languages.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Access Points menu style",
+      "description": "Switch between the new and legacy Access Points menu styles.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Add Gboard Signature Bypass",
+      "description": "Bypass Gboard signature whitelist checks and force them to pass.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Advanced Voice Typing",
+      "description": "Enable Advanced Voice Typing with automatic punctuation, and separately enable automatic punctuation for Traditional Chinese voice typing, which does not support Advanced Voice Typing.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Backup & Restore",
+      "description": "Export or restore all Patches settings, and back up, compare, or restore the Gboard PB/XML flag store.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Change emoji size",
+      "description": "Change emoji size.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Clipboard Custom Character Limit",
+      "description": "Customize the maximum character count for each text clipboard item.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Clipboard Enhancements",
+      "description": "Enhance clipboard retention time, item count limit, preview lines, countdown/creation time labels, order index, and column count.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Close Proactive Suggestions",
+      "description": "Show a dismiss button in the proactive suggestions bar.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Custom Symbols",
+      "description": "Add a dedicated custom symbols tab and replace the long-press comma entry with a heart shortcut.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Developer options",
+      "description": "Enable Developer options and the Flag Editor, allowing you to modify flag values.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Emojis, stickers & GIFs Tab Order",
+      "description": "Customize the bottom tab order in Gboard's Emojis, stickers & GIFs panel with drag-and-drop reordering.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Enable Inline Autofill Suggestions",
+      "description": "Enable Inline Autofill Suggestions",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Enable OCR / Scan Text",
+      "description": "Enable the OCR / Scan Text feature with Latin, Chinese, Japanese, Korean, and Devanagari recognition backends.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Enable accessibility layout",
+      "description": "Enable accessibility layout.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Enable cursor trackpad mode",
+      "description": "Long-press the space bar to use cursor trackpad and lock modes.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Enable split keyboard",
+      "description": "Enable the split keyboard layout.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "English QWERTY Up-Flick Uppercase",
+      "description": "Flick up on the English QWERTY keyboard to toggle uppercase and lowercase.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "FTP Server",
+      "description": "Add a LAN FTP server with file browsing, transfers, and download resume.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Floating Web Search",
+      "description": "Open a floating web page directly from Gboard to quickly search for the information you need.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "G Logo on Spacebar",
+      "description": "Show the G Logo on the spacebar and hide the language label.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Grammar Checker",
+      "description": "Enable Text correction > Grammar check.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Hyperspeed Typing Animation",
+      "description": "Show the animation during sustained fast typing with support for all keyboards.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Incognito Mode Toggle",
+      "description": "Add an Incognito toggle to the Access Point toolbar and configure clipboard and voice typing availability while Incognito mode is active.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Inline Suggestions",
+      "description": "Enable Text correction > Smart Compose.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Key Shape Selection",
+      "description": "Enable Key shape in Theme details.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Latin Globe Key Ignore Interval",
+      "description": "Add an independent English globe key ignore interval override for post-typing language-switch delay.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Long-Press Editing Shortcuts",
+      "description": "Add Select all, Undo, Copy, Cut, Paste, and Redo long-press shortcuts to English QWERTY and Zhuyin.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Package Rename",
+      "description": "Rename the package to com.akshaykadam.pixelboard and allow a custom app name so it can be installed alongside the official Gboard.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": [
+        {
+          "key": "app_display_name",
+          "title": "App Name",
+          "description": "",
+          "required": true,
+          "type": "kotlin.String",
+          "default": "PixelBoard",
+          "values": {
+            "PixelBoard": "PixelBoard",
+            "Gboard": "Gboard",
+            "Gboard Dev": "Gboard Dev",
+            "Gboard Patches": "Gboard Patches",
+            "Gboard Mod": "Gboard Mod"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quick Insert",
+      "description": "Enable the Quick Insert panel and toolbar access point.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Rounded Keyboard Panel",
+      "description": "Customize which corners of the keyboard panel are rounded, and set the top and bottom radii separately.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Settings Homepage Override",
+      "description": "Allow switching between the new and legacy Gboard settings pages.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Simple Calculator",
+      "description": "Type an expression and show a scrollable equation plus its answer in Gboard's suggestion row.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Swipeable Custom Top Row",
+      "description": "Swipe the keyboard top row to switch between the stock row and a customizable text/JavaScript row.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Top Toolbar Item Count",
+      "description": "Customize the Gboard top toolbar item count.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Use Bluetooth Microphone",
+      "description": "Enable Voice typing -> Use Bluetooth microphone.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Web Clipboard",
+      "description": "Add the phone-hosted Web Clipboard with browser sync, pairing, and a Quick Settings Tile.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Zhuyin Bottom Row Key Sizes",
+      "description": "Adjust Zhuyin keyboard bottom-row key sizes.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Zhuyin Quick Traditional/Simplified Toggle",
+      "description": "Swipe up on Zhuyin ㄥ to quickly toggle Traditional and Simplified Chinese.",
+      "use": true,
+      "dependencies": [
+        "Zhuyin Slide Input"
+      ],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Zhuyin Slide Input",
+      "description": "Enable slide-up and slide-down input on the Zhuyin keyboard.",
+      "use": true,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.0.3.954559732-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    }
+  ]
+}

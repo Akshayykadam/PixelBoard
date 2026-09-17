@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<retained-package-literals>
+    <literal source="res/values/arrays.xml" kind="array-item">com.google.android.inputmethod.latin</literal>
+    <literal source="res/values/strings.xml" kind="market-link">market://details?id=com.google.android.inputmethod.latin</literal>
+    <literal source="res/values/strings.xml" kind="https-link">http://play.google.com/store/apps/details?id=com.google.android.inputmethod.latin</literal>
+    <literal source="res/xml/APKTOOL_RENAMED_0x7f170033.xml" kind="phenotype-configuration-package">com.google.android.inputmethod.latin</literal>
+</retained-package-literals>

@@ -1,0 +1,159 @@
+{
+  "$schema": "gboard-port-product-catalog.schema.json",
+  "format": "gboard-port-product-catalog.v1",
+  "catalog_version": "1.12.0",
+  "composition": {
+    "selected_only_call_chain": true,
+    "runtime_feature_mask": false
+  },
+  "binding_contracts": {
+    "flag_bool_getter": "method",
+    "flag_name_field": "field"
+  },
+  "anchor_families": [
+    "dedicated_bytecode",
+    "flag_bool_getter",
+    "gesture_dispatch",
+    "pointer_lifecycle",
+    "resource_only",
+    "soft_key_bind"
+  ],
+  "features": [
+    {
+      "feature_id": "add_gboard_signature_bypass",
+      "public_patch_name": "Add Gboard Signature Bypass",
+      "feature_marker": null,
+      "target_family_ids": [
+        "signaturebypass"
+      ],
+      "migration_scope": "version-sensitive",
+      "consumer_files": [
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/signaturebypass/GboardSignatureBypassBytecodePatch.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/registry/GboardPatchRegistry.kt"
+      ],
+      "contributions": [
+        {
+          "contribution_id": "add_gboard_signature_bypass.bytecode",
+          "anchor_family_id": "dedicated_bytecode",
+          "phase": "dedicated",
+          "order": 100,
+          "required_bindings": [],
+          "runtime_calls": []
+        }
+      ]
+    },
+    {
+      "feature_id": "advanced_voice_typing",
+      "public_patch_name": "Advanced Voice Typing",
+      "feature_marker": "com.akshaykadam.pixelboard.feature.advanced_voice_typing",
+      "target_family_ids": [
+        "advancedvoice",
+        "flag.reader",
+        "rambler"
+      ],
+      "migration_scope": "version-sensitive",
+      "consumer_files": [
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/advancedvoice/GboardAdvancedVoice1803ZhTwPatch.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/advancedvoice/GboardAdvancedVoiceFeatureMarkerPatch.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/advancedvoice/GboardAdvancedVoiceFlagValuePatch.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/advancedvoice/GboardAdvancedVoicePatchSupport.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/rambler/GboardRambler1803OfficialSelectorPatch.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/registry/GboardPatchRegistry.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/shared/GboardFlagFamilyComposer.kt"
+      ],
+      "contributions": [
+        {
+          "contribution_id": "advanced_voice_typing.flag",
+          "anchor_family_id": "flag_bool_getter",
+          "phase": "after_stock_result",
+          "order": 200,
+          "required_bindings": [
+            "flag_bool_getter",
+            "flag_name_field"
+          ],
+          "runtime_calls": [
+            "ADVANCED_VOICE_RUNTIME_AFTER_FLAG_VALUE"
+          ]
+        },
+        {
+          "contribution_id": "advanced_voice_typing.bytecode",
+          "anchor_family_id": "dedicated_bytecode",
+          "phase": "dedicated",
+          "order": 200,
+          "required_bindings": [],
+          "runtime_calls": [
+            "ADVANCED_VOICE_RUNTIME_AFTER_1803_NATIVE_SPLIT_READINESS",
+            "ADVANCED_VOICE_RUNTIME_AFTER_MDD_PROVIDER_CONSTRUCTED",
+            "ADVANCED_VOICE_RUNTIME_BEFORE_FORMATTER_CONSTRUCTED",
+            "ADVANCED_VOICE_RUNTIME_INCLUDE_EXACT_ZH_TW_SUPPORTED_LOCALE",
+            "ADVANCED_VOICE_RUNTIME_SEED_APPLICATION_CONTEXT",
+            "RAMBLER_RUNTIME_ENTER_DEFAULT_SELECTION_SUPPRESSION",
+            "RAMBLER_RUNTIME_ENTER_VOICE_SETTINGS_SCOPE",
+            "RAMBLER_RUNTIME_EXIT_DEFAULT_SELECTION_SUPPRESSION",
+            "RAMBLER_RUNTIME_EXIT_VOICE_SETTINGS_SCOPE",
+            "RAMBLER_RUNTIME_UPDATE_OFFICIAL_SELECTION"
+          ]
+        }
+      ]
+    },
+    {
+      "feature_id": "ai_writing_tools",
+      "public_patch_name": "AI Writing Tools",
+      "feature_marker": "com.akshaykadam.pixelboard.feature.ai_writing_tools",
+      "target_family_ids": [
+        "writingtools",
+        "flag.reader"
+      ],
+      "migration_scope": "version-sensitive",
+      "consumer_files": [
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/writingtools/GboardAiWritingToolsFeatureMarkerPatch.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/writingtools/GboardAiWritingToolsFlagValuePatch.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/writingtools/GboardAiWritingToolsPatchConstants.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/registry/GboardPatchRegistry.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/shared/GboardFlagFamilyComposer.kt"
+      ],
+      "contributions": [
+        {
+          "contribution_id": "ai_writing_tools.flag",
+          "anchor_family_id": "flag_bool_getter",
+          "phase": "after_stock_result",
+          "order": 300,
+          "required_bindings": [
+            "flag_bool_getter",
+            "flag_name_field"
+          ],
+          "runtime_calls": [
+            "AI_WRITING_TOOLS_RUNTIME_APPLY_OVERRIDDEN_FLAG_VALUE",
+            "AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_APPLY_GEN_AI_INIT_CLIENT_TYPE",
+            "AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_APPLY_SMART_EDIT_INIT_CLIENT_TYPE",
+            "AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_BEGIN_GEN_AI_REFRESH",
+            "AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_FINISH_GEN_AI_REFRESH",
+            "AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_OBSERVE_GEN_AI_REFRESH_CLIENT_TYPE",
+            "AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_REMEMBER_GEN_AI_INIT_CALL"
+          ]
+        }
+      ]
+    },
+    {
+      "feature_id": "package_rename",
+      "public_patch_name": "Package Rename",
+      "feature_marker": null,
+      "target_family_ids": [],
+      "migration_scope": "generic",
+      "consumer_files": [
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/packagerename/GboardPackageRenameResourcePatch.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/registry/GboardPatchRegistry.kt"
+      ],
+      "contributions": [
+        {
+          "contribution_id": "package_rename.resources",
+          "anchor_family_id": "resource_only",
+          "phase": "resource",
+          "order": 200,
+          "required_bindings": [],
+          "runtime_calls": []
+        }
+      ]
+    }
+  ]
+}

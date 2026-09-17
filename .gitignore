@@ -1,0 +1,20 @@
+# Gradle & build caches
+.gradle/
+build/
+**/build/
+.idea/
+*.iml
+.DS_Store
+
+# Temporary & intermediate patcher files
+tools/patcher-data/
+output/patching-result.json
+output/gboard-patched.apk
+
+# Local input files (do not commit stock APKs)
+input/*.apk
+!input/.gitkeep
+*.apk.idsig
+
+# Log files
+*.log

@@ -1,0 +1,21 @@
+[
+    {
+        "patches": {
+            "Advanced Voice Typing": {
+                "enabled": true
+            },
+            "AI Writing Tools": {
+                "enabled": true
+            },
+            "Add Gboard Signature Bypass": {
+                "enabled": true
+            },
+            "Package Rename": {
+                "enabled": true,
+                "options": {
+                    "app_display_name": "PixelBoard"
+                }
+            }
+        }
+    }
+]

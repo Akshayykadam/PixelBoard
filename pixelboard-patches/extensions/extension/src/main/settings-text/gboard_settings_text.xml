@@ -1,0 +1,309 @@
+<?xml version="1.0" ?>
+<settings-text locales="en">
+    <string name="gboard_patches_activity_title">
+        <translation locale="en">Advanced settings</translation>
+    </string>
+    <string name="gboard_patches_header_badge">
+        <translation locale="en">Gboard</translation>
+    </string>
+    <string name="gboard_patches_header_title">
+        <translation locale="en">Advanced settings</translation>
+    </string>
+    <string name="gboard_patches_header_summary">
+        <translation locale="en"/>
+    </string>
+    <string name="gboard_patches_preview_label">
+        <translation locale="en">Preview</translation>
+    </string>
+    <string name="gboard_patches_current_value_label">
+        <translation locale="en">Current</translation>
+    </string>
+    <string name="gboard_patches_confirm_action">
+        <translation locale="en">Confirm</translation>
+    </string>
+    <string name="gboard_patches_dialog_cancel">
+        <translation locale="en">Cancel</translation>
+    </string>
+    <string name="gboard_patches_dialog_save">
+        <translation locale="en">Save</translation>
+    </string>
+    <string name="gboard_patches_dialog_close">
+        <translation locale="en">Close</translation>
+    </string>
+    <string name="gboard_patches_keyboard_preview_action">
+        <translation locale="en">Open keyboard</translation>
+    </string>
+    <string name="gboard_patches_keyboard_preview_title">
+        <translation locale="en">Gboard Patches</translation>
+    </string>
+    <string name="gboard_patches_keyboard_preview_input_accessibility">
+        <translation locale="en">Keyboard test field</translation>
+    </string>
+    <string name="gboard_patches_dialog_error_positive">
+        <translation locale="en">Enter a positive number.</translation>
+    </string>
+    <string name="gboard_patches_dialog_error_save_failed">
+        <translation locale="en">Failed to save setting.</translation>
+    </string>
+    <string name="gboard_patches_section_preferences">
+        <translation locale="en">Preferences</translation>
+    </string>
+    <string name="gboard_patches_section_features">
+        <translation locale="en">Features</translation>
+    </string>
+    <string name="gboard_patches_section_about">
+        <translation locale="en">About</translation>
+    </string>
+    <string name="gboard_patches_about_author_title">
+        <translation locale="en">Author</translation>
+    </string>
+    <string name="gboard_patches_about_patch_version_title">
+        <translation locale="en">Patch Version</translation>
+    </string>
+    <string name="gboard_patches_error_header_title">
+        <translation locale="en">Feature unavailable</translation>
+    </string>
+    <string name="gboard_patches_error_header_summary">
+        <translation locale="en">This settings page failed to load and was safely disabled.</translation>
+    </string>
+    <string name="gboard_patches_error_row_title">
+        <translation locale="en">Unable to load feature</translation>
+    </string>
+    <string name="gboard_patches_error_row_summary">
+        <translation locale="en">The host app stayed alive. Reopen Gboard settings and try again.</translation>
+    </string>
+    <string name="gboard_patches_fatal_fallback_title">
+        <translation locale="en">Patches temporarily unavailable</translation>
+    </string>
+    <string name="gboard_patches_fatal_fallback_summary">
+        <translation locale="en">This screen hit an internal error and was safely disabled. Gboard stays alive. Reopen settings and try again.</translation>
+    </string>
+    <string name="gboard_patches_preview_load_failed">
+        <translation locale="en">Failed to load preview media.</translation>
+    </string>
+    <string name="gboard_patches_navigate_up">
+        <translation locale="en">Navigate up</translation>
+    </string>
+    <string name="gboard_patches_restart_action">
+        <translation locale="en">Restart Gboard</translation>
+    </string>
+    <string name="gboard_patches_restart_failed">
+        <translation locale="en">Gboard could not be restarted. Reopen Gboard settings and try again.</translation>
+    </string>
+    <string name="gboard_patches_language_title">
+        <translation locale="en">Language</translation>
+    </string>
+    <string name="gboard_patches_language_summary">
+        <translation locale="en"/>
+    </string>
+    <string name="gboard_patches_language_system_label">
+        <translation locale="en">System default</translation>
+    </string>
+    <string name="gboard_patches_language_english_label">
+        <translation locale="en">English</translation>
+    </string>
+    <string name="gboard_patches_language_traditional_chinese_label">
+        <translation locale="en">Traditional Chinese</translation>
+    </string>
+    <string name="gboard_patches_language_system_value">
+        <translation locale="en">System default (%1$s)</translation>
+    </string>
+    <string name="gboard_patches_group_ai_voice_title">
+        <translation locale="en">AI &amp; Voice</translation>
+    </string>
+    <string name="gboard_patches_group_ai_voice_summary">
+        <translation locale="en">AI writing tools, advanced voice typing, and Bluetooth microphone.</translation>
+    </string>
+    <string name="gboard_patches_group_keyboard_header_summary">
+        <translation locale="en"/>
+    </string>
+    <string name="gboard_patches_group_keyboard_empty_title">
+        <translation locale="en">No keyboard settings available</translation>
+    </string>
+    <string name="gboard_patches_group_keyboard_empty_summary">
+        <translation locale="en">This build does not include any keyboard settings features.</translation>
+    </string>
+    <string name="gboard_patches_developer_options_package_warning_title">
+        <translation locale="en">Unsupported Gboard package</translation>
+    </string>
+    <string name="gboard_patches_developer_options_package_warning_message">
+        <translation locale="en">The current Gboard package is %1$s. PixelBoard Patches supports only the official package com.google.android.inputmethod.latin and com.akshaykadam.pixelboard. Mixing Gboard builds from multiple sources may cause instability.</translation>
+    </string>
+    <string name="gboard_patches_developer_options_try_anyway">
+        <translation locale="en">Try anyway</translation>
+    </string>
+    <string name="gboard_patches_developer_options_launch_failed">
+        <translation locale="en">Unable to open Developer options for %1$s.</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_title">
+        <translation locale="en">AI Writing Tools</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_summary">
+        <translation locale="en">Controls Gboard AI Writing Tools availability, keyboard support, and backend routing.</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_header_summary">
+        <translation locale="en"/>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_error_title">
+        <translation locale="en">AI Writing Tools unavailable</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_error_summary">
+        <translation locale="en">The AI Writing Tools settings screen failed to load. Reopen Gboard settings and try again.</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_enabled_title">
+        <translation locale="en">Enable AI Writing Tools</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_enabled_summary">
+        <translation locale="en">Show AI writing tools in the suggestion strip for instant proofreading, text rewriting, and smart suggestions. Restart Gboard to apply changes.</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_all_keyboards_title">
+        <translation locale="en">Support All Keyboards</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_all_keyboards_summary">
+        <translation locale="en">Enable AI Writing Tools across all language layouts and input fields without restrictions. Restart Gboard to apply changes.</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_backend_type_title">
+        <translation locale="en">Backend type</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_backend_type_summary">
+        <translation locale="en">If you select AI CORE or ASTREA, your account or device must be eligible to enable it.</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_backend_type_dialog_title">
+        <translation locale="en">Backend type</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_section_behavior">
+        <translation locale="en">Behavior</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_title">
+        <translation locale="en">Advanced Voice Typing</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_summary">
+        <translation locale="en">Controls whether Advanced Voice Typing is forced on.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_header_summary">
+        <translation locale="en">Voice typing -&gt; Advanced features、 Add punctuation</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_error_title">
+        <translation locale="en">Advanced Voice Typing unavailable</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_error_summary">
+        <translation locale="en">The Advanced Voice Typing settings screen failed to load. Reopen Gboard settings and try again.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_enabled_title">
+        <translation locale="en">Enable Advanced Voice Typing</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_enabled_summary">
+        <translation locale="en">Activate Pixel Rambler voice dictation for fast on-device speech-to-text with automatic punctuation. Restart Gboard to apply changes.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_zh_tw_punctuation_title">
+        <translation locale="en">Automatically Add Punctuation to Chinese Input</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_zh_tw_punctuation_summary">
+        <translation locale="en">Force-stop and restart Gboard for changes to take effect.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_section_behavior">
+        <translation locale="en">Behavior</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_section_information">
+        <translation locale="en">Information</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_section_offline_speech_model">
+        <translation locale="en">Offline speech model</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_section_supported_languages">
+        <translation locale="en">Supported languages</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_supported_languages_title">
+        <translation locale="en">Supported languages</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_supported_languages_summary">
+        <translation locale="en">Only en-US supports the complete feature set.\n\nEnglish en-AU, en-CA, en-GB, en-IE, en-IN, en-SG, en-US\nGerman de-AT, de-BE, de-CH, de-DE\nFrench fr-BE, fr-CA, fr-CH, fr-FR\nItalian it-CH, it-IT\nJapanese ja-JP\nSpanish es-ES, es-US</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_github_star_title">
+        <translation locale="en">Support this project on GitHub 😊</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_github_star_summary">
+        <translation locale="en">This feature took a significant amount of time to build. If it helps you, please give the project a Star on GitHub.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_speech_services_present_title">
+        <translation locale="en">Speech Recognition &amp; Synthesis (Installed)</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_speech_services_absent_title">
+        <translation locale="en">Speech Recognition &amp; Synthesis (Not installed)</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_speech_services_unknown_title">
+        <translation locale="en">Speech Recognition &amp; Synthesis (Unable to verify)</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_speech_services_status_summary">
+        <translation locale="en">Package: com.google.android.tts. Required for Advanced Voice Typing: install Speech Recognition &amp; Synthesis and download the offline speech recognition model for every language you use. Tap to open its Google Play page.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_speech_services_open_failed">
+        <translation locale="en">Unable to open the Speech Recognition &amp; Synthesis Google Play page.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_downloaded_languages_title">
+        <translation locale="en">Downloaded offline languages</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_downloaded_languages_loading_summary">
+        <translation locale="en">Checking downloaded offline languages…</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_downloaded_languages_empty_summary">
+        <translation locale="en">No downloaded offline languages detected.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_downloaded_languages_unsupported_summary">
+        <translation locale="en">This Android version cannot query downloaded offline languages.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_downloaded_languages_unavailable_summary">
+        <translation locale="en">No on-device speech recognition service is available.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_downloaded_languages_error_summary">
+        <translation locale="en">Unable to read downloaded offline languages. Check them in Live Transcribe.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_downloaded_languages_separator">
+        <translation locale="en">, </translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_live_transcribe_manage_title">
+        <translation locale="en">Manage languages with Live Transcribe</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_live_transcribe_manage_summary">
+        <translation locale="en">Use Google’s official Live Transcribe app to download the Speech Recognition &amp; Synthesis offline recognition models required for Advanced Voice Typing. In Live Transcribe, open Settings → More settings → Primary language.\nTap to open Live Transcribe.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_live_transcribe_open_failed">
+        <translation locale="en">Unable to open Live Transcribe or its Google Play page.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_present_title">
+        <translation locale="en">Dictation payload (Installed)</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_present_summary">
+        <translation locale="en">The currently installed %1$s meets the APK payload requirement for Advanced Voice Typing.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_present_requirement_title">
+        <translation locale="en">Installation requirement (currently met)</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_present_requirement_summary">
+        <translation locale="en">No download is needed right now. For future updates or reinstalls, you must still use a bundle or split APKM and apply the patch with PixelBoard Patcher; a standalone APK cannot work.\nTap to view the APKMirror download page</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_absent_title">
+        <translation locale="en">Dictation payload (Not installed)</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_absent_summary">
+        <translation locale="en">The currently installed %1$s does not contain libdictation_jni.so, which Advanced Voice Typing requires.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_absent_requirement_title">
+        <translation locale="en">Get a bundle or split APKM</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_absent_requirement_summary">
+        <translation locale="en">Get a bundle or split APKM and apply the patch with PixelBoard Patcher; a standalone APK cannot work.\nTap to open the APKMirror download page</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_unknown_title">
+        <translation locale="en">Dictation payload (Unable to verify)</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_unknown_summary">
+        <translation locale="en">The installed APK files for the selected Gboard package could not be inspected.</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_unknown_requirement_title">
+        <translation locale="en">Verify the installation source</translation>
+    </string>
+    <string name="gboard_patches_advanced_voice_payload_unknown_requirement_summary">
+        <translation locale="en">It is currently unclear whether another download is needed. Verify that you used a bundle or split APKM and applied the patch with PixelBoard Patcher; a standalone APK cannot work.\nTap to view the APKMirror download page</translation>
+    </string>
+</settings-text>

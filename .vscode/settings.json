@@ -1,0 +1,15 @@
+{
+  "search.exclude": {
+    "**/build": true,
+    "**/.gradle": true,
+    "**/tools/*-data": true,
+    "**/*.dex": true,
+    "**/*.class": true,
+    "**/*.jar": true,
+    "**/*.apk": true
+  },
+  "files.exclude": {
+    "**/.gradle": true,
+    "**/build": true
+  }
+}

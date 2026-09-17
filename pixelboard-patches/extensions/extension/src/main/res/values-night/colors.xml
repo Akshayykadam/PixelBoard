@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gboard_patches_window_background">#FF0F1217</color>
+    <color name="gboard_patches_surface">#FF161B22</color>
+    <color name="gboard_patches_surface_alt">#FF121821</color>
+    <color name="gboard_patches_surface_stroke">#1FFFFFFF</color>
+    <color name="gboard_patches_text_primary">#FFF3F5F8</color>
+    <color name="gboard_patches_text_secondary">#FFAAB3C0</color>
+    <color name="gboard_patches_text_disabled">#FF657181</color>
+    <color name="gboard_patches_accent">#FF8AB4F8</color>
+    <color name="gboard_patches_pressed_overlay">#1F8AB4F8</color>
+    <color name="gboard_patches_info_container">#172554</color>
+    <color name="gboard_patches_warning_container">#3F2D16</color>
+    <color name="gboard_patches_advanced_container">#111A2A</color>
+</resources>
