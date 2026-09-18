@@ -134,6 +134,16 @@ adb install -r output/PixelBoard.apk
 adb install -r output/PixelBoard-18.3.1.apk
 ```
 
+### Option C: Patch via Morphe Manager (Custom Source & Auto-Updates)
+You can include PixelBoard as a custom patch source directly in **Morphe Manager** on Android to patch yourself and receive automatic update notifications:
+1. In **Morphe Manager**, go to **Patch Sources** (or **Settings > Sources**).
+2. Tap **Add (+)** and enter the custom repository URL:
+   ```text
+   https://raw.githubusercontent.com/Akshayykadam/PixelBoard/main/patches-bundle.json
+   ```
+   *(or add `Akshayykadam/PixelBoard` directly)*
+3. Pick your stock Gboard APK (`v18.0.3` or `v18.3.1 Beta` `arm64-v8a`), select your patches, and tap **Patch**!
+
 ### First-Time Setup on Device
 1. On your phone, go to **Settings > System > Languages & input > On-screen keyboard** (or **Manage Keyboards**).
 2. Toggle on **PixelBoard**.
@@ -214,15 +224,6 @@ apksigner verify --verbose output/PixelBoard.apk
 
 ---
 
-## AI Workflow (Codex)
-
-This project was built and optimized utilizing an advanced **AI Workflow (Codex)** for:
-- Automated Smali bytecode inspection and runtime hook generation.
-- Aggressive APK debloating, dead-code removal, and DEX partition consolidation (slashing ~6 MB).
-- Architecture redesign of the Material preference settings and automatic preference migration.
-- Continuous automated build pipelines, zipalign verification, and multi-scheme APK signing.
-
----
 
 ## Acknowledgements & Credits
 

@@ -36,9 +36,13 @@ if [[ "$REBUILD_PATCH" == true ]] || [[ ! -f "$MPP_PATH" ]]; then
     ./gradlew :patches:buildAndroid
     cd "$SCRIPT_DIR"
 
-    COMPILED_MPP="pixelboard-patches/patches/build/libs/patches-3.10.0.mpp"
+    PATCH_VERSION=$(grep -E "^version\s*=" pixelboard-patches/gradle.properties | cut -d'=' -f2 | tr -d ' ')
+    COMPILED_MPP="pixelboard-patches/patches/build/libs/patches-${PATCH_VERSION}.mpp"
     if [[ ! -f "$COMPILED_MPP" ]]; then
-        echo "❌ Error: Patch bundle failed to build at $COMPILED_MPP"
+        COMPILED_MPP=$(ls pixelboard-patches/patches/build/libs/patches-*.mpp 2>/dev/null | grep -v 'javadoc' | grep -v 'sources' | head -n 1)
+    fi
+    if [[ -z "${COMPILED_MPP:-}" ]] || [[ ! -f "$COMPILED_MPP" ]]; then
+        echo "❌ Error: Patch bundle failed to build at pixelboard-patches/patches/build/libs/"
         exit 1
     fi
     mkdir -p patches
