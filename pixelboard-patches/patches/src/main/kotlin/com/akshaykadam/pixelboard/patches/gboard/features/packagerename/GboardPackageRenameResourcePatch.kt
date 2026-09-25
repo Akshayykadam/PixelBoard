@@ -295,6 +295,14 @@ internal fun applyGboardPackageRename(
         "Expected both Gboard settings documents"
     }
 
+    val versionCodeAttr = manifestDocument.documentElement.androidAttribute("versionCode")
+    if (versionCodeAttr != null) {
+        val currentCode = versionCodeAttr.value.toLongOrNull() ?: 0L
+        if (currentCode in 176004200..176004237) {
+            versionCodeAttr.value = "176004240"
+        }
+    }
+
     val allManifestAttributes = manifestDocument.getElementsByTagName("*")
         .elements()
         .flatMap { element -> element.attributes.asSequence().map { attribute -> element to attribute } }

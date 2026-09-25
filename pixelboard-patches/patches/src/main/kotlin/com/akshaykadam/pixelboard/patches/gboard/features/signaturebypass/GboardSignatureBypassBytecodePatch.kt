@@ -30,6 +30,7 @@ import com.akshaykadam.pixelboard.patches.shared.Constants.COMPATIBILITY_GBOARD
 
 private const val SIGNATURE_UTILS_CLASS = "Lrpv;"
 private const val SIGNATURE_UTILS_CLASS_1831 = "Lajpz;"
+private const val SIGNATURE_UTILS_CLASS_1831_RELEASE = "Lrvl;"
 
 internal val gboardSignatureBypassBytecodePatch = bytecodePatch(
     description = "Force bypass Gboard signature whitelist checks."
@@ -43,10 +44,10 @@ internal val gboardSignatureBypassBytecodePatch = bytecodePatch(
 
 context(context: BytecodePatchContext)
 private fun injectSignatureBypass() = with(context) {
-    val targetClass = if (mutableClassDefByOrNull(SIGNATURE_UTILS_CLASS_1831) != null) {
-        SIGNATURE_UTILS_CLASS_1831
-    } else {
-        SIGNATURE_UTILS_CLASS
+    val targetClass = when {
+        mutableClassDefByOrNull(SIGNATURE_UTILS_CLASS_1831_RELEASE) != null -> SIGNATURE_UTILS_CLASS_1831_RELEASE
+        mutableClassDefByOrNull(SIGNATURE_UTILS_CLASS_1831) != null -> SIGNATURE_UTILS_CLASS_1831
+        else -> SIGNATURE_UTILS_CLASS
     }
     mutableClass(targetClass)
         .methods
@@ -57,7 +58,7 @@ private fun injectSignatureBypass() = with(context) {
 internal fun Iterable<MutableMethod>.findGboardSignatureBypassTargetOrThrow(): MutableMethod {
     val targets = filter(MutableMethod::isExactGboardSignatureBypassTarget)
     check(targets.size == 1) {
-        "Expected exactly one $SIGNATURE_CHECK_DESCRIPTOR target"
+        "Expected exactly one signature bypass target, found ${targets.size}"
     }
     return targets.single()
 }
@@ -98,9 +99,16 @@ private fun MutableMethod.classifyGboardSignatureBypass(): VerifiedTransformatio
     check(returnRegisters == TARGET_RETURN_REGISTERS) {
         "Unexpected normal return registers in $definingClass->$name"
     }
-    val is1831 = definingClass == SIGNATURE_UTILS_CLASS_1831
-    val digestMethod = if (is1831) DIGEST_METHOD_DESCRIPTOR_1831 else DIGEST_METHOD_DESCRIPTOR
-    val targetFields = if (is1831) TARGET_FIELD_DESCRIPTORS_1831 else TARGET_FIELD_DESCRIPTORS
+    val digestMethod = when (definingClass) {
+        SIGNATURE_UTILS_CLASS_1831_RELEASE -> DIGEST_METHOD_DESCRIPTOR_1831_RELEASE
+        SIGNATURE_UTILS_CLASS_1831 -> DIGEST_METHOD_DESCRIPTOR_1831
+        else -> DIGEST_METHOD_DESCRIPTOR
+    }
+    val targetFields = when (definingClass) {
+        SIGNATURE_UTILS_CLASS_1831_RELEASE -> TARGET_FIELD_DESCRIPTORS_1831_RELEASE
+        SIGNATURE_UTILS_CLASS_1831 -> TARGET_FIELD_DESCRIPTORS_1831
+        else -> TARGET_FIELD_DESCRIPTORS
+    }
     check(instructions.count { it.isMethodReference(digestMethod) } == 1) {
         "Expected exact digest call in $definingClass->$name"
     }
@@ -155,7 +163,9 @@ private fun MutableMethod.forceSignatureBypassReturns() {
 }
 
 private fun MutableMethod.isExactGboardSignatureBypassTarget(): Boolean =
-    (definingClass == SIGNATURE_UTILS_CLASS || definingClass == SIGNATURE_UTILS_CLASS_1831) &&
+    (definingClass == SIGNATURE_UTILS_CLASS ||
+        definingClass == SIGNATURE_UTILS_CLASS_1831 ||
+        definingClass == SIGNATURE_UTILS_CLASS_1831_RELEASE) &&
         name == SIGNATURE_CHECK_METHOD_NAME &&
         returnType == "Z" &&
         parameterTypes == SIGNATURE_CHECK_PARAMETERS &&
@@ -193,6 +203,8 @@ private const val DIGEST_METHOD_DESCRIPTOR =
     "Lrpv;->c(Landroid/content/Context;Ljava/lang/String;)[B"
 private const val DIGEST_METHOD_DESCRIPTOR_1831 =
     "Lajpz;->c(Landroid/content/Context;Ljava/lang/String;)[B"
+private const val DIGEST_METHOD_DESCRIPTOR_1831_RELEASE =
+    "Lrvl;->c(Landroid/content/Context;Ljava/lang/String;)[B"
 private const val ARRAYS_EQUALS_DESCRIPTOR = "Ljava/util/Arrays;->equals([B[B)Z"
 private val TARGET_FIELD_DESCRIPTORS = listOf(
     "Lrpv;->e:[B",
@@ -205,6 +217,12 @@ private val TARGET_FIELD_DESCRIPTORS_1831 = listOf(
     "Lajpz;->d:[B",
     "Lajpz;->c:[B",
     "Lajom;->b:Z",
+)
+private val TARGET_FIELD_DESCRIPTORS_1831_RELEASE = listOf(
+    "Lrvl;->e:[B",
+    "Lrvl;->d:[B",
+    "Lrvl;->c:[B",
+    "Lrum;->b:Z",
 )
 private val TARGET_BASELINE_LITERALS = listOf(
     LiteralShape(0, 3),
