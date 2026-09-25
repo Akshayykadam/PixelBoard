@@ -1,7 +1,7 @@
 {
   "version": "1.0.3",
-  "created_at": "2026-09-25T10:10:00",
-  "description": "### PixelBoard Patches (v1.0.3)\n\n* **Gemini Rambler Voice Typing**: Auto-cleanup, sentence restructuring, and auto-punctuation\n* **In-Line AI Writing Assistant**: Proofread, rephrase, tone switcher, and describe edit\n* **Google Signature Bypass**: Bypass signature whitelist checks\n* **Standalone Coexistence**: Side-by-side installation with stock Gboard\n\nSupports Gboard v18.0.3 (Stable) and v18.3.1 (Release / Beta).",
+  "created_at": "2026-09-25T20:50:00",
+  "description": "### PixelBoard Patches (v1.0.3)\n\n* **Gemini Rambler Voice Typing**: Auto-cleanup, sentence restructuring, and auto-punctuation\n* **In-Line AI Writing Assistant**: Proofread, rephrase, and tone switcher\n* **Google Signature Bypass**: Bypass signature whitelist checks\n* **Standalone Coexistence**: Side-by-side installation with stock Gboard\n\nSupports Gboard v18.0.3 (Stable) and v18.3.1 (Release / Beta).",
   "download_url": "https://raw.githubusercontent.com/Akshayykadam/PixelBoard/main/patches/PixelBoard.mpp",
   "signature_download_url": ""
 }

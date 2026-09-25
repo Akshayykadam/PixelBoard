@@ -3,7 +3,7 @@
 <div align="center">
 
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
-[![Version](https://img.shields.io/badge/Patch%20Version-1.0.2-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
+[![Version](https://img.shields.io/badge/Patch%20Version-1.0.3-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
 [![Author](https://img.shields.io/badge/Author-Akshay%20Kadam-9cf?style=flat-square&logo=github)](https://github.com/Akshayykadam)
 
 **PixelBoard Patch Source for Gboard**
@@ -49,7 +49,7 @@ Build the Android patch bundle (`.mpp`):
 
 The compiled patch bundle will be located at:
 ```text
-patches/build/libs/patches-1.0.2.mpp
+patches/build/libs/patches-1.0.3.mpp
 ```
 
 ---

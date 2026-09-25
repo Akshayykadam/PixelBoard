@@ -1,7 +1,7 @@
-# PixelBoard Stable Release (v18.3.1)
+# PixelBoard Stable Release (v18.3.1 / Patch v1.0.3)
 
 ## Summary
-PixelBoard v18.3.1 brings the rock-solid, proven v1.0.2 feature set directly to Google's latest **Gboard v18.3.1 Release** (`18.3.1.977415014-release-arm64-v8a`). This release unifies the standalone build onto the latest stock base while retaining the classic, stable in-line AI Writing Assistant and Gemini Rambler Voice Dictation.
+PixelBoard v18.3.1 (Patch Bundle v1.0.3) brings the rock-solid in-line AI feature set directly to Google's latest **Gboard v18.3.1 Release** (`18.3.1.977415014-release-arm64-v8a`). This release unifies the standalone build onto the latest stock base while retaining the classic, stable in-line AI Writing Assistant and Gemini Rambler Voice Dictation.
 
 ---
 
@@ -12,8 +12,9 @@ PixelBoard v18.3.1 brings the rock-solid, proven v1.0.2 feature set directly to 
 - Fully supports arm64-v8a devices running Android 10 through Android 16 Preview.
 - Backward compatibility maintained for Gboard 18.0.3.
 
-### 2. Restored Proven In-Line AI Writing Tools
-- Reverted all experimental V2 prompt keyboard overrides to restore the stable v1.0.2 writing tools architecture.
+### 2. Patch Bundle v1.0.3
+- Bumped patch bundle to **v1.0.3** with official bytecode mappings and compatibility for Gboard 18.3.1 Release.
+- Reverted experimental V2 prompt keyboard overrides to restore the stable in-line writing tools architecture.
 - Proofread and style chips (Rephrase, Emojify, Formal, Casual, Concise, Elaborate) render directly above the keyboard layout.
 - Eliminated all errors associated with multi-role prompt splitting, empty draft payloads, and prompt bundle network failures.
 - Zero "Could not suggest" or "Showing error" states during text transformation requests.
@@ -30,12 +31,12 @@ PixelBoard v18.3.1 brings the rock-solid, proven v1.0.2 feature set directly to 
 
 ---
 
-## Assets & Downloads
+## Release Assets
 
 | File | Size | Description |
 | :--- | :--- | :--- |
-| **PixelBoard.apk** | ~82 MB | Ready-to-install signed Stable APK (v18.3.1 base) |
-| **PixelBoard.mpp** | ~1.4 MB | Standalone patch bundle for Morphe Manager |
+| **PixelBoard.apk** | ~82 MB | Ready-to-install signed Stable APK (v18.3.1 release base) |
+| **PixelBoard.mpp** | ~1.4 MB | Standalone patch bundle (v1.0.3) for Morphe Manager |
 
 ---
 
