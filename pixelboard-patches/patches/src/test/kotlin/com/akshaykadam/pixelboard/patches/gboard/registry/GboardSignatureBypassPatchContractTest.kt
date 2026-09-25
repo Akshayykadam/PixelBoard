@@ -30,7 +30,7 @@ class GboardSignatureBypassPatchContractTest {
         assertSame(COMPATIBILITY_GBOARD, compatibilities.single())
         assertEquals(GBOARD_PACKAGE, compatibilities.single().packageName)
         assertEquals(
-            listOf(TARGET_VERSION, TARGET_VERSION_1831, TARGET_VERSION_1831_RELEASE),
+            listOf(TARGET_VERSION, TARGET_VERSION_1831),
             compatibilities.single().targets.map { target -> target.version },
         )
 
@@ -46,7 +46,7 @@ class GboardSignatureBypassPatchContractTest {
         val packages = row.getAsJsonObject("compatiblePackages")
         assertEquals(setOf(GBOARD_PACKAGE), packages.keySet())
         assertEquals(
-            listOf(TARGET_VERSION, TARGET_VERSION_1831, TARGET_VERSION_1831_RELEASE),
+            listOf(TARGET_VERSION, TARGET_VERSION_1831),
             packages.getAsJsonArray(GBOARD_PACKAGE).map { it.asString },
         )
     }
@@ -92,7 +92,6 @@ class GboardSignatureBypassPatchContractTest {
         const val GBOARD_PACKAGE = "com.google.android.inputmethod.latin"
         const val TARGET_VERSION = "18.0.3.954559732-release-arm64-v8a"
         const val TARGET_VERSION_1831 = "18.3.1.977415014-beta-arm64-v8a"
-        const val TARGET_VERSION_1831_RELEASE = "18.3.1.977415014-release-arm64-v8a"
         const val SIGNATURE_BYPASS_DESCRIPTION =
             "Bypass Gboard signature whitelist checks and force them to pass."
         const val SIGNATURE_PATCH_PATH =

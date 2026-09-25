@@ -5,8 +5,6 @@ import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiW
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803AutoFixRoutePatch
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803GenAiInitPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803GenAiRefreshPatch
-import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803PromptAdapterPatch
-import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803PromptNetworkPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803SmartEditInitPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingToolsFeatureMarkerPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingToolsFlagValuePatch
@@ -74,8 +72,6 @@ class GboardAiWritingToolsPatchRegistrySourceTest {
                 gboardAiWritingTools1803GenAiInitPatch,
                 gboardAiWritingTools1803GenAiRefreshPatch,
                 gboardAiWritingTools1803SmartEditInitPatch,
-                gboardAiWritingTools1803PromptNetworkPatch,
-                gboardAiWritingTools1803PromptAdapterPatch,
             ),
             gboardAiWritingToolsPatch.dependencies.toList(),
         )
@@ -95,7 +91,6 @@ class GboardAiWritingToolsPatchRegistrySourceTest {
             listOf(
                 "18.0.3.954559732-release-arm64-v8a",
                 "18.3.1.977415014-beta-arm64-v8a",
-                "18.3.1.977415014-release-arm64-v8a",
             ),
             writingTools.getAsJsonObject("compatiblePackages")
                 .getAsJsonArray("com.google.android.inputmethod.latin")

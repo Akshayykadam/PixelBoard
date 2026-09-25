@@ -254,8 +254,6 @@ tasks {
             listOf(
                 rootProject.file("patches-bundle.json"),
                 rootProject.file("patches-list.json"),
-                projectDir.resolve("src/main/resources/patches-bundle.json"),
-                projectDir.resolve("src/main/resources/patches-list.json"),
             ).forEach { jsonFile ->
                 if (!jsonFile.exists()) {
                     return@forEach
@@ -276,15 +274,6 @@ tasks {
     named("generatePatchesList") {
         finalizedBy("normalizePatchMetadataEncoding")
     }
-
-    named("assemble") {
-        dependsOn("buildAndroid")
-    }
-
-    named("build") {
-        dependsOn("buildAndroid")
-    }
-
     // Used by gradle-semantic-release-plugin.
     publish {
         dependsOn("generatePatchesList")

@@ -109,27 +109,13 @@ private val gboardFlagFamilyComposerPatch = bytecodePatch(
             name = "a",
             type = "Ljava/lang/String;",
         )
-        val targetMethod1831Release = GboardMethodTarget(
-            classType = "Lobw;",
-            name = "g",
-            parameterTypes = emptyList(),
-            returnType = "Ljava/lang/Object;",
-        )
-        val targetField1831Release = GboardFieldTarget(
-            classType = "Lobw;",
-            name = "a",
-            type = "Ljava/lang/String;",
-        )
 
         val (targetMethod, targetField) = when {
-            findMutableMethodOrNull(targetMethod1831Release) != null && mutableFieldOrNull(targetField1831Release) != null -> {
-                targetMethod1831Release to targetField1831Release
+            findMutableMethodOrNull(targetMethod1803) != null && mutableFieldOrNull(targetField1803) != null -> {
+                targetMethod1803 to targetField1803
             }
             findMutableMethodOrNull(targetMethod1831) != null && mutableFieldOrNull(targetField1831) != null -> {
                 targetMethod1831 to targetField1831
-            }
-            findMutableMethodOrNull(targetMethod1803) != null && mutableFieldOrNull(targetField1803) != null -> {
-                targetMethod1803 to targetField1803
             }
             else -> error("Unsupported Gboard flag getter target")
         }
@@ -447,8 +433,7 @@ private fun com.android.tools.smali.dexlib2.iface.instruction.Instruction
         load.registerA == receiverRegister &&
         load.registerB == FLAG_NAME_SCRATCH_REGISTER &&
         (field.definingClass == "Lnyf;" && field.name == "c" ||
-            field.definingClass == "Lacqf;" && field.name == "a" ||
-            field.definingClass == "Locf;" && field.name == "a") &&
+            field.definingClass == "Lacqf;" && field.name == "a") &&
         field.type == "Ljava/lang/Object;"
 }
 

@@ -53,10 +53,6 @@ private fun resolvePatchBundleFile(): File {
 }
 
 private fun generatePatchList(version: String) {
-    val content = GboardPublishedPatchCatalog.publishedInventory(version)
-    File("../patches-list.json").writeText(content)
-    File("src/main/resources/patches-list.json").apply {
-        parentFile?.mkdirs()
-        writeText(content)
-    }
+    val listJson = File("../patches-list.json")
+    listJson.writeText(GboardPublishedPatchCatalog.publishedInventory(version))
 }

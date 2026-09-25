@@ -42,7 +42,7 @@ class GboardPackageRenamePatchContractTest {
         assertSame(COMPATIBILITY_GBOARD, compatibilities.single())
         assertEquals(GBOARD_PACKAGE_NAME, compatibilities.single().packageName)
         assertEquals(
-            listOf(TARGET_VERSION, TARGET_VERSION_1831, TARGET_VERSION_1831_RELEASE),
+            listOf(TARGET_VERSION, TARGET_VERSION_1831),
             compatibilities.single().targets.map { target -> target.version },
         )
         assertTrue(compatibilities.single().targets.none { target -> target.isExperimental })
@@ -77,7 +77,7 @@ class GboardPackageRenamePatchContractTest {
         val packages = row.getAsJsonObject("compatiblePackages")
         assertEquals(setOf(GBOARD_PACKAGE_NAME), packages.keySet())
         assertEquals(
-            listOf(TARGET_VERSION, TARGET_VERSION_1831, TARGET_VERSION_1831_RELEASE),
+            listOf(TARGET_VERSION, TARGET_VERSION_1831),
             packages.getAsJsonArray(GBOARD_PACKAGE_NAME).map { it.asString },
         )
     }
@@ -109,7 +109,6 @@ class GboardPackageRenamePatchContractTest {
     private companion object {
         const val TARGET_VERSION = "18.0.3.954559732-release-arm64-v8a"
         const val TARGET_VERSION_1831 = "18.3.1.977415014-beta-arm64-v8a"
-        const val TARGET_VERSION_1831_RELEASE = "18.3.1.977415014-release-arm64-v8a"
         const val PACKAGE_RENAME_DESCRIPTION =
             "Rename the package to com.akshaykadam.pixelboard " +
                 "and allow a custom app name so it can be installed alongside " +

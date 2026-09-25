@@ -2,7 +2,6 @@ package com.akshaykadam.pixelboard.patches.gboard.features.writingtools
 
 import com.akshaykadam.pixelboard.patches.shared.addInstructions
 import com.akshaykadam.pixelboard.patches.shared.addInstructionsWithLabels
-import com.akshaykadam.pixelboard.patches.shared.replaceInstruction
 import com.akshaykadam.pixelboard.patches.shared.bytecodePatch
 import com.akshaykadam.pixelboard.patches.shared.MutableMethod
 import com.akshaykadam.pixelboard.patches.shared.ExternalLabel
@@ -16,12 +15,8 @@ import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrThrow
 import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrNull
 import com.akshaykadam.pixelboard.patches.gboard.shared.gboardFlagFamilyFeaturePatch
 import com.akshaykadam.pixelboard.patches.gboard.shared.gboardPatchesExtensionCarrierPatch
-import com.akshaykadam.pixelboard.patches.gboard.shared.indexOfFirstFieldAccess
 import com.akshaykadam.pixelboard.patches.gboard.shared.isFieldReference
-import com.akshaykadam.pixelboard.patches.gboard.shared.isLiteralWrite
 import com.akshaykadam.pixelboard.patches.gboard.shared.isMethodReference
-import com.akshaykadam.pixelboard.patches.gboard.shared.isOpcode
-import com.akshaykadam.pixelboard.patches.gboard.shared.isReference
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeCallEmitter
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeCallId
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeAbiCatalog
@@ -70,45 +65,6 @@ private val genAiClientRefresh = GboardMethodTarget(
     returnType = "V",
 )
 
-private val jarvisPromptPanelControllerInit = GboardMethodTarget(
-    classType = "Lhsj;",
-    name = "<init>",
-    parameterTypes = listOf(
-        "Lpvf;",
-        "Ljava/lang/Runnable;",
-        "Lhre;",
-        "Lpch;",
-        "Lcom/google/android/apps/inputmethod/libs/jarvis/prompt/JarvisPromptKeyboard;",
-        "Landroid/content/Context;",
-        "Z",
-        "Lhsy;",
-        "Z",
-    ),
-    returnType = "V",
-)
-
-private val jarvisPromptKeyboardActivate = GboardMethodTarget(
-    classType = "Lcom/google/android/apps/inputmethod/libs/jarvis/prompt/JarvisPromptKeyboard;",
-    name = "e",
-    parameterTypes = listOf(
-        "Landroid/view/inputmethod/EditorInfo;",
-        "Ljava/lang/Object;",
-    ),
-    returnType = "V",
-)
-
-private val genAiGrpcClientGenerateResponse = GboardMethodTarget(
-    classType = "Lohl;",
-    name = "c",
-    parameterTypes = listOf(
-        "Landroid/content/Context;",
-        "Lwco;",
-        "Landroid/view/inputmethod/EditorInfo;",
-        "Lohz;",
-    ),
-    returnType = "Lxfk;",
-)
-
 private val genAiInitClientTypeRuntime =
     RuntimeCallId.AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_APPLY_GEN_AI_INIT_CLIENT_TYPE
 private val smartEditInitClientTypeRuntime =
@@ -121,33 +77,6 @@ private val observeGenAiRefreshRuntime =
     RuntimeCallId.AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_OBSERVE_GEN_AI_REFRESH_CLIENT_TYPE
 private val finishGenAiRefreshRuntime =
     RuntimeCallId.AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_FINISH_GEN_AI_REFRESH
-private val adaptPromptMessagesRuntime =
-    RuntimeCallId.AI_WRITING_TOOLS_RUNTIME_ADAPT_PROMPT_MESSAGES
-private val resolveDescribeDraftRuntime =
-    RuntimeCallId.AI_WRITING_TOOLS_RUNTIME_RESOLVE_DESCRIBE_DRAFT
-private val adaptAiResponseRuntime =
-    RuntimeCallId.AI_WRITING_TOOLS_RUNTIME_ADAPT_AI_RESPONSE
-private val observeEditorInfoRuntime =
-    RuntimeCallId.AI_WRITING_TOOLS_RUNTIME_OBSERVE_EDITOR_INFO
-
-private val jarvisPromptPanelControllerCreatePromptInfo = GboardMethodTarget(
-    classType = "Lhsj;",
-    name = "L",
-    parameterTypes = listOf(
-        "Ljava/lang/String;",
-        "Ljava/lang/String;",
-    ),
-    returnType = "Lqpy;",
-)
-
-private val jarvisPromptResponseFunctionApply = GboardMethodTarget(
-    classType = "Lhrd;",
-    name = "apply",
-    parameterTypes = listOf(
-        "Ljava/lang/Object;",
-    ),
-    returnType = "Ljava/lang/Object;",
-)
 
 internal val gboardAiWritingTools1803AutoFixRoutePatch = bytecodePatch(
     description = "Add 18.0.3 INTENT_AUTO_FIX to official Writing Tools v2 route set.",
@@ -204,31 +133,6 @@ internal val gboardAiWritingTools1803GenAiRefreshPatch = bytecodePatch(
     execute {
         if (findMutableMethodOrNull(genAiClientRefresh) == null) return@execute
         findMutableMethodOrThrow(genAiClientRefresh).applyGenAiClientRefreshRetry()
-    }
-}
-
-internal val gboardAiWritingTools1803PromptNetworkPatch = bytecodePatch(
-    description = "Ensure Jarvis Prompt panel network state initializes to available and avoids premature offline error.",
-) {
-    compatibleWith(COMPATIBILITY_GBOARD)
-
-    execute {
-        findMutableMethodOrNull(jarvisPromptPanelControllerInit)?.applyPromptPanelNetworkInit()
-        findMutableMethodOrNull(jarvisPromptKeyboardActivate)?.applyPromptKeyboardNetworkBypass()
-    }
-}
-
-internal val gboardAiWritingTools1803PromptAdapterPatch = bytecodePatch(
-    description = "Adapt conversational prompt messages and recover Describe draft context for Gboard GenAI server.",
-) {
-    compatibleWith(COMPATIBILITY_GBOARD)
-    dependsOn(gboardPatchesExtensionCarrierPatch)
-
-    execute {
-        findMutableMethodOrNull(jarvisPromptKeyboardActivate)?.applyObserveEditorInfo()
-        findMutableMethodOrNull(genAiGrpcClientGenerateResponse)?.applyPromptMessageAdaptation()
-        findMutableMethodOrNull(jarvisPromptPanelControllerCreatePromptInfo)?.applyDescribeDraftResolution()
-        findMutableMethodOrNull(jarvisPromptResponseFunctionApply)?.applyAiResponseAdaptation()
     }
 }
 
@@ -426,98 +330,3 @@ private fun MutableMethod.applySmartEditInitClientTypeCompatibility() {
     )
     addInstructions(clientProducerIndices.single() + 1, "move-object v11, v10")
 }
-
-private fun MutableMethod.applyPromptPanelNetworkInit() {
-    val instructions = implementation?.instructions ?: return
-    val iputIndex = indexOfFirstFieldAccess("Lhsj;", "T", "Z", "IPUT_BOOLEAN")
-    if (iputIndex < 0) return
-    val instruction = instructions[iputIndex] as? TwoRegisterInstruction ?: return
-    val sourceRegister = instruction.registerA
-    if (iputIndex > 0 && instructions[iputIndex - 1].isOpcode("CONST_4") &&
-        instructions[iputIndex - 1].isLiteralWrite(sourceRegister, 1L)) {
-        return
-    }
-    addInstructions(iputIndex, "const/4 v$sourceRegister, 1")
-}
-
-private fun MutableMethod.applyPromptKeyboardNetworkBypass() {
-    val instructions = implementation?.instructions ?: return
-    val igetIndex = indexOfFirstFieldAccess("Lhsj;", "T", "Z", "IGET_BOOLEAN")
-    if (igetIndex < 0) return
-    val instruction = instructions[igetIndex] as? TwoRegisterInstruction ?: return
-    val destRegister = instruction.registerA
-    if (instruction.isOpcode("CONST_4") && instruction.isLiteralWrite(destRegister, 1L)) {
-        return
-    }
-    replaceInstruction(igetIndex, "const/4 v$destRegister, 1")
-}
-
-private fun MutableMethod.applyPromptMessageAdaptation() {
-    val instructions = implementation?.instructions ?: return
-    val runtimeReference = RuntimeAbiCatalog.abi(adaptPromptMessagesRuntime).reference
-    if (instructions.any { it.isMethodReference(runtimeReference) }) {
-        return
-    }
-    addInstructions(
-        0,
-        """
-            ${RuntimeCallEmitter.invoke(observeEditorInfoRuntime, "p3")}
-            ${RuntimeCallEmitter.invoke(adaptPromptMessagesRuntime, "p2")}
-            move-result-object p2
-            check-cast p2, Lwco;
-        """.trimIndent(),
-    )
-}
-
-private fun MutableMethod.applyDescribeDraftResolution() {
-    val instructions = implementation?.instructions ?: return
-    val runtimeReference = RuntimeAbiCatalog.abi(resolveDescribeDraftRuntime).reference
-    if (instructions.any { it.isMethodReference(runtimeReference) }) {
-        return
-    }
-    addInstructions(
-        0,
-        """
-            ${RuntimeCallEmitter.invoke(resolveDescribeDraftRuntime, "p2, p0")}
-            move-result-object p2
-        """.trimIndent(),
-    )
-}
-
-private fun MutableMethod.applyAiResponseAdaptation() {
-    val instructions = implementation?.instructions ?: return
-    val runtimeReference = RuntimeAbiCatalog.abi(adaptAiResponseRuntime).reference
-    if (instructions.any { it.isMethodReference(runtimeReference) }) {
-        return
-    }
-    val checkCastIndex = instructions.indexOfFirst {
-        it.opcode == Opcode.CHECK_CAST && it.isReference("Lwco;")
-    }
-    if (checkCastIndex < 0) return
-    val targetRegister = (instructions[checkCastIndex] as? OneRegisterInstruction)?.registerA ?: 1
-    addInstructions(
-        checkCastIndex + 1,
-        """
-            ${RuntimeCallEmitter.invoke(adaptAiResponseRuntime, "v$targetRegister")}
-            move-result-object v$targetRegister
-            check-cast v$targetRegister, Lwco;
-        """.trimIndent(),
-    )
-}
-
-private fun MutableMethod.applyObserveEditorInfo() {
-    val instructions = implementation?.instructions ?: return
-    val runtimeReference = RuntimeAbiCatalog.abi(observeEditorInfoRuntime).reference
-    if (instructions.any { it.isMethodReference(runtimeReference) }) {
-        return
-    }
-    addInstructions(
-        0,
-        """
-            move-object/from16 v0, p1
-            ${RuntimeCallEmitter.invoke(observeEditorInfoRuntime, "v0")}
-        """.trimIndent(),
-    )
-}
-
-

@@ -24,8 +24,6 @@ import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiW
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803AutoFixRoutePatch
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803GenAiInitPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803GenAiRefreshPatch
-import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803PromptAdapterPatch
-import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803PromptNetworkPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingTools1803SmartEditInitPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.writingtools.gboardAiWritingToolsFlagValuePatch
 import com.akshaykadam.pixelboard.patches.gboard.shared.gboardPatchesSettingsPatch
@@ -82,8 +80,6 @@ val gboardAiWritingToolsPatch = gboardPublicResourcePatch(
         gboardAiWritingTools1803GenAiInitPatch,
         gboardAiWritingTools1803GenAiRefreshPatch,
         gboardAiWritingTools1803SmartEditInitPatch,
-        gboardAiWritingTools1803PromptNetworkPatch,
-        gboardAiWritingTools1803PromptAdapterPatch,
     )
 }
 
@@ -189,7 +185,6 @@ object GboardPublishedPatchCatalog {
         val name: String,
         val description: String?,
         val use: Boolean,
-        val default: Boolean = use,
         val dependencies: List<String>,
         val compatiblePackages: Map<String, Set<String>?>?,
         val options: List<Option>,

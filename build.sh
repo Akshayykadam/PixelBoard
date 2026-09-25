@@ -11,31 +11,19 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 REBUILD_PATCH=false
-INSTALL_DEVICE=false
-INPUT_TARGET=""
-
 for arg in "$@"; do
     case "$arg" in
         -r|--rebuild|--compile|-c)
             REBUILD_PATCH=true
             ;;
-        -i|--install)
-            INSTALL_DEVICE=true
-            ;;
         -h|--help)
-            echo "Usage: ./build.sh [options] [path_to_input.apk|path_to_input.apkm]"
+            echo "Usage: ./build.sh [options]"
             echo "Options:"
             echo "  -r, --rebuild    Recompile patch bundle from pixelboard-patches/ using Gradle"
-            echo "  -i, --install    Install patched APK to connected Android device via ADB"
             echo "  -h, --help       Show this help message"
             echo ""
             echo "By default, ./build.sh runs 100% offline using the pre-bundled patches/PixelBoard.mpp."
             exit 0
-            ;;
-        *)
-            if [[ -f "$arg" ]]; then
-                INPUT_TARGET="$arg"
-            fi
             ;;
     esac
 done
@@ -45,7 +33,7 @@ MPP_PATH="patches/PixelBoard.mpp"
 if [[ "$REBUILD_PATCH" == true ]] || [[ ! -f "$MPP_PATH" ]]; then
     echo "=== 🎹 Compiling PixelBoard Patch Bundle from Source ==="
     cd pixelboard-patches
-    ./gradlew :patches:buildAndroid :patches:generatePatchesList
+    ./gradlew :patches:buildAndroid
     cd "$SCRIPT_DIR"
 
     PATCH_VERSION=$(grep -E "^version\s*=" pixelboard-patches/gradle.properties | cut -d'=' -f2 | tr -d ' ')
@@ -59,10 +47,7 @@ if [[ "$REBUILD_PATCH" == true ]] || [[ ! -f "$MPP_PATH" ]]; then
     fi
     mkdir -p patches
     cp "$COMPILED_MPP" "$MPP_PATH"
-    cp "$COMPILED_MPP" "patches/patches-${PATCH_VERSION}.mpp"
-    cp pixelboard-patches/patches-bundle.json patches/patches-bundle.json
-    cp pixelboard-patches/patches-list.json patches/patches-list.json
-    echo "✅ Patch bundle compiled & synced to: $MPP_PATH (and patches/patches-${PATCH_VERSION}.mpp)"
+    echo "✅ Patch bundle compiled & synced to: $MPP_PATH"
 else
     echo "📦 Using local patch bundle: $MPP_PATH (100% offline)"
 fi
@@ -92,31 +77,14 @@ if [[ -z "$JAVA_BIN" ]]; then
 fi
 echo "☕ Using Java 21+: $JAVA_BIN"
 
-mkdir -p input output tools/patcher-data
-
-# Handle input APKM or custom input APK
-if [[ -n "$INPUT_TARGET" ]]; then
-    if [[ "$INPUT_TARGET" =~ \.(apkm|xapk|apks)$ ]]; then
-        echo "📦 Merging split bundle ($INPUT_TARGET) into standalone APK via APKEditor..."
-        "$JAVA_BIN" -jar tools/APKEditor.jar m -i "$INPUT_TARGET" -o input/gboard.apk -f
-        echo "✅ Standalone APK prepared at input/gboard.apk"
-    elif [[ "$INPUT_TARGET" != "input/gboard.apk" && "$INPUT_TARGET" != "./input/gboard.apk" ]]; then
-        cp "$INPUT_TARGET" input/gboard.apk
-    fi
-elif [[ ! -f "input/gboard.apk" ]]; then
-    # Look for any .apkm in input/
-    FOUND_APKM=$(ls input/*.apkm 2>/dev/null | head -n 1)
-    if [[ -n "$FOUND_APKM" ]]; then
-        echo "📦 Merging split bundle ($FOUND_APKM) into standalone APK via APKEditor..."
-        "$JAVA_BIN" -jar tools/APKEditor.jar m -i "$FOUND_APKM" -o input/gboard.apk -f
-        echo "✅ Standalone APK prepared at input/gboard.apk"
-    else
-        echo "⚠️ Note: Place stock Gboard APK at input/gboard.apk to generate output APK."
-        exit 0
-    fi
+if [[ ! -f "input/gboard.apk" ]]; then
+    echo "⚠️ Note: Place stock Gboard APK at input/gboard.apk to generate output APK."
+    exit 0
 fi
 
 echo "=== 🔨 Applying Patches to input/gboard.apk ==="
+mkdir -p output
+mkdir -p tools/patcher-data
 
 KEYSTORE_PATH="tools/patcher-data/pixelboard.keystore"
 if [[ ! -f "$KEYSTORE_PATH" ]]; then
@@ -147,19 +115,4 @@ fi
     -r=output/patching-result.json \
     input/gboard.apk
 
-cp output/PixelBoard.apk output/PixelBoard-18.3.1.apk
-cp output/PixelBoard.apk output/gboard-patched.apk
-cp output/patching-result.json output/patching-result-1831.json
-
-echo "🎉 Successfully built output/PixelBoard.apk (and output/PixelBoard-18.3.1.apk)!"
-
-if [[ "$INSTALL_DEVICE" == true ]]; then
-    ADB_BIN="$(which adb 2>/dev/null || echo "$HOME/Library/Android/sdk/platform-tools/adb")"
-    if [[ -x "$ADB_BIN" ]]; then
-        echo "📱 Installing output/PixelBoard.apk to connected device..."
-        "$ADB_BIN" install -r output/PixelBoard.apk
-        echo "✅ Installed successfully on device!"
-    else
-        echo "⚠️ adb not found; skipping device installation."
-    fi
-fi
+echo "🎉 Successfully built output/PixelBoard.apk!"
