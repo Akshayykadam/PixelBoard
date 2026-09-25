@@ -10,7 +10,7 @@
   </a>
   &nbsp;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard-18.3.1.apk">
-    <img src="https://img.shields.io/badge/🧪_Direct_Download-v18.3.1_Beta_(82_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Beta APK"/>
+    <img src="https://img.shields.io/badge/🚀_Direct_Download-v18.3.1_Release_(82_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Release APK"/>
   </a>
 </p>
 
@@ -142,7 +142,7 @@ You can include PixelBoard as a custom patch source directly in **Morphe Manager
    https://raw.githubusercontent.com/Akshayykadam/PixelBoard/main/patches-bundle.json
    ```
    *(or add `Akshayykadam/PixelBoard` directly)*
-3. Pick your stock Gboard APK (`v18.0.3` or `v18.3.1 Beta` `arm64-v8a`), select your patches, and tap **Patch**!
+3. Pick your stock Gboard APK (`v18.0.3` or `v18.3.1` `arm64-v8a`), select your patches, and tap **Patch**!
 
 ### First-Time Setup on Device
 1. On your phone, go to **Settings > System > Languages & input > On-screen keyboard** (or **Manage Keyboards**).
@@ -163,10 +163,10 @@ GBoardMod/
 ├── patches/
 │   └── PixelBoard.mpp         # Pre-bundled offline patch pack (~1.4 MB)
 ├── input/
-│   └── gboard.apk             # Base stock Gboard APK (v18.0.3)
+│   └── gboard.apk             # Base stock Gboard APK (v18.3.1 Release)
 ├── output/
-│   ├── PixelBoard.apk         # Ready-to-install signed Stable APK (v18.0.3, 79 MB)
-│   ├── PixelBoard-18.3.1.apk  # Ready-to-install signed Beta APK (v18.3.1, 82 MB)
+│   ├── PixelBoard.apk         # Ready-to-install signed APK (v18.3.1, 82 MB)
+│   ├── PixelBoard-18.3.1.apk  # Ready-to-install signed Release APK (v18.3.1, 82 MB)
 │   ├── gboard-patched.apk     # Patched binary alias
 │   └── patching-result.json   # Patch verification report
 ├── tools/

@@ -126,7 +126,7 @@ public final class GboardAiWritingToolsRuntimeTest {
                         official(true, true),
                         "com.akshaykadam.pixelboard"));
         String stylization = "composer_stylization_base";
-        Assert.assertEquals("202504090000_writing_tools_config",
+        Assert.assertEquals("composer_stylization_base",
                 GboardAiWritingToolsRuntime.computeOverrideValue(
                         GboardAiWritingToolsRuntime
                                 .FLAG_WRITING_HELPER_TEXT_STYLIZATION_MODEL_VERSION,
@@ -274,6 +274,22 @@ public final class GboardAiWritingToolsRuntimeTest {
                 wrongLongType,
                 astrea,
                 official(true, true)));
+
+        Assert.assertEquals(Long.valueOf(3L), GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_PI_STYLIZATION_CANDIDATE_COUNT,
+                Long.valueOf(1L),
+                astrea,
+                official(true, true)));
+        Assert.assertEquals(Long.valueOf(3L), GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_TOP_K,
+                Long.valueOf(1L),
+                astrea,
+                official(true, true)));
+        Assert.assertEquals(Long.valueOf(1L), GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_RETRY_MAX_ATTEMPTS,
+                Long.valueOf(0L),
+                astrea,
+                official(true, true)));
     }
 
     @Test
@@ -300,6 +316,124 @@ public final class GboardAiWritingToolsRuntimeTest {
                         false,
                         GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA),
                 official(true, true)));
+    }
+
+    @Test
+    public void writingToolsV2FlagsAreEnabledWithFullSuite() {
+        GboardAiWritingToolsSettings.Snapshot settings = serverSettings(true);
+        String[] v2Flags = new String[]{
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2_TUTORIAL_PROMPTS,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_ENABLE_STREAMING_UI,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_REPLACE_BUTTON,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SUPER_ICON_IN_DYNAMIC_WRITING_TOOLS,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_DECORATION_ANIM,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_ITEM_VIEW_EXPAND_ANIM,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SCROLL_HINT_ANIM,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_STYLE_VIEW_SELECT_ANIM,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_STYLE_VIEWS_FADE_IN_ANIM,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_THUMB_UP_AND_DOWN,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_ENABLE_STABLE_ENTRANCE,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_ENABLE_PROMPT_ROLE,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_MULTI_ROLE_PROMPT,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_USER_PROFILE,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_P13N,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_SHOW_P13N_TAG,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_SHOW_PI_LABEL,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_SCREENSHOT_CONTEXT,
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_ENABLE_SMART_REPLY_FOR_SELF_REPLY,
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_SMART_REPLY_ENABLE_MODULAR_PROMPT_TEMPLATE,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_ENABLE_ACCESS_POINT_ANIMATION,
+        };
+        for (String flag : v2Flags) {
+            Assert.assertSame(flag, Boolean.TRUE,
+                    GboardAiWritingToolsRuntime.computeOverrideValue(
+                            flag,
+                            Boolean.FALSE,
+                            settings,
+                            official(true, true)));
+        }
+
+        String[] v2DisabledFlags = new String[]{
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_IN_ZERO_STATE,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS,
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT_RESPONSE,
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_TOAST,
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_ENABLE_ZERO_STATE_INSTRUCTION_SUGGESTION_LOADING_STATUS,
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_ENABLE_ZERO_STATE_INSTRUCTION_SUGGESTION_ANIMATED_LOADING_STATUS,
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_ENABLE_ZERO_STATE_INSTRUCTION_SUGGESTION_MULTI_STATUS_ITEM,
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_CANCEL_ZERO_STATE_INSTRUCTION_SUGGESTION_ON_TYPING,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_PREPARE_PI_ON_ACCESS_POINT,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_PREPARE_PI_ON_COOPERATIVE_MODE,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_PREPARE_PI_ON_PROOFREAD_CHIP,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_PROMPT_DOWNLOAD
+        };
+        for (String flag : v2DisabledFlags) {
+            Assert.assertSame(flag, Boolean.FALSE,
+                    GboardAiWritingToolsRuntime.computeOverrideValue(
+                            flag,
+                            Boolean.TRUE,
+                            settings,
+                            official(true, true)));
+        }
+
+        Assert.assertEquals("", GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_ENABLED_SMART_REPLY_ZERO_STATE_SUGGESTION_LANGUAGE_TAGS,
+                "en",
+                settings,
+                official(true, true)));
+
+        Assert.assertEquals("", GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime.FLAG_PROOFREAD_SUPPORTED_APPS,
+                "-com.google.android.gm",
+                settings,
+                official(true, true)));
+
+        Assert.assertEquals("v3", GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_PROMPT_TEMPLATE_VERSION,
+                "",
+                settings,
+                official(true, true)));
+
+        Assert.assertEquals("v3", GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_FALLBACK_PROMPT_TEMPLATE_VERSION,
+                "-",
+                settings,
+                official(true, true)));
+
+        Assert.assertEquals("p3", GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_P13N_PROMPT_TEMPLATE_VERSION,
+                "",
+                settings,
+                official(true, true)));
+    }
+
+    @Test
+    public void adaptPromptMessagesSafelyHandlesSmallOrNonIterableInputs() {
+        Assert.assertNull(GboardAiWritingToolsRuntime.adaptPromptMessages(null));
+        Object nonIterable = "not-a-list";
+        Assert.assertSame(nonIterable, GboardAiWritingToolsRuntime.adaptPromptMessages(nonIterable));
+        java.util.List<Object> empty = java.util.Collections.emptyList();
+        Assert.assertSame(empty, GboardAiWritingToolsRuntime.adaptPromptMessages(empty));
+        java.util.List<Object> single = java.util.Collections.singletonList(new Object());
+        Assert.assertSame(single, GboardAiWritingToolsRuntime.adaptPromptMessages(single));
     }
 
     private static Boolean distinctBoolean(boolean value) throws Exception {

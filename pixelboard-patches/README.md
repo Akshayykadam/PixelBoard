@@ -3,7 +3,7 @@
 <div align="center">
 
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
-[![Version](https://img.shields.io/badge/Patch%20Version-1.0.2-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
+[![Version](https://img.shields.io/badge/Patch%20Version-1.0.3-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
 [![Author](https://img.shields.io/badge/Author-Akshay%20Kadam-9cf?style=flat-square&logo=github)](https://github.com/Akshayykadam)
 
 **PixelBoard Patch Source for Gboard**
@@ -20,11 +20,11 @@
   </a>
   &nbsp;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard-18.3.1.apk">
-    <img src="https://img.shields.io/badge/🧪_Download_Beta_APK-v18.3.1_(78_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Beta APK"/>
+    <img src="https://img.shields.io/badge/🚀_Download_Release_APK-v18.3.1_(82_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Release APK"/>
   </a>
 </p>
 
-[**⬇️ Direct Download Stable (v18.0.3)**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk) • [**⬇️ Direct Download Beta (v18.3.1)**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard-18.3.1.apk) • [**📦 View GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
+[**⬇️ Direct Download Stable (v18.0.3)**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk) • [**⬇️ Direct Download Release (v18.3.1)**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard-18.3.1.apk) • [**📦 View GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
 
 ---
 
@@ -36,7 +36,7 @@ This repository contains the patch definitions and extension bytecode for **Pixe
 
 - **App Label**: `PixelBoard`
 - **Package ID**: `com.akshaykadam.pixelboard`
-- **Target App**: Google Keyboard (Gboard) `v18.0.3` (Stable) & `v18.3.1` (Beta)
+- **Target App**: Google Keyboard (Gboard) `v18.0.3` (Stable) & `v18.3.1` (Release / Beta)
 
 ---
 
@@ -49,7 +49,7 @@ Build the Android patch bundle (`.mpp`):
 
 The compiled patch bundle will be located at:
 ```text
-patches/build/libs/patches-1.0.2.mpp
+patches/build/libs/patches-1.0.3.mpp
 ```
 
 ---
