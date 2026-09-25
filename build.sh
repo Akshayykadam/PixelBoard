@@ -45,7 +45,7 @@ MPP_PATH="patches/PixelBoard.mpp"
 if [[ "$REBUILD_PATCH" == true ]] || [[ ! -f "$MPP_PATH" ]]; then
     echo "=== 🎹 Compiling PixelBoard Patch Bundle from Source ==="
     cd pixelboard-patches
-    ./gradlew :patches:buildAndroid
+    ./gradlew :patches:buildAndroid :patches:generatePatchesList
     cd "$SCRIPT_DIR"
 
     PATCH_VERSION=$(grep -E "^version\s*=" pixelboard-patches/gradle.properties | cut -d'=' -f2 | tr -d ' ')
@@ -59,7 +59,10 @@ if [[ "$REBUILD_PATCH" == true ]] || [[ ! -f "$MPP_PATH" ]]; then
     fi
     mkdir -p patches
     cp "$COMPILED_MPP" "$MPP_PATH"
-    echo "✅ Patch bundle compiled & synced to: $MPP_PATH"
+    cp "$COMPILED_MPP" "patches/patches-${PATCH_VERSION}.mpp"
+    cp pixelboard-patches/patches-bundle.json patches/patches-bundle.json
+    cp pixelboard-patches/patches-list.json patches/patches-list.json
+    echo "✅ Patch bundle compiled & synced to: $MPP_PATH (and patches/patches-${PATCH_VERSION}.mpp)"
 else
     echo "📦 Using local patch bundle: $MPP_PATH (100% offline)"
 fi

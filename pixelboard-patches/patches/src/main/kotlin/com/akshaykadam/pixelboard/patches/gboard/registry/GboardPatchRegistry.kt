@@ -189,6 +189,7 @@ object GboardPublishedPatchCatalog {
         val name: String,
         val description: String?,
         val use: Boolean,
+        val default: Boolean = use,
         val dependencies: List<String>,
         val compatiblePackages: Map<String, Set<String>?>?,
         val options: List<Option>,

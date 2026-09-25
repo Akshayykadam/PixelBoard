@@ -340,8 +340,6 @@ public final class GboardAiWritingToolsRuntimeTest {
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_STYLE_VIEWS_FADE_IN_ANIM,
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_THUMB_UP_AND_DOWN,
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_ENABLE_STABLE_ENTRANCE,
-                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_ENABLE_PROMPT_ROLE,
-                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_MULTI_ROLE_PROMPT,
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_USER_PROFILE,
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_P13N,
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_SHOW_P13N_TAG,
@@ -362,7 +360,7 @@ public final class GboardAiWritingToolsRuntimeTest {
                             official(true, true)));
         }
 
-        String[] v2DisabledFlags = new String[]{
+        String[] v2EnabledSuggestionFlags = new String[]{
                 GboardAiWritingToolsRuntime
                         .FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_IN_ZERO_STATE,
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS,
@@ -377,11 +375,24 @@ public final class GboardAiWritingToolsRuntimeTest {
                 GboardAiWritingToolsRuntime
                         .FLAG_WRITING_TOOLS_V2_ENABLE_ZERO_STATE_INSTRUCTION_SUGGESTION_MULTI_STATUS_ITEM,
                 GboardAiWritingToolsRuntime
-                        .FLAG_WRITING_TOOLS_V2_CANCEL_ZERO_STATE_INSTRUCTION_SUGGESTION_ON_TYPING,
+                        .FLAG_WRITING_TOOLS_V2_CANCEL_ZERO_STATE_INSTRUCTION_SUGGESTION_ON_TYPING
+        };
+        for (String flag : v2EnabledSuggestionFlags) {
+            Assert.assertSame(flag, Boolean.TRUE,
+                    GboardAiWritingToolsRuntime.computeOverrideValue(
+                            flag,
+                            Boolean.FALSE,
+                            settings,
+                            official(true, true)));
+        }
+
+        String[] v2DisabledFlags = new String[]{
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_PREPARE_PI_ON_ACCESS_POINT,
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_PREPARE_PI_ON_COOPERATIVE_MODE,
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_PREPARE_PI_ON_PROOFREAD_CHIP,
-                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_PROMPT_DOWNLOAD
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_PROMPT_DOWNLOAD,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_ENABLE_PROMPT_ROLE,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_MULTI_ROLE_PROMPT
         };
         for (String flag : v2DisabledFlags) {
             Assert.assertSame(flag, Boolean.FALSE,
@@ -392,11 +403,19 @@ public final class GboardAiWritingToolsRuntimeTest {
                             official(true, true)));
         }
 
-        Assert.assertEquals("", GboardAiWritingToolsRuntime.computeOverrideValue(
+        Assert.assertEquals("*", GboardAiWritingToolsRuntime.computeOverrideValue(
                 GboardAiWritingToolsRuntime
                         .FLAG_WRITING_TOOLS_V2_ENABLED_SMART_REPLY_ZERO_STATE_SUGGESTION_LANGUAGE_TAGS,
                 "en",
                 settings,
+                official(true, true)));
+
+        GboardAiWritingToolsSettings.Snapshot settingsNoAll = serverSettings(false);
+        Assert.assertEquals("en", GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime
+                        .FLAG_WRITING_TOOLS_V2_ENABLED_SMART_REPLY_ZERO_STATE_SUGGESTION_LANGUAGE_TAGS,
+                "en",
+                settingsNoAll,
                 official(true, true)));
 
         Assert.assertEquals("", GboardAiWritingToolsRuntime.computeOverrideValue(
@@ -434,6 +453,230 @@ public final class GboardAiWritingToolsRuntimeTest {
         Assert.assertSame(empty, GboardAiWritingToolsRuntime.adaptPromptMessages(empty));
         java.util.List<Object> single = java.util.Collections.singletonList(new Object());
         Assert.assertSame(single, GboardAiWritingToolsRuntime.adaptPromptMessages(single));
+    }
+
+    @Test
+    public void resolveDescribeDraftReturnsProvidedDraftAndUpdatesLastKnown() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting(null);
+        String resolved = GboardAiWritingToolsRuntime.resolveDescribeDraft("My initial text", null);
+        Assert.assertEquals("My initial text", resolved);
+        Assert.assertEquals("My initial text", GboardAiWritingToolsRuntime.getLastKnownDraftForTesting());
+    }
+
+    @Test
+    public void resolveDescribeDraftFallsBackToLastKnownDraftWhenBlankAndNoTrigger() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting("Captured editor text from active session");
+        String resolved = GboardAiWritingToolsRuntime.resolveDescribeDraft("", null);
+        Assert.assertEquals("Captured editor text from active session", resolved);
+        Assert.assertEquals("Captured editor text from active session", GboardAiWritingToolsRuntime.getLastKnownDraftForTesting());
+
+        String resolvedNull = GboardAiWritingToolsRuntime.resolveDescribeDraft(null, null);
+        Assert.assertEquals("Captured editor text from active session", resolvedNull);
+        Assert.assertEquals("Captured editor text from active session", GboardAiWritingToolsRuntime.getLastKnownDraftForTesting());
+    }
+
+    @Test
+    public void observeEditorInfoCapturesSelectedText() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting(null);
+        Object mockEditorInfo = new Object() {
+            public String packageName = "com.google.android.apps.messaging";
+            public CharSequence getInitialSelectedText(int flags) {
+                return "Selected text in editor";
+            }
+        };
+        GboardAiWritingToolsRuntime.observeEditorInfo(mockEditorInfo);
+        Assert.assertEquals("Selected text in editor", GboardAiWritingToolsRuntime.getLastKnownDraftForTesting());
+    }
+
+    @Test
+    public void observeEditorInfoCapturesSurroundingTextWhenNoSelection() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting(null);
+        Object mockEditorInfo = new Object() {
+            public String packageName = "ai.perplexity.app.android";
+            public CharSequence getInitialTextBeforeCursor(int n, int flags) {
+                return "Your lighting is warm, ";
+            }
+            public CharSequence getInitialTextAfterCursor(int n, int flags) {
+                return "but even accounting for that...";
+            }
+        };
+        GboardAiWritingToolsRuntime.observeEditorInfo(mockEditorInfo);
+        Assert.assertEquals("Your lighting is warm, but even accounting for that...",
+                GboardAiWritingToolsRuntime.getLastKnownDraftForTesting());
+    }
+
+    @Test
+    public void observeEditorInfoIgnoresImePackages() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting("Original draft");
+        Object mockEditorInfo = new Object() {
+            public String packageName = "com.google.android.inputmethod.latin";
+            public CharSequence getInitialTextBeforeCursor(int n, int flags) {
+                return "Prompt query typed in keyboard";
+            }
+        };
+        GboardAiWritingToolsRuntime.observeEditorInfo(mockEditorInfo);
+        Assert.assertEquals("Original draft", GboardAiWritingToolsRuntime.getLastKnownDraftForTesting());
+    }
+
+    @Test
+    public void resolveDescribeDraftIgnoresErrorStrings() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting(null);
+        String resolvedError = GboardAiWritingToolsRuntime.resolveDescribeDraft("Something went wrong. Please try again.", null);
+        Assert.assertEquals("", resolvedError);
+        Assert.assertNull(GboardAiWritingToolsRuntime.getLastKnownDraftForTesting());
+
+        final String errorText = "Couldn't load suggestion";
+        Object mockOvi = new Object() {
+            public CharSequence b = errorText;
+        };
+        Object mockHsj = new Object() {
+            public Object r = mockOvi;
+        };
+        String resolvedTriggerError = GboardAiWritingToolsRuntime.resolveDescribeDraft("", mockHsj);
+        Assert.assertEquals("", resolvedTriggerError);
+        Assert.assertNull(GboardAiWritingToolsRuntime.getLastKnownDraftForTesting());
+    }
+
+    @Test
+    public void sanitizePromptInjectsMissingDraftWhenAvailable() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting("Let us schedule the sync on Friday.");
+        String rawPrompt = "You are a writing assistant.\n\n"
+                + "## User's Current Request\n"
+                + "User instruction: <INSTRUCTION>make it professional</INSTRUCTION>\n"
+                + "---\n"
+                + "Now, begin processing the request based on the protocol above and provide your response.";
+
+        String sanitized = GboardAiWritingToolsRuntime.sanitizePrompt(rawPrompt);
+        Assert.assertTrue(sanitized.contains("Context: <CURRENT_DRAFT>Let us schedule the sync on Friday.</CURRENT_DRAFT>"));
+        Assert.assertFalse(sanitized.contains("Output: <DRAFT>"));
+    }
+
+    @Test
+    public void sanitizePromptDoesNotDuplicateExistingDraftOrOutputTag() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting("Existing draft.");
+        String alreadyCompletePrompt = "## User's Current Request\n"
+                + "User instruction: <INSTRUCTION>polish</INSTRUCTION>\n"
+                + "Context: <CURRENT_DRAFT>Already has draft</CURRENT_DRAFT>\n";
+
+        String sanitized = GboardAiWritingToolsRuntime.sanitizePrompt(alreadyCompletePrompt);
+        Assert.assertEquals(alreadyCompletePrompt, sanitized);
+    }
+
+    @Test
+    public void sanitizePromptReplacesEmptyDraftTagWithLastKnownDraft() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting("Recovered draft text.");
+        String promptWithEmptyDraft = "## Context Information\n"
+                + "<CURRENT_DRAFT>\n\n</CURRENT_DRAFT>\n"
+                + "## User's Current Request\n"
+                + "User instruction: <INSTRUCTION>make it concise</INSTRUCTION>\n";
+
+        String sanitized = GboardAiWritingToolsRuntime.sanitizePrompt(promptWithEmptyDraft);
+        Assert.assertTrue(sanitized.contains("<CURRENT_DRAFT>\nRecovered draft text.\n</CURRENT_DRAFT>"));
+    }
+
+    @Test
+    public void resolveDescribeDraftRecoversDraftFromHsjFields() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting(null);
+        final String expectedDraft = "Draft inside mock hsj";
+        Object mockOvi = new Object() {
+            public CharSequence b = expectedDraft;
+        };
+        Object mockHsj = new Object() {
+            public Object r = mockOvi;
+        };
+
+        String resolved = GboardAiWritingToolsRuntime.resolveDescribeDraft("", mockHsj);
+        Assert.assertEquals(expectedDraft, resolved);
+        Assert.assertEquals(expectedDraft, GboardAiWritingToolsRuntime.getLastKnownDraftForTesting());
+    }
+
+    @Test
+    public void sanitizePromptDoesNotDuplicateWhenContextSectionHasDraft() {
+        GboardAiWritingToolsRuntime.setLastKnownDraftForTesting("Recovered pink casing draft");
+        String nativePromptWithContextDraft = "## Context Information\n"
+                + "<CONTEXT>\n"
+                + "<CURRENT_DRAFT>Your lighting is warm...</CURRENT_DRAFT>\n"
+                + "</CONTEXT>\n"
+                + "## User's Current Request\n"
+                + "<INSTRUCTION>Email</INSTRUCTION>\n"
+                + "---\n";
+
+        String sanitized = GboardAiWritingToolsRuntime.sanitizePrompt(nativePromptWithContextDraft);
+        Assert.assertEquals(nativePromptWithContextDraft, sanitized);
+    }
+
+    @Test
+    public void repairAiResponseWrapsRawTextWithoutTags() {
+        String rawServerResponse = "Subject: Pink Casing Question\n\nHi there,\n\nBest,";
+        String repaired = GboardAiWritingToolsRuntime.repairAiResponse(rawServerResponse);
+
+        Assert.assertTrue(repaired.contains("<INSTRUCTION_CLASS>MODIFICATION</INSTRUCTION_CLASS>"));
+        Assert.assertTrue(repaired.contains("<DRAFT>" + rawServerResponse + "</DRAFT>"));
+    }
+
+    @Test
+    public void repairAiResponseStripsMarkdownCodeFences() {
+        String markdownResponse = "```xml\n"
+                + "<INSTRUCTION_CLASS>MODIFICATION</INSTRUCTION_CLASS>\n"
+                + "<DRAFT>Here is the revised draft</DRAFT>\n"
+                + "```";
+        String repaired = GboardAiWritingToolsRuntime.repairAiResponse(markdownResponse);
+
+        Assert.assertFalse(repaired.contains("```"));
+        Assert.assertTrue(repaired.startsWith("<INSTRUCTION_CLASS>MODIFICATION</INSTRUCTION_CLASS>"));
+        Assert.assertTrue(repaired.endsWith("<DRAFT>Here is the revised draft</DRAFT>"));
+    }
+
+    @Test
+    public void repairAiResponseClosesUnclosedDraftTag() {
+        String unclosed = "<INSTRUCTION_CLASS>MODIFICATION</INSTRUCTION_CLASS>\n"
+                + "<DRAFT>Draft text here without closing tag";
+        String repaired = GboardAiWritingToolsRuntime.repairAiResponse(unclosed);
+
+        Assert.assertTrue(repaired.endsWith("</DRAFT>"));
+    }
+
+    @Test
+    public void repairAiResponseAddsInstructionClassWhenMissing() {
+        String onlyDraft = "<DRAFT>Just a draft text</DRAFT>";
+        String repaired = GboardAiWritingToolsRuntime.repairAiResponse(onlyDraft);
+
+        Assert.assertTrue(repaired.startsWith("<INSTRUCTION_CLASS>MODIFICATION</INSTRUCTION_CLASS>"));
+        Assert.assertTrue(repaired.contains(onlyDraft));
+    }
+
+    @Test
+    public void repairAiResponseRemovesThinkingTags() {
+        String withThinking = "<think>Let me compose an email</think>\n"
+                + "Subject: Meeting\n\nLet us meet tomorrow.";
+        String repaired = GboardAiWritingToolsRuntime.repairAiResponse(withThinking);
+
+        Assert.assertFalse(repaired.contains("<think>"));
+        Assert.assertFalse(repaired.contains("</think>"));
+        Assert.assertTrue(repaired.contains("<DRAFT>Subject: Meeting\n\nLet us meet tomorrow.</DRAFT>"));
+    }
+
+    @Test
+    public void repairAiResponsePreservesAlreadyValidResponse() {
+        String valid = "<INSTRUCTION_CLASS>COMPOSITION</INSTRUCTION_CLASS>\n"
+                + "<DRAFT>Valid composition output</DRAFT>";
+        String repaired = GboardAiWritingToolsRuntime.repairAiResponse(valid);
+
+        Assert.assertEquals(valid, repaired);
+    }
+
+    @Test
+    public void adaptAiResponseUpdatesFieldOnListItems() {
+        class MockOkq {
+            public String b = "Raw text reply from model";
+        }
+        MockOkq item = new MockOkq();
+        java.util.List<MockOkq> list = java.util.Collections.singletonList(item);
+
+        Object adapted = GboardAiWritingToolsRuntime.adaptAiResponse(list);
+        Assert.assertSame(list, adapted);
+        Assert.assertTrue(item.b.contains("<INSTRUCTION_CLASS>MODIFICATION</INSTRUCTION_CLASS>"));
+        Assert.assertTrue(item.b.contains("<DRAFT>Raw text reply from model</DRAFT>"));
     }
 
     private static Boolean distinctBoolean(boolean value) throws Exception {

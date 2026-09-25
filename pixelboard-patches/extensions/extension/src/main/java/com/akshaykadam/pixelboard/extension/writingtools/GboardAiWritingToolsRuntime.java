@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +14,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * PixelBoard runtime engine for Gboard 18.0.3 AI Writing Tools and Proofread capabilities.
@@ -173,6 +177,7 @@ public final class GboardAiWritingToolsRuntime {
             new ThreadLocal<Integer>();
 
     private static volatile Context applicationContext;
+    private static volatile String sLastKnownDraft = null;
 
     private GboardAiWritingToolsRuntime() {
     }
@@ -269,7 +274,14 @@ public final class GboardAiWritingToolsRuntime {
         }
         if (FLAG_WRITING_TOOLS_V2_ENABLED_SMART_REPLY_ZERO_STATE_SUGGESTION_LANGUAGE_TAGS
                 .equals(flagName)) {
-            return originalResult instanceof String ? "" : originalResult;
+            if (!(originalResult instanceof String)) {
+                return originalResult;
+            }
+            if (settings.allKeyboardsEnabled) {
+                return ALL_LANGUAGES_ALLOWLIST_VALUE;
+            }
+            String stock = (String) originalResult;
+            return stock.isEmpty() ? "en" : stock;
         }
         if (FLAG_PROOFREAD_SUPPORTED_APPS.equals(flagName)) {
             return originalResult instanceof String ? "" : originalResult;
@@ -298,18 +310,12 @@ public final class GboardAiWritingToolsRuntime {
             return originalResult;
         }
 
-        if (FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_IN_ZERO_STATE.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT_RESPONSE.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_TOAST.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_ZERO_STATE_INSTRUCTION_SUGGESTION_LOADING_STATUS.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_ZERO_STATE_INSTRUCTION_SUGGESTION_ANIMATED_LOADING_STATUS.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_ZERO_STATE_INSTRUCTION_SUGGESTION_MULTI_STATUS_ITEM.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_CANCEL_ZERO_STATE_INSTRUCTION_SUGGESTION_ON_TYPING.equals(flagName)
-                || FLAG_WRITING_TOOLS_PREPARE_PI_ON_ACCESS_POINT.equals(flagName)
+        if (FLAG_WRITING_TOOLS_PREPARE_PI_ON_ACCESS_POINT.equals(flagName)
                 || FLAG_WRITING_TOOLS_PREPARE_PI_ON_COOPERATIVE_MODE.equals(flagName)
                 || FLAG_WRITING_TOOLS_PREPARE_PI_ON_PROOFREAD_CHIP.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_PROMPT_DOWNLOAD.equals(flagName)) {
+                || FLAG_WRITING_TOOLS_V2_ENABLE_PROMPT_DOWNLOAD.equals(flagName)
+                || FLAG_WRITING_TOOLS_ENABLE_PROMPT_ROLE.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_MULTI_ROLE_PROMPT.equals(flagName)) {
             return Boolean.FALSE;
         }
 
@@ -339,8 +345,6 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_WRITING_TOOLS_STYLE_VIEWS_FADE_IN_ANIM.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_THUMB_UP_AND_DOWN.equals(flagName)
                 || FLAG_WRITING_TOOLS_ENABLE_STABLE_ENTRANCE.equals(flagName)
-                || FLAG_WRITING_TOOLS_ENABLE_PROMPT_ROLE.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_MULTI_ROLE_PROMPT.equals(flagName)
                 || FLAG_WRITING_TOOLS_V2_ENABLE_USER_PROFILE.equals(flagName)
                 || FLAG_WRITING_TOOLS_V2_ENABLE_P13N.equals(flagName)
                 || FLAG_WRITING_TOOLS_V2_SHOW_P13N_TAG.equals(flagName)
@@ -349,7 +353,15 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_WRITING_TOOLS_V2_ENABLE_SMART_REPLY_FOR_SELF_REPLY.equals(flagName)
                 || FLAG_WRITING_TOOLS_V2_SMART_REPLY_ENABLE_MODULAR_PROMPT_TEMPLATE
                         .equals(flagName)
-                || FLAG_WRITING_HELPER_ENABLE_ACCESS_POINT_ANIMATION.equals(flagName)) {
+                || FLAG_WRITING_HELPER_ENABLE_ACCESS_POINT_ANIMATION.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_IN_ZERO_STATE.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT_RESPONSE.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_TOAST.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_ZERO_STATE_INSTRUCTION_SUGGESTION_LOADING_STATUS.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_ZERO_STATE_INSTRUCTION_SUGGESTION_ANIMATED_LOADING_STATUS.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_ZERO_STATE_INSTRUCTION_SUGGESTION_MULTI_STATUS_ITEM.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_CANCEL_ZERO_STATE_INSTRUCTION_SUGGESTION_ON_TYPING.equals(flagName)) {
             return Boolean.TRUE;
         }
         return originalResult;
@@ -518,6 +530,284 @@ public final class GboardAiWritingToolsRuntime {
         }
     }
 
+    private static boolean isInvalidDraft(String text) {
+        if (text == null) {
+            return true;
+        }
+        String trimmed = text.trim();
+        if (trimmed.isEmpty()) {
+            return true;
+        }
+        String lower = trimmed.toLowerCase();
+        return lower.startsWith("something went wrong")
+                || lower.startsWith("couldn't load")
+                || lower.startsWith("could not load")
+                || lower.startsWith("failed to get")
+                || lower.startsWith("please try again")
+                || lower.equals("try again")
+                || lower.equals("cancel")
+                || lower.equals("describe")
+                || lower.equals("clear")
+                || lower.equals("undo");
+    }
+
+    public static void observeEditorInfo(Object editorInfoObj) {
+        if (editorInfoObj == null) {
+            return;
+        }
+        try {
+            // Ignore IME internal editor infos to prevent overwriting with user prompt queries
+            try {
+                Field pkgField = editorInfoObj.getClass().getField("packageName");
+                Object pkgVal = pkgField.get(editorInfoObj);
+                if (pkgVal instanceof String) {
+                    String pkg = ((String) pkgVal).toLowerCase();
+                    if (pkg.contains("inputmethod") || pkg.contains("pixelboard")) {
+                        return;
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+
+            // 1. Try getInitialSelectedText(0)
+            try {
+                Method selMethod = editorInfoObj.getClass().getMethod("getInitialSelectedText", int.class);
+                Object sel = selMethod.invoke(editorInfoObj, 0);
+                if (sel != null) {
+                    String selStr = sel.toString();
+                    if (!isInvalidDraft(selStr)) {
+                        sLastKnownDraft = selStr.trim();
+                        safeLogInfo("observeEditorInfo: captured selected text: " + sLastKnownDraft);
+                        return;
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+
+            // 2. Try getInitialTextBeforeCursor + getInitialTextAfterCursor
+            CharSequence before = null;
+            CharSequence after = null;
+            try {
+                Method beforeMethod = editorInfoObj.getClass().getMethod("getInitialTextBeforeCursor", int.class, int.class);
+                Object b = beforeMethod.invoke(editorInfoObj, 10000, 0);
+                if (b instanceof CharSequence) {
+                    before = (CharSequence) b;
+                }
+            } catch (Throwable ignored) {
+            }
+            try {
+                Method afterMethod = editorInfoObj.getClass().getMethod("getInitialTextAfterCursor", int.class, int.class);
+                Object a = afterMethod.invoke(editorInfoObj, 10000, 0);
+                if (a instanceof CharSequence) {
+                    after = (CharSequence) a;
+                }
+            } catch (Throwable ignored) {
+            }
+
+            String full = (before != null ? before.toString() : "")
+                    + (after != null ? after.toString() : "");
+            if (!isInvalidDraft(full)) {
+                sLastKnownDraft = full.trim();
+                safeLogInfo("observeEditorInfo: captured editor text: " + sLastKnownDraft);
+            }
+        } catch (Throwable t) {
+            safeLog("observeEditorInfo failed", t);
+        }
+    }
+
+    public static String resolveDescribeDraft(String draft, Object hsj) {
+        if (draft != null && !isInvalidDraft(draft)) {
+            sLastKnownDraft = draft.trim();
+            return draft.trim();
+        }
+        if (hsj != null) {
+            String recovered = extractTriggerDraft(hsj);
+            if (recovered != null && !isInvalidDraft(recovered)) {
+                sLastKnownDraft = recovered.trim();
+                safeLogInfo("resolveDescribeDraft: recovered draft from trigger: " + recovered);
+                return recovered.trim();
+            }
+        }
+        if (sLastKnownDraft != null && !isInvalidDraft(sLastKnownDraft)) {
+            safeLogInfo("resolveDescribeDraft: recovered draft from sLastKnownDraft: " + sLastKnownDraft);
+            return sLastKnownDraft;
+        }
+        return "";
+    }
+
+    private static String extractTriggerDraft(Object hsj) {
+        if (hsj == null) {
+            return null;
+        }
+        try {
+            // 1. Check hsj.r (Lovi) -> field "b" (CharSequence)
+            try {
+                Field rf = hsj.getClass().getDeclaredField("r");
+                rf.setAccessible(true);
+                Object ovi = rf.get(hsj);
+                if (ovi != null) {
+                    Field bf = ovi.getClass().getDeclaredField("b");
+                    bf.setAccessible(true);
+                    Object bVal = bf.get(ovi);
+                    if (bVal instanceof CharSequence && !isInvalidDraft(bVal.toString())) {
+                        return bVal.toString();
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+
+            // 2. Check hsj.a() -> Lhsm -> field "b" (CharSequence)
+            try {
+                Method am = hsj.getClass().getDeclaredMethod("a");
+                am.setAccessible(true);
+                Object hsm = am.invoke(hsj);
+                if (hsm != null) {
+                    for (Field f : hsm.getClass().getDeclaredFields()) {
+                        if (CharSequence.class.isAssignableFrom(f.getType())) {
+                            f.setAccessible(true);
+                            Object bVal = f.get(hsm);
+                            if (bVal instanceof CharSequence && !isInvalidDraft(bVal.toString())) {
+                                return bVal.toString();
+                            }
+                        }
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+
+            // 3. Check hsj.w (Lhsq) -> list "j" -> item "b"
+            try {
+                Field wf = hsj.getClass().getDeclaredField("w");
+                wf.setAccessible(true);
+                Object hsq = wf.get(hsj);
+                if (hsq != null) {
+                    Field jf = hsq.getClass().getDeclaredField("j");
+                    Field kf = hsq.getClass().getDeclaredField("k");
+                    jf.setAccessible(true);
+                    kf.setAccessible(true);
+                    List<?> list = (List<?>) jf.get(hsq);
+                    int k = kf.getInt(hsq);
+                    if (list != null) {
+                        List<Integer> indices = new ArrayList<>();
+                        if (k >= 0 && k < list.size()) {
+                            indices.add(k);
+                        }
+                        for (int i = list.size() - 1; i >= 0; i--) {
+                            if (i != k) {
+                                indices.add(i);
+                            }
+                        }
+                        for (int idx : indices) {
+                            Object item = list.get(idx);
+                            if (item != null) {
+                                for (Field f : item.getClass().getDeclaredFields()) {
+                                    if (CharSequence.class.isAssignableFrom(f.getType())) {
+                                        f.setAccessible(true);
+                                        Object bVal = f.get(item);
+                                        if (bVal instanceof CharSequence && !isInvalidDraft(bVal.toString())) {
+                                            return bVal.toString();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+
+            // 4. Check hsj.U (CharSequence)
+            try {
+                Field uf = hsj.getClass().getDeclaredField("U");
+                uf.setAccessible(true);
+                Object uVal = uf.get(hsj);
+                if (uVal instanceof CharSequence && !isInvalidDraft(uVal.toString())) {
+                    return uVal.toString();
+                }
+            } catch (Throwable ignored) {
+            }
+
+            // 5. Existing fallback: scan all objects for AtomicReference
+            for (Field f : hsj.getClass().getDeclaredFields()) {
+                f.setAccessible(true);
+                Object obj = f.get(hsj);
+                if (obj == null || obj == hsj || obj.getClass().getName().startsWith("android.")
+                        || obj.getClass().getName().startsWith("java.")) {
+                    continue;
+                }
+                for (Field hf : obj.getClass().getDeclaredFields()) {
+                    if (AtomicReference.class.isAssignableFrom(hf.getType())) {
+                        hf.setAccessible(true);
+                        AtomicReference<?> ref = (AtomicReference<?>) hf.get(obj);
+                        if (ref != null && ref.get() != null) {
+                            Object trigger = ref.get();
+                            for (Field tf : trigger.getClass().getDeclaredFields()) {
+                                tf.setAccessible(true);
+                                Object val = tf.get(trigger);
+                                if (val != null && !val.getClass().isPrimitive()
+                                        && !(val instanceof Boolean) && !(val instanceof Number)) {
+                                    String text = val.toString();
+                                    if (text != null && !isInvalidDraft(text)
+                                            && !text.startsWith("Optional") && !text.contains("@")) {
+                                        return text;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Throwable t) {
+            safeLog("extractTriggerDraft error", t);
+        }
+        return null;
+    }
+
+    static String sanitizePrompt(String text) {
+        if (text == null) {
+            return null;
+        }
+        String result = text;
+
+        // If <CURRENT_DRAFT> is present but contains only whitespace or is empty, populate from sLastKnownDraft
+        if (sLastKnownDraft != null && !sLastKnownDraft.trim().isEmpty()) {
+            Pattern emptyDraftPattern = Pattern.compile("(?s)<CURRENT_DRAFT>\\s*</CURRENT_DRAFT>");
+            if (emptyDraftPattern.matcher(result).find()) {
+                result = emptyDraftPattern.matcher(result).replaceAll(
+                        "<CURRENT_DRAFT>\n" + Matcher.quoteReplacement(sLastKnownDraft) + "\n</CURRENT_DRAFT>");
+            }
+        }
+
+        if (!result.contains("<CURRENT_DRAFT>") && sLastKnownDraft != null
+                && !sLastKnownDraft.trim().isEmpty()) {
+            if (result.contains("## User's Current Request")) {
+                int userReqIdx = result.lastIndexOf("## User's Current Request");
+                int endInstr = result.indexOf("</INSTRUCTION>", userReqIdx);
+                if (endInstr != -1) {
+                    int insertPos = endInstr + "</INSTRUCTION>".length();
+                    result = result.substring(0, insertPos) + "\nContext: <CURRENT_DRAFT>"
+                            + sLastKnownDraft + "</CURRENT_DRAFT>" + result.substring(insertPos);
+                }
+            } else if (result.contains("</INSTRUCTION>")) {
+                int endInstr = result.lastIndexOf("</INSTRUCTION>");
+                int insertPos = endInstr + "</INSTRUCTION>".length();
+                result = result.substring(0, insertPos) + "\nContext: <CURRENT_DRAFT>"
+                        + sLastKnownDraft + "</CURRENT_DRAFT>" + result.substring(insertPos);
+            } else {
+                result = result + "\nContext: <CURRENT_DRAFT>" + sLastKnownDraft + "</CURRENT_DRAFT>";
+            }
+        }
+        return result;
+    }
+
+    static void setLastKnownDraftForTesting(String draft) {
+        sLastKnownDraft = draft;
+    }
+
+    static String getLastKnownDraftForTesting() {
+        return sLastKnownDraft;
+    }
+
     public static Object adaptPromptMessages(Object messages) {
         if (messages == null) {
             return null;
@@ -531,7 +821,7 @@ public final class GboardAiWritingToolsRuntime {
                 items.add(item);
             }
         }
-        if (items.size() <= 1) {
+        if (items.isEmpty()) {
             return messages;
         }
 
@@ -563,17 +853,6 @@ public final class GboardAiWritingToolsRuntime {
         String combinedText;
         if (texts.size() == 1) {
             combinedText = texts.get(0);
-        } else if (texts.size() == 2) {
-            String first = texts.get(0);
-            String second = texts.get(1);
-            String lowerFirst = first.toLowerCase();
-            String lowerSecond = second.toLowerCase();
-            if (lowerSecond.contains("instruction") || lowerSecond.contains("rewrite")
-                    || lowerFirst.contains("draft") || lowerFirst.contains("text:")) {
-                combinedText = first + "\n\n" + second;
-            } else {
-                combinedText = second + ":\n\n" + first;
-            }
         } else {
             StringBuilder sb = new StringBuilder();
             for (String t : texts) {
@@ -585,22 +864,69 @@ public final class GboardAiWritingToolsRuntime {
             combinedText = sb.toString();
         }
 
-        safeLogInfo("adaptPromptMessages: combining " + items.size()
-                + " messages into 1 text message: " + combinedText);
+        String sanitizedText = sanitizePrompt(combinedText);
+        if (items.size() == 1 && sanitizedText.equals(texts.get(0))) {
+            return messages;
+        }
+
+        safeLogInfo("adaptPromptMessages: adapting " + items.size()
+                + " messages into 1 text message: " + sanitizedText);
 
         try {
-            ClassLoader cl = messages.getClass().getClassLoader();
-            if (cl == null && !items.isEmpty()) {
+            ClassLoader cl = null;
+            if (!items.isEmpty()) {
                 cl = items.get(0).getClass().getClassLoader();
+            }
+            if (cl == null) {
+                cl = messages.getClass().getClassLoader();
             }
             if (cl == null) {
                 cl = Thread.currentThread().getContextClassLoader();
             }
-            Class<?> oidClass = Class.forName("oid", true, cl);
-            Method bMethod = oidClass.getMethod("b", String.class);
-            Object singleOid = bMethod.invoke(null, combinedText);
 
-            Class<?> wcoClass = Class.forName("wco", true, cl);
+            Class<?> oidClass = null;
+            if (!items.isEmpty()) {
+                oidClass = items.get(0).getClass();
+            } else {
+                oidClass = Class.forName("oid", true, cl);
+            }
+
+            Method bMethod = oidClass.getMethod("b", String.class);
+            Object singleOid = bMethod.invoke(null, sanitizedText);
+
+            Class<?> wcoClass = null;
+            try {
+                wcoClass = Class.forName("wco", true, oidClass.getClassLoader());
+            } catch (Throwable ignored) {
+            }
+            if (wcoClass == null && cl != null) {
+                try {
+                    wcoClass = Class.forName("wco", true, cl);
+                } catch (Throwable ignored) {
+                }
+            }
+            if (wcoClass == null) {
+                Class<?> curr = messages.getClass();
+                while (curr != null && curr != Object.class) {
+                    for (Method m : curr.getDeclaredMethods()) {
+                        if (Modifier.isStatic(m.getModifiers()) && m.getName().equals("r")
+                                && m.getParameterTypes().length == 1) {
+                            wcoClass = curr;
+                            break;
+                        }
+                    }
+                    if (wcoClass != null) {
+                        break;
+                    }
+                    curr = curr.getSuperclass();
+                }
+            }
+
+            if (wcoClass == null) {
+                safeLog("adaptPromptMessages: could not resolve wco class", null);
+                return messages;
+            }
+
             if (nonTextItems.isEmpty()) {
                 Method rMethod = wcoClass.getMethod("r", Object.class);
                 return rMethod.invoke(null, singleOid);
@@ -615,6 +941,107 @@ public final class GboardAiWritingToolsRuntime {
             safeLog("Failed to create single adapted prompt message", t);
             return messages;
         }
+    }
+
+    public static Object adaptAiResponse(Object response) {
+        if (response == null) {
+            return null;
+        }
+        if (!(response instanceof Iterable)) {
+            return response;
+        }
+        for (Object item : (Iterable<?>) response) {
+            if (item == null) {
+                continue;
+            }
+            try {
+                Field bField = null;
+                try {
+                    bField = item.getClass().getDeclaredField("b");
+                } catch (NoSuchFieldException e) {
+                    for (Field f : item.getClass().getDeclaredFields()) {
+                        if (CharSequence.class.isAssignableFrom(f.getType())) {
+                            bField = f;
+                            break;
+                        }
+                    }
+                }
+                if (bField != null) {
+                    bField.setAccessible(true);
+                    Object val = bField.get(item);
+                    if (val instanceof String) {
+                        String raw = (String) val;
+                        safeLogInfo("adaptAiResponse: raw response: " + raw);
+                        String repaired = repairAiResponse(raw);
+                        if (!raw.equals(repaired)) {
+                            bField.set(item, repaired);
+                            safeLogInfo("adaptAiResponse: repaired response: " + repaired);
+                        }
+                    }
+                }
+            } catch (Throwable t) {
+                safeLog("adaptAiResponse: failed to adapt item", t);
+            }
+        }
+        return response;
+    }
+
+    static String repairAiResponse(String raw) {
+        if (raw == null) {
+            return null;
+        }
+        String text = raw.trim();
+        if (text.isEmpty()) {
+            return raw;
+        }
+
+        // 1. Remove markdown code fences if wrapped: ```xml ... ``` or ```markdown ... ``` or ``` ... ```
+        if (text.startsWith("```")) {
+            int firstNewline = text.indexOf('\n');
+            if (firstNewline != -1) {
+                text = text.substring(firstNewline + 1);
+            } else {
+                text = text.substring(3);
+            }
+            if (text.endsWith("```")) {
+                text = text.substring(0, text.length() - 3);
+            }
+            text = text.trim();
+        }
+
+        // 2. Remove reasoning/thinking tags if model outputs <think> ... </think> or <thought> ... </thought>
+        text = text.replaceAll("(?s)<(think|thought)>.*?</\\1>", "").trim();
+
+        boolean hasDraftOpen = text.contains("<DRAFT>");
+        boolean hasDraftClose = text.contains("</DRAFT>");
+        boolean hasInstrClass = text.contains("<INSTRUCTION_CLASS>");
+
+        // Case A: Missing <DRAFT> completely
+        if (!hasDraftOpen && !hasDraftClose) {
+            StringBuilder sb = new StringBuilder();
+            if (!hasInstrClass) {
+                sb.append("<INSTRUCTION_CLASS>MODIFICATION</INSTRUCTION_CLASS>\n");
+            }
+            sb.append("<DRAFT>").append(text).append("</DRAFT>");
+            return sb.toString();
+        }
+
+        // Case B: Has <DRAFT> but missing </DRAFT>
+        if (hasDraftOpen && !hasDraftClose) {
+            text = text + "</DRAFT>";
+        }
+
+        // Case C: Has </DRAFT> but missing <DRAFT>
+        if (!hasDraftOpen && hasDraftClose) {
+            text = "<DRAFT>" + text;
+        }
+
+        // Case D: Missing <INSTRUCTION_CLASS>
+        if (!hasInstrClass) {
+            text = "<INSTRUCTION_CLASS>MODIFICATION</INSTRUCTION_CLASS>\n" + text;
+        }
+
+        return text;
     }
 
     private static void safeLogInfo(String message) {
