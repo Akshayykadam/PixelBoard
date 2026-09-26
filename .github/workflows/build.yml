@@ -7,10 +7,16 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout Source Code
@@ -23,7 +29,7 @@ jobs:
           java-version: '21'
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Grant execute permission for gradlew
         run: chmod +x pixelboard-patches/gradlew

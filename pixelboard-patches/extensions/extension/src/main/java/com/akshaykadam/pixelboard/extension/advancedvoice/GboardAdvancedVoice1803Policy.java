@@ -12,6 +12,8 @@ public final class GboardAdvancedVoice1803Policy {
             "handle_fallback_inside_sd_stack";
     public static final String ENABLE_STICKY_MIC_BACKGROUND_FLAG =
             "enable_sticky_mic_background";
+    public static final String IMMEDIATELY_END_DICTATION_ON_KEYBOARD_HIDDEN_FLAG =
+            "immediately_end_dictation_on_keyboard_hidden";
     public static final String ENABLE_SODA_LONGFORM_EXPERIMENT_FLAG =
             "enable_soda_longform_experiment";
 
@@ -45,7 +47,7 @@ public final class GboardAdvancedVoice1803Policy {
                 || ENABLE_ADVANCED_FEATURES_FLAG.equals(flagName)
                 || ENABLE_DICTATION_SPLIT_INSTALL_FLAG.equals(flagName)
                 || HANDLE_FALLBACK_INSIDE_SD_STACK_FLAG.equals(flagName)
-                || ENABLE_STICKY_MIC_BACKGROUND_FLAG.equals(flagName)
+                || IMMEDIATELY_END_DICTATION_ON_KEYBOARD_HIDDEN_FLAG.equals(flagName)
                 || ENABLE_SODA_LONGFORM_EXPERIMENT_FLAG.equals(flagName);
     }
 }

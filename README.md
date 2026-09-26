@@ -42,6 +42,7 @@ Traditional voice-to-text transcribes every hesitation literally. PixelBoard unl
 - **Thought Completion**: Seamlessly fixes self corrections on the fly (e.g. *"let's meet at two no, three PM"* &rarr; *"Let's meet at 3:00 PM"*).
 - **Auto-Punctuation & Capitalization**: Adds context-aware periods, commas, and proper noun capitalization without requiring voice commands.
 - **Multilingual Fluidity**: Mix and match languages seamlessly in a single sentence.
+- **Battery-Friendly Lifecycle**: Cleanly releases speech recognition bindings (`GoogleAsrService`) as soon as the keyboard is hidden, eliminating screen-off battery drain.
 
 ### 2. In-Line AI Writing Assistant
 Access Google's Gemini-driven writing suite directly above your keys across any app:
@@ -223,7 +224,8 @@ apksigner verify --verbose output/PixelBoard.apk
 ## Acknowledgements & Credits
 
 Special thanks and sincere appreciation to:
-- **Jason** (`dev.jason.gboardpatches`) — The pioneering author of the original Gboard patch project whose foundational reverse-engineering research and Smali patch framework made this specialized mod possible.
+- **JasonWu** — The pioneering author of the original Gboard patch project whose foundational reverse-engineering research and Smali patch framework made this specialized mod possible.
+- **Paolo Del Casale** ([@PaoloDelCasale](https://github.com/PaoloDelCasale)) — For the comprehensive BatteryStats investigation and candidate fix resolving background `GoogleAsrService` persistence in Rambler dictation ([Issue #3](https://github.com/Akshayykadam/PixelBoard/issues/3)).
 - **The ReVanced & Open-Source Android Modding Communities** — For the open-source decompilation toolchains, patch compilers, and continuous ecosystem contributions.
 
 ---

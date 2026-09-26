@@ -1,7 +1,7 @@
-# PixelBoard Stable Release (v18.3.1 / Patch v1.0.3)
+# PixelBoard Stable Release (v18.3.1 / Patch v1.0.4)
 
 ## Summary
-PixelBoard v18.3.1 (Patch Bundle v1.0.3) brings the rock-solid in-line AI feature set directly to Google's latest **Gboard v18.3.1 Release** (`18.3.1.977415014-release-arm64-v8a`). This release unifies the standalone build onto the latest stock base while retaining the classic, stable in-line AI Writing Assistant and Gemini Rambler Voice Dictation.
+PixelBoard v18.3.1 (Patch Bundle v1.0.4) brings the rock-solid in-line AI feature set directly to Google's latest **Gboard v18.3.1 Release** (`18.3.1.977415014-release-arm64-v8a`) along with critical idle battery optimizations for Gemini Rambler Voice Typing.
 
 ---
 
@@ -12,8 +12,9 @@ PixelBoard v18.3.1 (Patch Bundle v1.0.3) brings the rock-solid in-line AI featur
 - Fully supports arm64-v8a devices running Android 10 through Android 16 Preview.
 - Backward compatibility maintained for Gboard 18.0.3.
 
-### 2. Patch Bundle v1.0.3
-- Bumped patch bundle to **v1.0.3** with official bytecode mappings and compatibility for Gboard 18.3.1 Release.
+### 2. Patch Bundle v1.0.4
+- Bumped patch bundle to **v1.0.4** with official bytecode mappings and compatibility for Gboard 18.3.1 Release.
+- **Rambler ASR Battery & Service Lifecycle Fix**: Eliminated background `GoogleAsrService` (`com.google.android.tts`) service binder persistence after closing the keyboard by enforcing `immediately_end_dictation_on_keyboard_hidden=true` and unforcing `enable_sticky_mic_background` (credits: @PaoloDelCasale).
 - Reverted experimental V2 prompt keyboard overrides to restore the stable in-line writing tools architecture.
 - Proofread and style chips (Rephrase, Emojify, Formal, Casual, Concise, Elaborate) render directly above the keyboard layout.
 - Eliminated all errors associated with multi-role prompt splitting, empty draft payloads, and prompt bundle network failures.
@@ -36,7 +37,7 @@ PixelBoard v18.3.1 (Patch Bundle v1.0.3) brings the rock-solid in-line AI featur
 | File | Size | Description |
 | :--- | :--- | :--- |
 | **PixelBoard.apk** | ~82 MB | Ready-to-install signed Stable APK (v18.3.1 release base) |
-| **PixelBoard.mpp** | ~1.4 MB | Standalone patch bundle (v1.0.3) for Morphe Manager |
+| **PixelBoard.mpp** | ~1.4 MB | Standalone patch bundle (v1.0.4) for Morphe Manager |
 
 ---
 
