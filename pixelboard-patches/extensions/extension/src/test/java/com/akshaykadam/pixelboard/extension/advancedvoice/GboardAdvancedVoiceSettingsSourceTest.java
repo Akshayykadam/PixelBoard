@@ -63,7 +63,7 @@ public final class GboardAdvancedVoiceSettingsSourceTest {
         Assert.assertTrue(feature.matches(
                 "(?s).*new GboardPatchesSettingsContract\\.Section\\("
                         + "\\s*null,\\s*githubStarRows\\).*"));
-        Assert.assertTrue(feature.contains("18-0-3-954559732-release-arm64-v8a-2"));
+        Assert.assertTrue(feature.contains("18-4-1-985164140-release"));
         Assert.assertTrue(availability.contains("FEATURE_ADVANCED_VOICE_TYPING"));
         Assert.assertTrue(availability.contains(
                 "com.akshaykadam.pixelboard.feature.advanced_voice_typing"));

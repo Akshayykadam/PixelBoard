@@ -34,7 +34,7 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
         GboardPatchesSettingsContract.ToggleRow allKeyboardsRow =
                 findToggleRow(screen.getRows(), "Support All Keyboards");
         GboardPatchesSettingsContract.SelectorRow backendRow =
-                findSelectorRow(screen.getRows(), "Backend type");
+                findSelectorRow(screen.getRows(), "AI Processing Backend");
 
         Assert.assertNotNull(enabledRow);
         Assert.assertNotNull(allKeyboardsRow);
@@ -49,8 +49,7 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
                         + "restrictions. Restart Gboard to apply changes.",
                 allKeyboardsRow.getSummary());
         Assert.assertEquals(
-                "If you select AI CORE or ASTREA, your account or device must be eligible to "
-                        + "enable it.",
+                "Choose between Google Cloud processing or private on-device inference (AICore / Astrea).",
                 backendRow.getSummary());
         Assert.assertTrue(enabledRow.isChecked());
         Assert.assertTrue(allKeyboardsRow.isChecked());
@@ -94,7 +93,7 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
         Assert.assertFalse(findToggleRow(
                 screen.getRows(), "Support All Keyboards").isEnabled());
         Assert.assertFalse(findSelectorRow(
-                screen.getRows(), "Backend type").isEnabled());
+                screen.getRows(), "AI Processing Backend").isEnabled());
     }
 
     @Test
@@ -104,7 +103,7 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
         CapturingHost host = new CapturingHost(preferences);
         GboardPatchesSettingsContract.SelectorRow backendRow = findSelectorRow(
                 new GboardAiWritingToolsSettingsFeature(null).buildScreen(host).getRows(),
-                "Backend type");
+                "AI Processing Backend");
 
         backendRow.getAction().run();
 

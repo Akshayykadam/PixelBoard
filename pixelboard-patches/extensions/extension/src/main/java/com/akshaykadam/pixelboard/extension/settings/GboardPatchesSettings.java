@@ -19,6 +19,22 @@ public final class GboardPatchesSettings {
         if (lookupContext == null) {
             throw new IllegalStateException("Context required for Gboard patch settings.");
         }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            try {
+                if (!lookupContext.isDeviceProtectedStorage()) {
+                    Context deContext = lookupContext.createDeviceProtectedStorageContext();
+                    if (deContext != null) {
+                        try {
+                            deContext.moveSharedPreferencesFrom(lookupContext, PREF_FILE);
+                        } catch (Throwable ignored) {
+                            // May fail if credential storage is locked during Direct Boot before unlock.
+                        }
+                        lookupContext = deContext;
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+        }
         return lookupContext.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
     }
 

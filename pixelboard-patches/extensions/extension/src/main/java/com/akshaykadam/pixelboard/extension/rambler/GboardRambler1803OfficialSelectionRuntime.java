@@ -1,6 +1,9 @@
 package com.akshaykadam.pixelboard.extension.rambler;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.PreferenceManager;
 
 import java.lang.reflect.Method;
 
@@ -31,7 +34,7 @@ public final class GboardRambler1803OfficialSelectionRuntime {
         if (selected == null) {
             selected = readOfficialSelection();
         }
-        return Boolean.TRUE.equals(selected);
+        return selected == null || selected.booleanValue();
     }
 
     public static void enterVoiceSettingsScope() {
@@ -43,6 +46,9 @@ public final class GboardRambler1803OfficialSelectionRuntime {
     }
 
     public static void updateOfficialSelection(boolean selected) {
+        if (!selected && !hasExplicitlyDisabledPreference()) {
+            return;
+        }
         officialRamblerSelected = Boolean.valueOf(selected);
     }
 
@@ -79,75 +85,113 @@ public final class GboardRambler1803OfficialSelectionRuntime {
 
     private static Boolean readOfficialSelection() {
         try {
-            Object application = Class.forName("android.app.ActivityThread")
-                    .getMethod("currentApplication")
-                    .invoke(null);
-            if (!(application instanceof Context)) {
+            Context context = resolveContext();
+            if (context == null) {
                 return null;
             }
-            Context context = (Context) application;
+            SharedPreferences prefs = resolveStockPreferences(context);
+            if (prefs != null && prefs.contains("enable_jetson")) {
+                boolean val = prefs.getBoolean("enable_jetson", true);
+                officialRamblerSelected = Boolean.valueOf(val);
+                return officialRamblerSelected;
+            }
+
             ClassLoader loader = context.getClassLoader();
 
-            // 1. In 18.3.1+: check aaeo.a(Context)
+            // 1. In 18.3.1+: check aaeo.a(Context) only if it confirms true
             try {
                 Class<?> support = Class.forName("aaeo", false, loader);
                 Method selection = support.getDeclaredMethod("a", Context.class);
                 selection.setAccessible(true);
                 Object value = selection.invoke(null, context);
-                if (value instanceof Boolean) {
-                    boolean explicit = false;
-                    try {
-                        Class<?> prefsClass = Class.forName("ahbz", false, loader);
-                        Method getInstance = prefsClass.getDeclaredMethod("I", Context.class);
-                        getInstance.setAccessible(true);
-                        Object prefs = getInstance.invoke(null, context);
-                        if (prefs != null) {
-                            Method ak = prefsClass.getMethod("ak", int.class);
-                            ak.setAccessible(true);
-                            Object contains = ak.invoke(prefs, 0x7f140950);
-                            if (contains instanceof Boolean) {
-                                explicit = ((Boolean) contains).booleanValue();
-                            }
-                        }
-                    } catch (Throwable ignored) {
-                    }
-                    boolean result = explicit ? ((Boolean) value).booleanValue() : true;
-                    officialRamblerSelected = Boolean.valueOf(result);
-                    return officialRamblerSelected;
-                }
-            } catch (ClassNotFoundException | NoSuchMethodException ignored) {
-            }
-
-            // 2. In 18.0.3: check mqk.a(Context)
-            try {
-                Class<?> support = Class.forName("mqk", false, loader);
-                Method selection = support.getDeclaredMethod("a", Context.class);
-                selection.setAccessible(true);
-                Object value = selection.invoke(null, context);
-                if (value instanceof Boolean) {
-                    officialRamblerSelected = (Boolean) value;
-                    return (Boolean) value;
-                }
-            } catch (ClassNotFoundException | NoSuchMethodException ignored) {
-            }
-
-            // 3. Fallback: direct SharedPreferences check for "enable_jetson"
-            try {
-                android.content.SharedPreferences prefs =
-                        android.preference.PreferenceManager.getDefaultSharedPreferences(context);
-                if (prefs != null) {
-                    if (prefs.contains("enable_jetson")) {
-                        boolean val = prefs.getBoolean("enable_jetson", true);
-                        officialRamblerSelected = Boolean.valueOf(val);
-                        return officialRamblerSelected;
-                    }
+                if (Boolean.TRUE.equals(value)) {
                     officialRamblerSelected = Boolean.TRUE;
                     return Boolean.TRUE;
                 }
             } catch (Throwable ignored) {
             }
+
+            // 2. In 18.0.3: check mqk.a(Context) only if it confirms true
+            try {
+                Class<?> support = Class.forName("mqk", false, loader);
+                Method selection = support.getDeclaredMethod("a", Context.class);
+                selection.setAccessible(true);
+                Object value = selection.invoke(null, context);
+                if (Boolean.TRUE.equals(value)) {
+                    officialRamblerSelected = Boolean.TRUE;
+                    return Boolean.TRUE;
+                }
+            } catch (Throwable ignored) {
+            }
+
+            officialRamblerSelected = Boolean.TRUE;
+            return Boolean.TRUE;
         } catch (Throwable ignored) {
             // Application or the exact formal selector may not be ready yet.
+        }
+        return null;
+    }
+
+    private static boolean hasExplicitlyDisabledPreference() {
+        Context context = resolveContext();
+        if (context == null) {
+            return true;
+        }
+        try {
+            SharedPreferences prefs = resolveStockPreferences(context);
+            if (prefs != null && prefs.contains("enable_jetson")) {
+                return !prefs.getBoolean("enable_jetson", true);
+            }
+        } catch (Throwable ignored) {
+        }
+        return false;
+    }
+
+    private static SharedPreferences resolveStockPreferences(Context context) {
+        if (context == null) {
+            return null;
+        }
+        Context target = context;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                && !context.isDeviceProtectedStorage()) {
+            try {
+                Context deContext = context.createDeviceProtectedStorageContext();
+                if (deContext != null) {
+                    target = deContext;
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+        try {
+            return PreferenceManager.getDefaultSharedPreferences(target);
+        } catch (Throwable ignored) {
+            try {
+                return PreferenceManager.getDefaultSharedPreferences(context);
+            } catch (Throwable ignored2) {
+                return null;
+            }
+        }
+    }
+
+    private static Context resolveContext() {
+        Context context = reflectedContext("android.app.ActivityThread", "currentApplication");
+        if (context == null) {
+            context = reflectedContext("android.app.AppGlobals", "getInitialApplication");
+        }
+        return context;
+    }
+
+    private static Context reflectedContext(String className, String methodName) {
+        try {
+            Class<?> owner = Class.forName(className);
+            Method method = owner.getMethod(methodName);
+            Object value = method.invoke(null);
+            if (value instanceof Context) {
+                Context ctx = (Context) value;
+                Context app = ctx.getApplicationContext();
+                return app != null ? app : ctx;
+            }
+        } catch (Throwable ignored) {
         }
         return null;
     }

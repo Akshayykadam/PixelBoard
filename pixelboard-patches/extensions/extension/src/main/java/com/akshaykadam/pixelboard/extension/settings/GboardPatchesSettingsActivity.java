@@ -432,12 +432,15 @@ public final class GboardPatchesSettingsActivity extends Activity
     }
 
     static boolean isSupportedDeveloperOptionsTargetVersion(String versionName) {
-        return SUPPORTED_DEVELOPER_OPTIONS_TARGET_VERSION.equals(versionName);
+        return SUPPORTED_DEVELOPER_OPTIONS_TARGET_VERSION.equals(versionName)
+                || "18.3.1.977415014-release-arm64-v8a".equals(versionName)
+                || "18.4.1.985164140-release-arm64-v8a".equals(versionName);
     }
 
     private static boolean isSupportedTargetPackage(String packageName) {
         return GBOARD_PACKAGE_STABLE.equals(packageName)
-                || GBOARD_PACKAGE_REVERSED_DEV.equals(packageName);
+                || GBOARD_PACKAGE_REVERSED_DEV.equals(packageName)
+                || (packageName != null && packageName.startsWith(GBOARD_PACKAGE_REVERSED_DEV));
     }
 
     @Override
@@ -2841,19 +2844,76 @@ public final class GboardPatchesSettingsActivity extends Activity
                 value -> {
                     if (writingPrefs != null) {
                         GboardAiWritingToolsSettings.writeEnabled(writingPrefs, value);
+                        renderCurrentScreenSafely();
                     }
                 }));
 
         rows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_all_keyboards_title),
                 GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_all_keyboards_summary),
-                true,
+                aiWritingToolsEnabled,
                 allKeyboardsEnabled,
                 value -> {
                     if (writingPrefs != null) {
                         GboardAiWritingToolsSettings.writeAllKeyboardsEnabled(writingPrefs, value);
                     }
                 }));
+
+        if (com.akshaykadam.pixelboard.extension.writingtools.GboardAiWritingToolsDeviceSupport.isSupportedDevice()) {
+            String backendType = writingPrefs != null
+                    ? GboardAiWritingToolsSettings.readBackendType(writingPrefs)
+                    : GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER;
+            String[] backendTypeValues = new String[]{
+                    GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER,
+                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE,
+                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA
+            };
+            String[] backendTypeLabels = new String[]{
+                    "Google Cloud (Server)",
+                    "Private Inference (AICore)",
+                    "Private Inference (Astrea)"
+            };
+            String currentLabel = GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE.equals(backendType)
+                    ? "Private Inference (AICore)"
+                    : GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA.equals(backendType)
+                    ? "Private Inference (Astrea)"
+                    : "Google Cloud (Server)";
+            rows.add(new GboardPatchesSettingsContract.SelectorRow(
+                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_backend_type_title),
+                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_backend_type_summary),
+                    currentLabel,
+                    aiWritingToolsEnabled,
+                    () -> {
+                        showChoiceDialog(
+                                GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_backend_type_dialog_title),
+                                backendTypeLabels,
+                                backendTypeValues,
+                                backendType,
+                                null,
+                                null,
+                                value -> {
+                                    if (writingPrefs != null) {
+                                        GboardAiWritingToolsSettings.writeBackendType(writingPrefs, value);
+                                        renderCurrentScreenSafely();
+                                    }
+                                });
+                    }));
+
+            boolean v2Enabled = writingPrefs != null
+                    && GboardAiWritingToolsSettings.readV2Enabled(writingPrefs);
+            rows.add(new GboardPatchesSettingsContract.ToggleRow(
+                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_title),
+                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_summary),
+                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_badge),
+                    aiWritingToolsEnabled,
+                    v2Enabled,
+                    value -> {
+                        if (writingPrefs != null) {
+                            GboardAiWritingToolsSettings.writeV2Enabled(writingPrefs, value);
+                            renderCurrentScreenSafely();
+                        }
+                    }));
+        }
 
         rows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_advanced_voice_enabled_title),
@@ -3071,7 +3131,30 @@ public final class GboardPatchesSettingsActivity extends Activity
         LinearLayout textColumn = buildRowTextColumn(true);
         TextView titleView = buildRowTitle(rowModel.getTitle());
         TextView summaryView = buildRowSummary(rowModel.getSummary(), false);
-        textColumn.addView(titleView);
+        if (rowModel.getBadge() != null && !rowModel.getBadge().isEmpty()) {
+            LinearLayout titleContainer = new LinearLayout(this);
+            titleContainer.setOrientation(LinearLayout.HORIZONTAL);
+            titleContainer.setGravity(Gravity.CENTER_VERTICAL);
+            titleContainer.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            titleView.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            titleContainer.addView(titleView);
+
+            TextView badgeView = buildBetaBadge(rowModel.getBadge());
+            LinearLayout.LayoutParams badgeParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            badgeParams.leftMargin = dp(8);
+            titleContainer.addView(badgeView, badgeParams);
+
+            textColumn.addView(titleContainer);
+        } else {
+            textColumn.addView(titleView);
+        }
         textColumn.addView(summaryView);
         LinearLayout toggleSupportLine = buildToggleSupportLine(rowModel);
         if (toggleSupportLine != null) {
@@ -3639,13 +3722,11 @@ public final class GboardPatchesSettingsActivity extends Activity
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.topMargin = dp(10);
+        params.topMargin = dp(4);
         supportLine.setLayoutParams(params);
 
         if (hasCurrentValue) {
-            TextView labelView = buildSupportLineLabel(
-                    text(R.string.gboard_patches_current_value_label));
-            supportLine.addView(labelView);
+            int unusedLabelRes = R.string.gboard_patches_current_value_label;
             supportLine.addView(buildCurrentValueChip(rowModel.getCurrentValue()),
                     supportChipLayoutParams(0));
         }
@@ -3688,14 +3769,25 @@ public final class GboardPatchesSettingsActivity extends Activity
         TextView chipView = new TextView(this);
         chipView.setText(text);
         chipView.setTextColor(palette.accent);
-        chipView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
-        chipView.setTypeface(Typeface.DEFAULT_BOLD);
+        chipView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f);
+        chipView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         chipView.setMaxLines(1);
         chipView.setEllipsize(TextUtils.TruncateAt.END);
-        chipView.setMaxWidth(dp(200));
-        chipView.setPadding(dp(12), dp(7), dp(12), dp(7));
-        chipView.setBackground(buildChipDrawable(palette.infoContainer, palette.surfaceStroke));
+        chipView.setPadding(0, 0, 0, 0);
         return chipView;
+    }
+
+    private TextView buildBetaBadge(String text) {
+        TextView badgeView = new TextView(this);
+        badgeView.setText(text);
+        badgeView.setTextColor(palette.accent);
+        badgeView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f);
+        badgeView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        badgeView.setAllCaps(true);
+        badgeView.setPadding(dp(6), dp(2), dp(6), dp(2));
+        badgeView.setGravity(Gravity.CENTER);
+        badgeView.setBackground(buildCardDrawable(palette.infoContainer, palette.surfaceStroke, dp(4)));
+        return badgeView;
     }
 
     private TextView buildChevronView() {
@@ -3795,6 +3887,32 @@ public final class GboardPatchesSettingsActivity extends Activity
     }
 
     private void tintDialogButtons(AlertDialog dialog) {
+        if (dialog == null) {
+            return;
+        }
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(
+                    buildCardDrawable(palette.surfaceAlt, palette.surfaceStroke, dp(28)));
+        }
+        if (dialog.getListView() != null) {
+            dialog.getListView().setDivider(null);
+            dialog.getListView().setSelector(buildRippleDrawable(dp(16)));
+            dialog.getListView().setOverScrollMode(View.OVER_SCROLL_NEVER);
+        }
+        try {
+            int titleId = getResources().getIdentifier("alertTitle", "id", "android");
+            if (titleId != 0) {
+                TextView titleView = dialog.findViewById(titleId);
+                if (titleView != null) {
+                    titleView.setTextColor(palette.textPrimary);
+                }
+            }
+            TextView messageView = dialog.findViewById(android.R.id.message);
+            if (messageView != null) {
+                messageView.setTextColor(palette.textSecondary);
+            }
+        } catch (Throwable ignored) {
+        }
         TextView positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         if (positiveButton != null) {
             positiveButton.setTextColor(palette.accent);

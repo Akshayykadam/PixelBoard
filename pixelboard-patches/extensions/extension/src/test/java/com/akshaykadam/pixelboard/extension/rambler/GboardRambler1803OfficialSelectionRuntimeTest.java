@@ -57,4 +57,11 @@ public final class GboardRambler1803OfficialSelectionRuntimeTest {
         Assert.assertTrue(
                 GboardRambler1803OfficialSelectionRuntime.shouldEnableAgenticDictation());
     }
+
+    @Test
+    public void unconfiguredSelectionDefaultsToTrue() {
+        GboardRambler1803OfficialSelectionRuntime.resetForTests();
+        Assert.assertTrue(
+                GboardRambler1803OfficialSelectionRuntime.shouldEnableAgenticDictation());
+    }
 }

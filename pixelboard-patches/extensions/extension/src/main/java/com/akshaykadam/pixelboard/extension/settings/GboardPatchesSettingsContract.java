@@ -696,16 +696,23 @@ public final class GboardPatchesSettingsContract {
         private final String summary;
         private final boolean enabled;
         private final PreviewSpec previewSpec;
+        private final String badge;
 
         protected Row(CharSequence title, String summary, boolean enabled) {
-            this(title, summary, enabled, null);
+            this(title, summary, enabled, null, null);
         }
 
         protected Row(CharSequence title, String summary, boolean enabled, PreviewSpec previewSpec) {
+            this(title, summary, enabled, previewSpec, null);
+        }
+
+        protected Row(CharSequence title, String summary, boolean enabled, PreviewSpec previewSpec,
+                String badge) {
             this.title = title;
             this.summary = summary;
             this.enabled = enabled;
             this.previewSpec = previewSpec;
+            this.badge = badge;
         }
 
         public CharSequence getTitle() {
@@ -722,6 +729,10 @@ public final class GboardPatchesSettingsContract {
 
         public PreviewSpec getPreviewSpec() {
             return previewSpec;
+        }
+
+        public String getBadge() {
+            return badge;
         }
     }
 
@@ -777,12 +788,22 @@ public final class GboardPatchesSettingsContract {
 
         public ToggleRow(CharSequence title, String summary, boolean enabled, boolean checked,
                 ToggleAction toggleAction) {
-            this(title, summary, enabled, checked, toggleAction, null);
+            this(title, summary, enabled, checked, toggleAction, null, null);
+        }
+
+        public ToggleRow(CharSequence title, String summary, String badge, boolean enabled,
+                boolean checked, ToggleAction toggleAction) {
+            this(title, summary, enabled, checked, toggleAction, null, badge);
         }
 
         public ToggleRow(CharSequence title, String summary, boolean enabled, boolean checked,
                 ToggleAction toggleAction, PreviewSpec previewSpec) {
-            super(title, summary, enabled, previewSpec);
+            this(title, summary, enabled, checked, toggleAction, previewSpec, null);
+        }
+
+        public ToggleRow(CharSequence title, String summary, boolean enabled, boolean checked,
+                ToggleAction toggleAction, PreviewSpec previewSpec, String badge) {
+            super(title, summary, enabled, previewSpec, badge);
             this.checked = checked;
             this.toggleAction = toggleAction;
         }

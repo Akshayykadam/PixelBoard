@@ -10,6 +10,8 @@ public final class GboardAiWritingToolsSettings {
             "pref_ai_writing_tools_all_keyboards_enabled";
     public static final String PREF_KEY_BACKEND_TYPE =
             "pref_ai_writing_tools_backend_type";
+    public static final String PREF_KEY_V2_ENABLED =
+            "pref_ai_writing_tools_v2_enabled";
     public static final String BACKEND_GBOARD_SERVER = "GBOARD_SERVER";
     public static final String BACKEND_PRIVATE_INFERENCE_AICORE =
             "PRIVATE_INFERENCE_AICORE";
@@ -17,6 +19,7 @@ public final class GboardAiWritingToolsSettings {
             "PRIVATE_INFERENCE_ASTREA";
     public static final boolean DEFAULT_ENABLED = true;
     public static final boolean DEFAULT_ALL_KEYBOARDS = true;
+    public static final boolean DEFAULT_V2_ENABLED = false;
     public static final String DEFAULT_BACKEND_TYPE = BACKEND_GBOARD_SERVER;
 
     private GboardAiWritingToolsSettings() {
@@ -61,6 +64,12 @@ public final class GboardAiWritingToolsSettings {
             }
             editor.putString(PREF_KEY_BACKEND_TYPE, DEFAULT_BACKEND_TYPE);
         }
+        if (!preferences.contains(PREF_KEY_V2_ENABLED)) {
+            if (editor == null) {
+                editor = preferences.edit();
+            }
+            editor.putBoolean(PREF_KEY_V2_ENABLED, DEFAULT_V2_ENABLED);
+        }
         if (editor != null) {
             editor.apply();
         }
@@ -97,6 +106,17 @@ public final class GboardAiWritingToolsSettings {
                     preferences.getString(PREF_KEY_BACKEND_TYPE, DEFAULT_BACKEND_TYPE));
         } catch (ClassCastException ignored) {
             return DEFAULT_BACKEND_TYPE;
+        }
+    }
+
+    public static boolean readV2Enabled(SharedPreferences preferences) {
+        if (preferences == null) {
+            return DEFAULT_V2_ENABLED;
+        }
+        try {
+            return preferences.getBoolean(PREF_KEY_V2_ENABLED, DEFAULT_V2_ENABLED);
+        } catch (ClassCastException ignored) {
+            return DEFAULT_V2_ENABLED;
         }
     }
 
@@ -140,6 +160,19 @@ public final class GboardAiWritingToolsSettings {
         }
     }
 
+    public static boolean writeV2Enabled(SharedPreferences preferences, boolean enabled) {
+        if (preferences == null) {
+            return false;
+        }
+        try {
+            return preferences.edit()
+                    .putBoolean(PREF_KEY_V2_ENABLED, enabled)
+                    .commit();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
     public static String sanitizeBackendType(String backendType) {
         if (BACKEND_PRIVATE_INFERENCE_AICORE.equals(backendType)
                 || BACKEND_PRIVATE_INFERENCE_ASTREA.equals(backendType)) {
@@ -154,23 +187,31 @@ public final class GboardAiWritingToolsSettings {
         return new Snapshot(
                 readEnabled(preferences),
                 readAllKeyboardsEnabled(preferences),
-                readBackendType(preferences));
+                readBackendType(preferences),
+                readV2Enabled(preferences));
     }
 
     public static final class Snapshot {
         public final boolean featureEnabled;
         public final boolean allKeyboardsEnabled;
         public final String backendType;
+        public final boolean v2Enabled;
 
         public Snapshot(boolean featureEnabled, boolean allKeyboardsEnabled) {
-            this(featureEnabled, allKeyboardsEnabled, DEFAULT_BACKEND_TYPE);
+            this(featureEnabled, allKeyboardsEnabled, DEFAULT_BACKEND_TYPE, DEFAULT_V2_ENABLED);
         }
 
         public Snapshot(boolean featureEnabled, boolean allKeyboardsEnabled,
                 String backendType) {
+            this(featureEnabled, allKeyboardsEnabled, backendType, DEFAULT_V2_ENABLED);
+        }
+
+        public Snapshot(boolean featureEnabled, boolean allKeyboardsEnabled,
+                String backendType, boolean v2Enabled) {
             this.featureEnabled = featureEnabled;
             this.allKeyboardsEnabled = featureEnabled && allKeyboardsEnabled;
             this.backendType = sanitizeBackendType(backendType);
+            this.v2Enabled = featureEnabled && v2Enabled;
         }
     }
 }

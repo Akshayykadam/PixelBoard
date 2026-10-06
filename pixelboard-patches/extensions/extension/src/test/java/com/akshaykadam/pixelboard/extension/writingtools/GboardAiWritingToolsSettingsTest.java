@@ -26,6 +26,9 @@ public final class GboardAiWritingToolsSettingsTest {
         Assert.assertEquals(
                 GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER,
                 preferences.values.get(GboardAiWritingToolsSettings.PREF_KEY_BACKEND_TYPE));
+        Assert.assertEquals(
+                Boolean.FALSE,
+                preferences.values.get(GboardAiWritingToolsSettings.PREF_KEY_V2_ENABLED));
     }
 
     @Test
@@ -39,12 +42,16 @@ public final class GboardAiWritingToolsSettingsTest {
         Assert.assertTrue(GboardAiWritingToolsSettings.writeBackendType(
                 preferences,
                 GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA));
+        Assert.assertTrue(GboardAiWritingToolsSettings.writeV2Enabled(
+                preferences,
+                true));
 
         Assert.assertTrue(GboardAiWritingToolsSettings.readEnabled(preferences));
         Assert.assertTrue(GboardAiWritingToolsSettings.readAllKeyboardsEnabled(preferences));
         Assert.assertEquals(
                 GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA,
                 GboardAiWritingToolsSettings.readBackendType(preferences));
+        Assert.assertTrue(GboardAiWritingToolsSettings.readV2Enabled(preferences));
     }
 
     @Test
@@ -81,10 +88,12 @@ public final class GboardAiWritingToolsSettingsTest {
                 new GboardAiWritingToolsSettings.Snapshot(
                         false,
                         true,
-                        GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE);
+                        GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE,
+                        true);
 
         Assert.assertFalse(snapshot.featureEnabled);
         Assert.assertFalse(snapshot.allKeyboardsEnabled);
+        Assert.assertFalse(snapshot.v2Enabled);
         Assert.assertEquals(
                 GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE,
                 snapshot.backendType);

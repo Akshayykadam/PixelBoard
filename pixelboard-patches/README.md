@@ -3,7 +3,8 @@
 <div align="center">
 
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
-[![Version](https://img.shields.io/badge/Patch%20Version-1.0.4-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
+[![Version](https://img.shields.io/badge/Patch%20Version-1.0.5-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
+[![Target](https://img.shields.io/badge/Gboard-v18.4.1_Release-orange?style=flat-square&logo=google)](https://github.com/Akshayykadam/PixelBoard)
 [![Author](https://img.shields.io/badge/Author-Akshay%20Kadam-9cf?style=flat-square&logo=github)](https://github.com/Akshayykadam)
 
 **PixelBoard Patch Source for Gboard**
@@ -15,16 +16,20 @@
 **You don't need to build from source unless you want to customize patches:**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk">
-    <img src="https://img.shields.io/badge/📥_Download_Stable_APK-v18.3.1_(82_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Stable APK"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable/PixelBoard-18.4.1.apk">
+    <img src="https://img.shields.io/badge/📥_Download_Stable_APK-v18.4.1_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Stable APK"/>
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable/gboard-stock-18.4.1.apk">
+    <img src="https://img.shields.io/badge/📦_Stock_Base_APK-Gboard_v18.4.1_(122_MB)-FF6F00?style=for-the-badge&logo=google&logoColor=white" height="40" alt="Download Stock Gboard Base APK"/>
   </a>
   &nbsp;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp">
-    <img src="https://img.shields.io/badge/📦_Download_Patch_Bundle-PixelBoard.mpp_(1.4_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Patch Bundle"/>
+    <img src="https://img.shields.io/badge/📦_Download_Patch_Bundle-PixelBoard.mpp_(1.5_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Patch Bundle"/>
   </a>
 </p>
 
-[**⬇️ Direct Download Stable APK (v18.3.1)**](https://github.com/Akshayykadam/PixelBoard/raw/main/output/PixelBoard.apk) • [**📦 Download Patch Bundle (.mpp)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) • [**📦 View GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
+[**⬇️ Direct Download Stable APK (v18.4.1)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable/PixelBoard-18.4.1.apk) • [**📦 Stock Base APK**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable/gboard-stock-18.4.1.apk) • [**📦 Patch Bundle (.mpp)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) • [**🌐 APKMirror Release**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) • [**📦 GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
 
 ---
 
@@ -32,11 +37,19 @@
 
 ## Overview
 
-This repository contains the patch definitions and extension bytecode for **PixelBoard**, specifically configured for **AI Writing Assistant** and **Gemini Rambler Voice Dictation**.
+This repository contains the patch definitions and extension bytecode for **PixelBoard**, specifically configured for:
+- **Gemini Rambler Voice Dictation**: Speech cleanup, sentence restructuring, auto-punctuation, and idle battery drain fix.
+- **In-Line AI Writing Assistant**: Proofread, rewrite with tone selection (Professional, Casual, Concise, Emotive), and smart editing.
+- **Writing Tools V2 Gating**: "Suggested" chips, "Describe your edit" prompt bar, hardware/model eligibility device-gating, and dedicated Material You **BETA** toggle in Advanced Settings.
+- **Device-Gated Backend Selector**: Selectable inference engine (`GBOARD_SERVER`, `PRIVATE_INFERENCE_AICORE`, `PRIVATE_INFERENCE_ASTREA`) on supported Pixel devices.
+- **Standalone Coexistence & Signature Bypass**: Safe side-by-side installation with stock Gboard and bypassed signature checks.
 
 - **App Label**: `PixelBoard`
 - **Package ID**: `com.akshaykadam.pixelboard`
-- **Target App**: Google Keyboard (Gboard) `v18.3.1` (Release) & `v18.0.3`
+- **Target App**: Google Keyboard (Gboard) `v18.4.1` (Release) & `v18.3.1` (Release / Beta)
+
+> [!NOTE]
+> **Google Pixel Device Requirement**: New v18.4 features (**Writing Tools V2** and **On-Device AICore / Astrea inference**) are available **only on Google Pixel devices**. Core Rambler Voice Typing and AI writing tools work across all Android devices.
 
 ---
 
@@ -49,7 +62,12 @@ Build the Android patch bundle (`.mpp`):
 
 The compiled patch bundle will be located at:
 ```text
-patches/build/libs/patches-1.0.4.mpp
+patches/build/libs/patches-1.0.5.mpp
+```
+
+Run tests to verify all patch contracts and bytecode transformations:
+```bash
+./gradlew test
 ```
 
 ---

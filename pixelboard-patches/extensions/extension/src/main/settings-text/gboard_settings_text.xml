@@ -160,13 +160,22 @@
         <translation locale="en">Enable AI Writing Tools across all language layouts and input fields without restrictions. Restart Gboard to apply changes.</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_backend_type_title">
-        <translation locale="en">Backend type</translation>
+        <translation locale="en">AI Processing Backend</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_backend_type_summary">
-        <translation locale="en">If you select AI CORE or ASTREA, your account or device must be eligible to enable it.</translation>
+        <translation locale="en">Choose between Google Cloud processing or private on-device inference (AICore / Astrea).</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_backend_type_dialog_title">
-        <translation locale="en">Backend type</translation>
+        <translation locale="en">AI Processing Backend</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_v2_title">
+        <translation locale="en">Writing Tools V2</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_v2_summary">
+        <translation locale="en">Enable \'Suggested\' style chips and \'Describe your edit\' freeform instruction bar. Restart Gboard to apply changes.</translation>
+    </string>
+    <string name="gboard_patches_ai_writing_tools_v2_badge">
+        <translation locale="en">BETA</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_section_behavior">
         <translation locale="en">Behavior</translation>

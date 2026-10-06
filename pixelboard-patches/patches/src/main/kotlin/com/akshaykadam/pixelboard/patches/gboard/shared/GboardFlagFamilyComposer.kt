@@ -120,8 +120,22 @@ private val gboardFlagFamilyComposerPatch = bytecodePatch(
             name = "a",
             type = "Ljava/lang/String;",
         )
+        val targetMethod1841Release = GboardMethodTarget(
+            classType = "Lodx;",
+            name = "g",
+            parameterTypes = emptyList(),
+            returnType = "Ljava/lang/Object;",
+        )
+        val targetField1841Release = GboardFieldTarget(
+            classType = "Lodx;",
+            name = "a",
+            type = "Ljava/lang/String;",
+        )
 
         val (targetMethod, targetField) = when {
+            findMutableMethodOrNull(targetMethod1841Release) != null && mutableFieldOrNull(targetField1841Release) != null -> {
+                targetMethod1841Release to targetField1841Release
+            }
             findMutableMethodOrNull(targetMethod1831Release) != null && mutableFieldOrNull(targetField1831Release) != null -> {
                 targetMethod1831Release to targetField1831Release
             }
@@ -448,7 +462,8 @@ private fun com.android.tools.smali.dexlib2.iface.instruction.Instruction
         load.registerB == FLAG_NAME_SCRATCH_REGISTER &&
         (field.definingClass == "Lnyf;" && field.name == "c" ||
             field.definingClass == "Lacqf;" && field.name == "a" ||
-            field.definingClass == "Locf;" && field.name == "a") &&
+            field.definingClass == "Locf;" && field.name == "a" ||
+            field.definingClass == "Loeg;" && field.name == "a") &&
         field.type == "Ljava/lang/Object;"
 }
 

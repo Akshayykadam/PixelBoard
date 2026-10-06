@@ -9,14 +9,15 @@ build/
 # Temporary & intermediate patcher files
 tools/patcher-data/
 tools/APKEditor*.jar
+# Binary APK files (binaries are hosted on GitHub Releases)
+*.apk
+*.apk.idsig
 output/patching-result*.json
-output/gboard-patched.apk
+!output/.gitkeep
 
 # Local input files (do not commit stock APKs)
-input/*.apk
 input/splits*/
 !input/.gitkeep
-*.apk.idsig
 
 # Log files
 *.log

@@ -302,6 +302,77 @@ public final class GboardAiWritingToolsRuntimeTest {
                 official(true, true)));
     }
 
+    @Test
+    public void writingToolsV2EnabledOnSupportedDeviceWhenToggleActive() {
+        GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(true);
+        try {
+            GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
+                    true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, true);
+
+            String[] v2Flags = new String[]{
+                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
+                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR,
+                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
+                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2,
+                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS,
+                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT,
+                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_ZERO_STATE,
+                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ALLOW_EMPTY_USER_INSTRUCTION,
+                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS,
+                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE,
+                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS
+            };
+
+            for (String flag : v2Flags) {
+                Assert.assertSame(flag, Boolean.TRUE,
+                        GboardAiWritingToolsRuntime.computeOverrideValue(
+                                flag, Boolean.FALSE, settings, official(true, true)));
+            }
+        } finally {
+            GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(null);
+        }
+    }
+
+    @Test
+    public void writingToolsV2DisabledOnUnsupportedDeviceEvenWhenToggleActive() {
+        GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(false);
+        try {
+            GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
+                    true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, true);
+
+            Assert.assertSame(Boolean.FALSE,
+                    GboardAiWritingToolsRuntime.computeOverrideValue(
+                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
+                            Boolean.TRUE, settings, official(true, true)));
+            Assert.assertSame(Boolean.FALSE,
+                    GboardAiWritingToolsRuntime.computeOverrideValue(
+                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
+                            Boolean.TRUE, settings, official(true, true)));
+        } finally {
+            GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(null);
+        }
+    }
+
+    @Test
+    public void writingToolsV2DisabledOnSupportedDeviceWhenToggleInactive() {
+        GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(true);
+        try {
+            GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
+                    true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, false);
+
+            Assert.assertSame(Boolean.FALSE,
+                    GboardAiWritingToolsRuntime.computeOverrideValue(
+                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
+                            Boolean.TRUE, settings, official(true, true)));
+            Assert.assertSame(Boolean.FALSE,
+                    GboardAiWritingToolsRuntime.computeOverrideValue(
+                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
+                            Boolean.TRUE, settings, official(true, true)));
+        } finally {
+            GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(null);
+        }
+    }
+
     private static Boolean distinctBoolean(boolean value) throws Exception {
         return Boolean.class.getDeclaredConstructor(boolean.class).newInstance(value);
     }

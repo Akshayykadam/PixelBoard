@@ -41,6 +41,28 @@ public final class GboardAiWritingToolsRuntime {
     static final String FLAG_ON_DEVICE_PROOFREAD = "enable_on_device_proofread";
     static final String FLAG_ENABLE_WRITING_TOOLS_VOICE_COMMANDS =
             "enable_writing_tools_voice_commands";
+    static final String FLAG_ENABLE_WRITING_TOOLS_V2 =
+            "enable_writing_tools_v2";
+    static final String FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR =
+            "enable_writing_tools_v2_on_toolbar";
+    static final String FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE =
+            "enable_writing_tools_suggest_style";
+    static final String FLAG_WRITING_TOOLS_V2 =
+            "writing_tools_v2";
+    static final String FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS =
+            "writing_tools_v2_enable_suggested_instructions";
+    static final String FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT =
+            "writing_tools_v2_enable_suggested_instructions_in_draft_response";
+    static final String FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_ZERO_STATE =
+            "writing_tools_v2_display_instruction_suggestions_in_zero_state";
+    static final String FLAG_WRITING_TOOLS_V2_ALLOW_EMPTY_USER_INSTRUCTION =
+            "writing_tools_v2_allow_empty_user_instruction";
+    static final String FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS =
+            "writing_tools_v2_show_predefined_prompts";
+    static final String FLAG_ENABLE_WRITING_TOOLS_MY_STYLE =
+            "enable_writing_tools_my_style";
+    static final String FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS =
+            "enable_writing_tools_my_style_plus";
     static final String FLAG_ENABLE_MODELESS_SMART_EDIT =
             "enable_nga_lab_modeless_smartedit";
     static final String FLAG_MODELESS_SMART_EDIT_REGEX_VERSION =
@@ -100,7 +122,8 @@ public final class GboardAiWritingToolsRuntime {
                                 + ", enforced=" + describe(enforced)
                                 + ", featureEnabled=" + settings.featureEnabled
                                 + ", allKeyboards=" + settings.allKeyboardsEnabled
-                                + ", backendType=" + settings.backendType);
+                                + ", backendType=" + settings.backendType
+                                + ", v2Enabled=" + settings.v2Enabled);
             }
             return enforced;
         } catch (Throwable throwable) {
@@ -129,7 +152,9 @@ public final class GboardAiWritingToolsRuntime {
             return originalResult;
         }
 
-        if (RENAMED_GBOARD_PACKAGE.equals(packageName)
+        if (packageName != null
+                && (packageName.equals(RENAMED_GBOARD_PACKAGE)
+                        || packageName.startsWith(RENAMED_GBOARD_PACKAGE))
                 && GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER.equals(
                         settings.backendType)
                 && originalResult instanceof String) {
@@ -169,6 +194,25 @@ public final class GboardAiWritingToolsRuntime {
                     : originalResult;
         }
         if (!(originalResult instanceof Boolean)) {
+            return originalResult;
+        }
+
+        if (FLAG_ENABLE_WRITING_TOOLS_V2.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_ZERO_STATE.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ALLOW_EMPTY_USER_INSTRUCTION.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS.equals(flagName)) {
+            if (originalResult instanceof Boolean) {
+                return (settings.v2Enabled && GboardAiWritingToolsDeviceSupport.isSupportedDevice())
+                        ? Boolean.TRUE
+                        : Boolean.FALSE;
+            }
             return originalResult;
         }
 

@@ -3,6 +3,7 @@ package com.akshaykadam.pixelboard.patches.gboard.registry
 import com.akshaykadam.pixelboard.patches.shared.Patch
 import com.akshaykadam.pixelboard.patches.shared.ResourcePatchBuilder
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoice1803ZhTwPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoice1831LanguageDownloadGuardPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoiceFlagValuePatch
 import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRambler1803OfficialSelectorPatch
 
@@ -22,6 +23,7 @@ internal object GboardContributionWiring {
             unit("advanced_voice_typing.bytecode") {
                 arrayOf(
                     gboardAdvancedVoice1803ZhTwPatch,
+                    gboardAdvancedVoice1831LanguageDownloadGuardPatch,
                     gboardRambler1803OfficialSelectorPatch,
                 )
             },

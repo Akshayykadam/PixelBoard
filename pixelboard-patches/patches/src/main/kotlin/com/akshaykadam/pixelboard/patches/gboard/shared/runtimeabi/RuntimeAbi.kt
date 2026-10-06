@@ -4,6 +4,7 @@ internal enum class RuntimeCallId(internal val encodedAbi: String) {
 
     ADVANCED_VOICE_RUNTIME_AFTER_FLAG_VALUE("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardAdvancedVoice1803Runtime;->afterFlagValue(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"),
     ADVANCED_VOICE_RUNTIME_AFTER_1803_NATIVE_SPLIT_READINESS("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardAdvancedVoice1803Runtime;->after1803NativeSplitReadiness(Z)Z"),
+    LANGUAGE_DOWNLOAD_GUARD_SHOULD_SKIP("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardLanguageDownloadGuard;->shouldSkip(Ljava/lang/String;Ljava/lang/Object;)Z"),
     ADVANCED_VOICE_RUNTIME_AFTER_MDD_PROVIDER_CONSTRUCTED("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardAdvancedVoice1803Runtime;->afterMddProviderConstructed(Ljava/lang/Object;)V"),
     ADVANCED_VOICE_RUNTIME_BEFORE_FORMATTER_CONSTRUCTED("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardAdvancedVoice1803Runtime;->beforeFormatterConstructed(Ljava/util/Locale;Ljava/lang/Object;Z)Z"),
     ADVANCED_VOICE_RUNTIME_INCLUDE_EXACT_ZH_TW_SUPPORTED_LOCALE("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardAdvancedVoice1803Runtime;->includeExactZhTwSupportedLocale(Ljava/lang/Object;)Ljava/lang/Object;"),
