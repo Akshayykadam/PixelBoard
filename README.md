@@ -40,7 +40,7 @@
 
 ## Overview
 
-**PixelBoard** is a sleek, ultra-clean enhancement of Google's flagship keyboard. Tailored for pure productivity, PixelBoard strips away unnecessary bloatware and focuses strictly on powerhouse capabilities: **Gemini Rambler Natural Voice Dictation**, **AI Writing Assistant**, **Writing Tools V2 Gating**, and **Device-Gated Inference Backend Selection**.
+**PixelBoard** is a sleek, ultra-clean enhancement of Google's flagship keyboard. Tailored for pure productivity, PixelBoard strips away unnecessary bloatware and focuses strictly on powerhouse capabilities: **Gemini Rambler Natural Voice Dictation**, **AI Writing Assistant**, **Writing Tools V2 Gating**, **Device-Gated Inference Backend Selection**, and **Automatic Zero-Restart Instant Activation**.
 
 PixelBoard is engineered with an independent coexistence package ID (`com.akshaykadam.pixelboard`), allowing you to install and use it **side-by-side with your factory Gboard** without replacing, uninstalling, or risking system keyboard stability.
 
@@ -76,7 +76,12 @@ On supported devices (such as Google Pixel 8 Pro / 9 series), choose your prefer
 - `PRIVATE_INFERENCE_ASTREA` (On-Device Astrea Framework)
 - Dynamically hidden on unsupported hardware to maintain a clutter-free, native experience.
 
-### 5. Safe Coexistence & Instant Bypass
+### 5. Automatic Live Activation — Zero Restarts Required (New)
+- **Instant Hot-Reload**: Toggling Rambler Voice Typing, switching AI Writing Tools preferences, or changing inference backend options applies automatically in real time without restarting Gboard, force-closing the app, or rebooting your phone.
+- **Zero-Friction Workflow**: Features are synchronized across the keyboard process dynamically — simply configure your desired options and start typing or dictating right away.
+- **Optional Manual Reload**: Advanced Settings retains an optional Restart (`↻`) button solely as a convenience tool, but manual restarts are no longer mandatory.
+
+### 6. Safe Coexistence & Instant Bypass
 - **Side-by-Side Installation**: Installs with app label `PixelBoard` alongside stock Google Keyboard.
 - **Signature Whitelist Bypass**: Pre-patched bytecode ensures Google Play signature checks and integrity verifications pass cleanly without root.
 
@@ -94,13 +99,11 @@ Follow these quick steps to activate Google's Gemini-powered **Rambler** natural
 2. **Select Rambler Dictation**:
    - Tap **Voice typing**.
    - Under **Dictation type**, choose **Rambler** (switch selection from *Standard* to *Rambler*).
-3. **Apply & Restart PixelBoard**:
-   - Go back to the main PixelBoard settings list and scroll down to the bottom.
-   - Tap **★ Advanced settings**.
-   - Ensure **Enable Advanced Voice Typing** is toggled **ON** (enabled by default).
-   - Tap the **Restart (`↻`)** button in the top-right corner of the toolbar.
-   > [!IMPORTANT]
-   > Tapping the **Restart button (`↻`)** is required so Gboard restarts its background dictation service and loads the Rambler Gemini model.
+3. **Instant Automatic Activation (No Restart Needed)**:
+   - Your selection activates automatically in real-time — **no app restart or device reboot required**!
+   - *(Optional)*: You can verify that **Enable Advanced Voice Typing** is toggled **ON** under **★ Advanced settings** (enabled by default). The toolbar **Restart (`↻`)** button remains available as an optional manual fallback if ever needed.
+   > [!TIP]
+   > Thanks to recent runtime enhancements, Rambler dictation initializes dynamically on the fly. You can immediately tap the microphone icon without needing to restart Gboard or kill the app process!
 4. **Start Speaking Naturally**:
    - Tap any text box and hit the **Microphone** icon on PixelBoard.
    - You will see the **"Just speak naturally"** setup screen.
@@ -142,7 +145,7 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 - **Writing Tools V2 (Beta)**: Enables modern "Suggested" style chips and freeform edit prompts with device safety gating.
 - **Inference Backend Type**: On supported hardware, select between `GBOARD_SERVER`, `PRIVATE_INFERENCE_AICORE`, and `PRIVATE_INFERENCE_ASTREA`.
 - **Enable Advanced Voice Typing**: Unlocks the *Rambler* dictation engine in Voice typing settings.
-- **Toolbar Restart Button (`↻`)**: One-tap process restart to instantly apply feature flag changes without restarting your device.
+- **Toolbar Restart Button (`↻`)**: Optional one-tap process reload utility in the toolbar if you ever want to force a refresh, though all settings and toggles now apply automatically in real time.
 - **Custom Attribution**: Dedicated credit footer (*Akshay Kadam*).
 
 ---
@@ -186,7 +189,7 @@ You can patch your stock Gboard APK directly on your phone using **Morphe Manage
 1. On your phone, go to **Settings > System > Languages & input > On-screen keyboard** (or **Manage Keyboards**).
 2. Toggle on **PixelBoard**.
 3. Tap the keyboard switch icon (or spacebar selector) and pick **PixelBoard** as your active input method.
-4. Follow the [**Rambler Setup Guide**](#how-to-enable-rambler-voice-typing) to select Rambler dictation and tap restart (`↻`).
+4. Follow the [**Rambler Setup Guide**](#how-to-enable-rambler-voice-typing) to select Rambler dictation (activates automatically — no restart needed!).
 5. Access the [**AI Writing Tools**](#where-to-find--use-ai-writing-tools) right from your suggestion strip!
 
 ---
