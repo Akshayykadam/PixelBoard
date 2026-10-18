@@ -38,6 +38,7 @@ public final class GboardClipboardSyncRuntime {
         }
         try {
             ensureClipboardManager(handler);
+            ensureScreenshotObserver(handler);
 
             // Gboard's ClipboardDataHandler implements ClipboardManager.OnPrimaryClipChangedListener.
             // Invoking onPrimaryClipChanged() evaluates the user's opt-in setting and asynchronously
@@ -54,6 +55,15 @@ public final class GboardClipboardSyncRuntime {
             }
         } catch (Throwable t) {
             Log.w(TAG, "Failed to sync clipboard onStartInputView", t);
+        }
+    }
+
+    private static void ensureScreenshotObserver(Object handler) {
+        try {
+            Method qMethod = handler.getClass().getDeclaredMethod("q", boolean.class);
+            qMethod.setAccessible(true);
+            qMethod.invoke(handler, Boolean.TRUE);
+        } catch (Throwable ignored) {
         }
     }
 

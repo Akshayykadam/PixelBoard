@@ -3,7 +3,7 @@
 <div align="center">
 
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
-[![Version](https://img.shields.io/badge/Patch%20Version-1.1.0-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
+[![Version](https://img.shields.io/badge/Patch%20Version-1.2.0-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
 [![Target](https://img.shields.io/badge/Gboard-v18.4.1_Release-orange?style=flat-square&logo=google)](https://github.com/Akshayykadam/PixelBoard)
 [![Author](https://img.shields.io/badge/Author-Akshay%20Kadam-9cf?style=flat-square&logo=github)](https://github.com/Akshayykadam)
 
@@ -16,8 +16,8 @@
 **You don't need to build from source unless you want to customize patches:**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V6/PixelBoard-18.4.1-V6.apk">
-    <img src="https://img.shields.io/badge/📥_Download_Stable_APK-v18.4.1_V6_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Stable APK"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/PixelBoard-18.4.1-V7.apk">
+    <img src="https://img.shields.io/badge/📥_Download_Stable_APK-v18.4.1_V7_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Stable APK"/>
   </a>
   &nbsp;&nbsp;
   <a href="https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/">
@@ -29,7 +29,7 @@
   </a>
 </p>
 
-[**⬇️ Direct Download Stable APK (v18.4.1 V6)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V6/PixelBoard-18.4.1-V6.apk) • [**🌐 Stock Base APK (APKMirror)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) • [**📦 Patch Bundle (.mpp)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) • [**📦 GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
+[**⬇️ Direct Download Stable APK (v18.4.1 V7)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/PixelBoard-18.4.1-V7.apk) • [**🌐 Stock Base APK (APKMirror)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) • [**📦 Patch Bundle (.mpp)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) • [**📦 GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
 
 ---
 
@@ -42,6 +42,7 @@ This repository contains the patch definitions and extension bytecode for **Pixe
 - **In-Line AI Writing Assistant**: Proofread, rewrite with tone selection (Professional, Casual, Concise, Emotive), smart editing, and Android 16 Quick Insert crash safeguard.
 - **Modern Spell Checker Suggestion Chips & Grammar Checking**: Enforces Android 12+ inline spellcheck suggestion chips and add-to-dictionary UI on all devices (`GboardSpellCheckerChipsPatch`).
 - **Scan Text / Camera OCR & Floating Screenshot Banner**: Direct optical character recognition camera tool and floating screenshot suggestion chips with permissions.
+- **Sign-to-Text (ASL Real-Time Translation)**: Native camera gesture recognition to translate American Sign Language into text on supported Pixel devices (`enable_signboard`, `signboard_prompt_manual_trigger`, `on_demand_feature_split`).
 - **Emoji Palette V2 & Super Insert Hub**: Dedicated recent/frequent tabs, rich multi-view super insert, and in-line Smart Compose ghost autocompletion.
 - **Writing Tools V2 Gating**: "Suggested" chips, "Describe your edit" prompt bar, hardware/model eligibility device-gating, and dedicated Material You toggles.
 - **Device-Gated Backend Selector**: Selectable inference engine (`GBOARD_SERVER`, `PRIVATE_INFERENCE_AICORE`, `PRIVATE_INFERENCE_ASTREA`) on supported Pixel devices.
@@ -69,7 +70,7 @@ Build the Android patch bundle (`.mpp`):
 
 The compiled patch bundle will be located at:
 ```text
-patches/build/libs/patches-1.1.0.mpp
+patches/build/libs/patches-1.2.0.mpp
 ```
 
 Run tests to verify all patch contracts and bytecode transformations:

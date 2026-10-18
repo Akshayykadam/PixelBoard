@@ -119,9 +119,9 @@ fi
     -r=output/patching-result.json \
     input/gboard.apk
 
-cp output/PixelBoard.apk output/PixelBoard-18.4.1-V6.apk
+cp output/PixelBoard.apk output/PixelBoard-18.4.1-V7.apk
 if [[ -n "${PATCH_VERSION:-}" ]]; then
     cp output/PixelBoard.apk "output/PixelBoard-${PATCH_VERSION}.apk"
 fi
 
-echo "🎉 Successfully built output/PixelBoard.apk and output/PixelBoard-18.4.1-V6.apk!"
+echo "🎉 Successfully built output/PixelBoard.apk and output/PixelBoard-18.4.1-V7.apk!"

@@ -23,6 +23,9 @@ class GboardAdvancedVoice1803PatchSourceTest {
         assertTrue(source.contains("classType = \"Lrtu;\""))
         assertTrue(source.contains("classType = \"Lrwr;\""))
         assertTrue(source.contains("classType = \"Lscn;\""))
+        assertTrue(source.contains("\"Lslc;\""))
+        assertTrue(source.contains("Lqeq;->e(Lqem;)Z"))
+        assertTrue(source.contains("Loco;->b:Lqem;"))
         assertTrue(source.contains(
             "ADVANCED_VOICE_RUNTIME_AFTER_1803_NATIVE_SPLIT_READINESS",
         ))

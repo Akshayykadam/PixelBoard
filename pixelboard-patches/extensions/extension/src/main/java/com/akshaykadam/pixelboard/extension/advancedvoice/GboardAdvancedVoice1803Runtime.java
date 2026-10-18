@@ -120,7 +120,7 @@ public final class GboardAdvancedVoice1803Runtime {
     }
 
     /**
-     * Reconciles Gboard 18.0.3's install-time feature-split check with a fused APK.
+     * Reconciles Gboard's install-time feature-split checks with a fused APK.
      * The readiness bit is promoted only when the stock NativeLibHelper can really load the
      * dictation JNI library that was merged into the base APK.
      */
@@ -129,18 +129,23 @@ public final class GboardAdvancedVoice1803Runtime {
             return stockResult;
         }
         try {
-            Handles handles = handles(runtimeClassLoader());
-            boolean nativeLoaded = readMemoizedNativeReadiness(
-                    handles.nativeReadinessSupplierField,
-                    handles.nativeReadinessSupplierMethod);
+            // Fused APKs can contain the JNI library without a Play split marker.
+            // Avoid the unrelated, version-specific fields in Handles.
+            Class<?> helper = Class.forName(
+                    "com.google.android.libraries.inputmethod.nativelib.NativeLibHelper",
+                    false, runtimeClassLoader());
+            Method load = helper.getDeclaredMethod("c", String.class, boolean.class);
+            load.setAccessible(true);
+            boolean nativeLoaded = Boolean.TRUE.equals(
+                    load.invoke(null, "dictation_jni", false));
             boolean promoted = GboardAdvancedVoice1803Policy.shouldPromoteNativeReadiness(
                     Boolean.valueOf(stockResult), nativeLoaded);
             if (promoted) {
-                logInfo("promoted scn#a() after dictation_jni load succeeded");
+                logInfo("promoted fused native split readiness after dictation_jni load succeeded");
             }
             return promoted;
         } catch (Throwable failure) {
-            logError("18.0.3 native split readiness check failed", failure);
+            logError("fused native split readiness check failed", failure);
             return stockResult;
         }
     }

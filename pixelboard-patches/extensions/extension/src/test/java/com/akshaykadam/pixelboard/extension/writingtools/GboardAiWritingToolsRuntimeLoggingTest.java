@@ -452,6 +452,10 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_POST_CORRECTION_TRIGGER_PREDICTOR));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK));
 
         // Scan Text (OCR Camera Input) flags
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
@@ -539,6 +543,26 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_EMOGEN_IN_ACCESS_POINTS));
 
+        // Sign-to-Text (Signboard ASL Camera Translation) flags
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SIGNBOARD));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SIGNBOARD_PROMPT_MANUAL_TRIGGER));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ON_DEMAND_FEATURE_SPLIT));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_AUTO_SHOW_SIGNBOARD));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SIGNBOARD_AUTO_SHOW_PROMPT));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SIGNBOARD_DOWNLOAD));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SIGNBOARD_DOWNLOAD_DIALOG));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SIGNBOARD_MOVE_AP_PROMPT));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_USE_4C_IN_SIGNBOARD));
+
         Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS));
         Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
@@ -550,23 +574,23 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     }
 
     @Test
-    public void intendedOovMinCountEnforcesOneAndLogsDiagnostics() throws Exception {
+    public void intendedOovMinCountEnforcesTwoAndLogsDiagnostics() throws Exception {
         IntendedOovMinCountFlagReceiver receiver = new IntendedOovMinCountFlagReceiver();
 
         ShadowLog.clear();
         Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
                 receiver, Long.valueOf(4L));
-        Assert.assertEquals(Long.valueOf(1L), enforced);
+        Assert.assertEquals(Long.valueOf(2L), enforced);
         Assert.assertEquals(1L, warningCount(
-                "flag=intended_oov_min_count, original=Long(4), enforced=Long(1)"));
+                "flag=intended_oov_min_count, original=Long(4), enforced=Long(2)"));
 
-        // Already 1L -> no duplicate log
+        // Already 2L -> no duplicate log
         ShadowLog.clear();
         Object unchanged = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                receiver, Long.valueOf(1L));
-        Assert.assertEquals(Long.valueOf(1L), unchanged);
+                receiver, Long.valueOf(2L));
+        Assert.assertEquals(Long.valueOf(2L), unchanged);
         Assert.assertEquals(0L, warningCount(
-                "flag=intended_oov_min_count, original=Long(1), enforced=Long(1)"));
+                "flag=intended_oov_min_count, original=Long(2), enforced=Long(2)"));
 
         // Non-Long is preserved
         String nonLong = "not_a_long";
@@ -595,6 +619,8 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
         Assert.assertTrue(defaultPrefs.getBoolean("enable_mark_misspelled_words", false));
         Assert.assertTrue(defaultPrefs.contains("pref_key_enable_grammar_checker"));
         Assert.assertTrue(defaultPrefs.getBoolean("pref_key_enable_grammar_checker", false));
+        Assert.assertTrue(defaultPrefs.contains("pref_key_auto_correction"));
+        Assert.assertTrue(defaultPrefs.getBoolean("pref_key_auto_correction", false));
         Assert.assertTrue(defaultPrefs.contains("show_suggestion_strip"));
         Assert.assertTrue(defaultPrefs.getBoolean("show_suggestion_strip", false));
     }

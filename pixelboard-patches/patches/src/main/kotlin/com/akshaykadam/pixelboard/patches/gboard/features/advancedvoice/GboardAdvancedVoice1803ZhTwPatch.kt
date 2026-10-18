@@ -8,6 +8,7 @@ import com.akshaykadam.pixelboard.patches.gboard.shared.GboardMethodTarget
 import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrThrow
 import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrNull
 import com.akshaykadam.pixelboard.patches.gboard.shared.gboardPatchesExtensionCarrierPatch
+import com.akshaykadam.pixelboard.patches.gboard.shared.isFieldReference
 import com.akshaykadam.pixelboard.patches.gboard.shared.isMethodReference
 import com.akshaykadam.pixelboard.patches.gboard.shared.returnInstructionIndices
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeAbiCatalog
@@ -59,6 +60,19 @@ internal val gboardAdvancedVoice1803ZhTwPatch = bytecodePatch(
     dependsOn(gboardPatchesExtensionCarrierPatch)
 
     execute {
+        // Verified against 18.4.1.985164140-release-arm64-v8a.
+        // Keep the old locale/MDD hooks restricted to their 18.0.3 targets.
+        val fusedReadiness = findMutableMethodOrNull(
+            GboardMethodTarget("Lslc;", "a", emptyList(), "Z"),
+        )?.takeIf { method ->
+            val body = method.implementation?.instructions.orEmpty()
+            body.any { it.isMethodReference("Lqeq;->e(Lqem;)Z") } &&
+                body.any { it.isFieldReference("Loco;->b:Lqem;") }
+        }
+        if (fusedReadiness != null) {
+            fusedReadiness.applyNativeSplitReadiness()
+            return@execute
+        }
         if (findMutableMethodOrNull(GboardAdvancedVoice1803Targets.nativeSplitReadiness) == null) {
             return@execute
         }
@@ -82,17 +96,17 @@ internal val gboardAdvancedVoice1803ZhTwPatch = bytecodePatch(
 private fun MutableMethod.applyNativeSplitReadiness() {
     val call = RuntimeCallId.ADVANCED_VOICE_RUNTIME_AFTER_1803_NATIVE_SPLIT_READINESS
     val reference = RuntimeAbiCatalog.abi(call).reference
-    val instructions = implementation?.instructions ?: error("No scn#a implementation")
+    val instructions = implementation?.instructions ?: error("No native split readiness implementation")
     val returns = returnInstructionIndices()
-    check(returns.isNotEmpty()) { "No boolean returns in scn#a" }
+    check(returns.isNotEmpty()) { "No boolean returns in native split readiness" }
     val existing = instructions.count { it.isMethodReference(reference) }
     if (existing != 0) {
-        check(existing == returns.size) { "Malformed 18.0.3 native split readiness delegates" }
+        check(existing == returns.size) { "Malformed native split readiness delegates" }
         return
     }
     returns.asReversed().forEach { returnIndex ->
         val register = (instructions[returnIndex] as? OneRegisterInstruction)?.registerA
-            ?: error("Non-register boolean return in scn#a")
+            ?: error("Non-register boolean return in native split readiness")
         addInstructions(
             returnIndex,
             """

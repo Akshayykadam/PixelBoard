@@ -94,7 +94,7 @@ public final class GboardAiWritingToolsRuntime {
     // Fast user history learning and prefix predictions
     static final String FLAG_INTENDED_OOV_MIN_COUNT =
             "intended_oov_min_count";
-    static final Long ENFORCED_INTENDED_OOV_MIN_COUNT = 1L;
+    static final Long ENFORCED_INTENDED_OOV_MIN_COUNT = 2L;
     static final String FLAG_MIN_CHAR_NUM_LIMIT_FOR_SINGLE_WORD_PREDICTIONS =
             "min_char_num_limit_for_single_word_predictions";
     static final Long ENFORCED_MIN_CHAR_NUM_LIMIT_FOR_SINGLE_WORD_PREDICTIONS = 2L;
@@ -168,6 +168,10 @@ public final class GboardAiWritingToolsRuntime {
             "enable_post_correction_trigger_predictor";
     static final String FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS =
             "populate_preemptive_next_key_predictions";
+    static final String FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT =
+            "auto_correct_with_replace_text";
+    static final String FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK =
+            "enable_revert_auto_correct_on_pk";
 
     // Scan Text (OCR Camera Input)
     static final String FLAG_ENABLE_OCR =
@@ -260,6 +264,26 @@ public final class GboardAiWritingToolsRuntime {
     // Access Points immediate population (prevents blank shortcuts on first launch)
     static final String FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS =
             "stop_deferring_access_points_tasks";
+
+    // Sign-to-Text (Signboard ASL Camera Translation)
+    static final String FLAG_ENABLE_SIGNBOARD =
+            "enable_signboard";
+    static final String FLAG_SIGNBOARD_PROMPT_MANUAL_TRIGGER =
+            "signboard_prompt_manual_trigger";
+    static final String FLAG_ON_DEMAND_FEATURE_SPLIT =
+            "on_demand_feature_split";
+    static final String FLAG_AUTO_SHOW_SIGNBOARD =
+            "auto_show_signboard";
+    static final String FLAG_SIGNBOARD_AUTO_SHOW_PROMPT =
+            "signboard_auto_show_prompt";
+    static final String FLAG_SIGNBOARD_DOWNLOAD =
+            "signboard_download";
+    static final String FLAG_SIGNBOARD_DOWNLOAD_DIALOG =
+            "signboard_download_dialog";
+    static final String FLAG_SIGNBOARD_MOVE_AP_PROMPT =
+            "signboard_move_ap_prompt";
+    static final String FLAG_USE_4C_IN_SIGNBOARD =
+            "use_4c_in_signboard";
 
     // Writing Helper & Imagen production backend hosts
     static final String FLAG_WRITING_HELPER_SERVER_TARGET =
@@ -404,7 +428,18 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_EMOGEN_IN_ACCESS_POINTS.equals(flagName)
                 || FLAG_FIX_FIRST_AUTO_CORRECTION_COMMIT.equals(flagName)
                 || FLAG_LEARNING_FOR_EDITOR_WITHOUT_AUTO_CORRECTION.equals(flagName)
-                || FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS.equals(flagName);
+                || FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS.equals(flagName)
+                || FLAG_ENABLE_SIGNBOARD.equals(flagName)
+                || FLAG_SIGNBOARD_PROMPT_MANUAL_TRIGGER.equals(flagName)
+                || FLAG_ON_DEMAND_FEATURE_SPLIT.equals(flagName)
+                || FLAG_AUTO_SHOW_SIGNBOARD.equals(flagName)
+                || FLAG_SIGNBOARD_AUTO_SHOW_PROMPT.equals(flagName)
+                || FLAG_SIGNBOARD_DOWNLOAD.equals(flagName)
+                || FLAG_SIGNBOARD_DOWNLOAD_DIALOG.equals(flagName)
+                || FLAG_SIGNBOARD_MOVE_AP_PROMPT.equals(flagName)
+                || FLAG_USE_4C_IN_SIGNBOARD.equals(flagName)
+                || FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT.equals(flagName)
+                || FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK.equals(flagName);
     }
 
     public static Object applyOverriddenFlagValue(Object receiver, Object originalResult) {
@@ -799,6 +834,10 @@ public final class GboardAiWritingToolsRuntime {
             if (!prefs.contains("pref_key_enable_grammar_checker")) {
                 if (editor == null) editor = prefs.edit();
                 editor.putBoolean("pref_key_enable_grammar_checker", true);
+            }
+            if (!prefs.contains("pref_key_auto_correction")) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean("pref_key_auto_correction", true);
             }
             if (!prefs.contains("show_suggestion_strip")) {
                 if (editor == null) editor = prefs.edit();

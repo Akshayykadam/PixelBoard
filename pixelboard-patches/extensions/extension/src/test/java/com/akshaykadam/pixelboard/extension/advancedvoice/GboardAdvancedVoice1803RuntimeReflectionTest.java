@@ -340,6 +340,14 @@ public final class GboardAdvancedVoice1803RuntimeReflectionTest {
         Assert.assertEquals(0, FakeCoroutineLauncher.launchCount.get());
     }
 
+    @Test
+    public void nativeSplitReadinessPreservesStockResultWhenLoadFailsOrStockIsTrue()
+            throws Exception {
+        Method nativeSplit = hookMethod("after1803NativeSplitReadiness", boolean.class);
+        Assert.assertEquals(Boolean.TRUE, nativeSplit.invoke(null, true));
+        Assert.assertEquals(Boolean.FALSE, nativeSplit.invoke(null, false));
+    }
+
     private static Object[] formatterArgs(
             Locale locale,
             FakeOrationContext context,

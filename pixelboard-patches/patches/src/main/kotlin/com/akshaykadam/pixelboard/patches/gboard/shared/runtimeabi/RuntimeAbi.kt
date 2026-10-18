@@ -23,6 +23,8 @@ internal enum class RuntimeCallId(internal val encodedAbi: String) {
     AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_REMEMBER_GEN_AI_INIT_CALL("Lcom/akshaykadam/pixelboard/extension/writingtools/GboardAiWritingToolsVoiceCommandRuntime;->rememberGenAiInitCall(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V"),
     CANDIDATE_EMOJI_RUNTIME_ADJUST_CANDIDATE_PAINT("Lcom/akshaykadam/pixelboard/extension/emoji/GboardCandidateEmojiRuntime;->adjustCandidatePaint(Landroid/widget/TextView;Landroid/text/TextPaint;)V"),
     CLIPBOARD_SYNC_RUNTIME_SYNC_ON_START_INPUT_VIEW("Lcom/akshaykadam/pixelboard/extension/clipboard/GboardClipboardSyncRuntime;->syncOnStartInputView(Ljava/lang/Object;)V"),
+    FEATURES_MENU_ACCESSIBILITY_ON_INFLATE("Lcom/akshaykadam/pixelboard/extension/accessibility/GboardFeaturesMenuAccessibilityRuntime;->onAccessPointsPanelInflated(Landroid/view/View;)V"),
+    FEATURES_MENU_ACCESSIBILITY_ON_VISIBILITY_CHANGED("Lcom/akshaykadam/pixelboard/extension/accessibility/GboardFeaturesMenuAccessibilityRuntime;->onAccessPointsPanelVisibilityChanged(Landroid/view/View;)V"),
 }
 
 internal data class RuntimeAbi(

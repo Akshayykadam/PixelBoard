@@ -17,6 +17,7 @@ import org.w3c.dom.Element
 import com.akshaykadam.pixelboard.patches.gboard.features.emoji.gboardCandidateEmojiVibrancyPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardSyncPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.spellchecker.gboardSpellCheckerChipsPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.accessibility.gboardFeaturesMenuAccessibilityPatch
 
 internal val gboardPatchesSettingsPatch = resourcePatch(
     description = "Add Patches entry to the bottom of Gboard settings."
@@ -28,6 +29,7 @@ internal val gboardPatchesSettingsPatch = resourcePatch(
         gboardCandidateEmojiVibrancyPatch,
         gboardClipboardSyncPatch,
         gboardSpellCheckerChipsPatch,
+        gboardFeaturesMenuAccessibilityPatch,
     )
 
     finalize {
@@ -69,6 +71,7 @@ private fun applyPatchesSettingsPatch() = with(context) {
     }
     applySpellCheckerXmlOverride()
     applyEmojiSuggestionXmlOverride()
+    applyClipboardXmlOverride()
     applyPixelboardStringsOverride()
 }
 
@@ -278,9 +281,26 @@ internal fun applyEmojiSuggestionXmlOverride() = with(context) {
                 val element = switches.item(i) as? Element ?: continue
                 val key = element.androidAttribute("key")
                 if (key == "@string/string_0x7f14093e" || key == "pref_key_enable_emoji_suggestion") {
-                    if (element.androidAttribute("defaultValue").isNullOrBlank()) {
-                        element.setAndroidAttribute("defaultValue", "true")
-                    }
+                    element.setAndroidAttribute("defaultValue", "true")
+                }
+            }
+        }
+    } catch (_: Throwable) {
+    }
+}
+
+context(context: ResourcePatchContext)
+internal fun applyClipboardXmlOverride() = with(context) {
+    try {
+        document("res/xml/setting_clipboard.xml").use { doc ->
+            val switches = doc.getElementsByTagName("SwitchPreferenceCompat")
+            for (i in 0 until switches.length) {
+                val element = switches.item(i) as? Element ?: continue
+                val key = element.androidAttribute("key")
+                if (key == "@string/string_0x7f140963" || key == "enable_screenshot_in_clipboard" ||
+                    key == "@string/string_0x7f140945" || key == "pref_key_enable_clipboard"
+                ) {
+                    element.setAndroidAttribute("defaultValue", "true")
                 }
             }
         }
