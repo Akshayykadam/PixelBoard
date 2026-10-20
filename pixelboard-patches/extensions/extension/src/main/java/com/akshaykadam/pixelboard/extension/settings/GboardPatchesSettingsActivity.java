@@ -1850,6 +1850,12 @@ public final class GboardPatchesSettingsActivity extends Activity
             }
             restartButton.setEnabled(!pending);
             restartButton.setAlpha(1f);
+            String restartingLabel = pending ? text(R.string.gboard_patches_restarting) : null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                restartButton.setStateDescription(restartingLabel);
+            } else if (pending) {
+                restartButton.announceForAccessibility(restartingLabel);
+            }
             if (pending) {
                 startRestartButtonAnimation();
             }
@@ -3555,7 +3561,12 @@ public final class GboardPatchesSettingsActivity extends Activity
                 toneBackground(block.getTone()),
                 palette.surfaceStroke,
                 dp(20)));
-        card.addView(buildSectionTitle(block.getTitle()));
+        TextView titleView = buildSectionTitle(block.getTitle());
+        if (block.getTone() == GboardPatchesSettingsContract.StatusTone.WARNING) {
+            titleView.setContentDescription(
+                    text(R.string.gboard_patches_warning_label) + ": " + block.getTitle());
+        }
+        card.addView(titleView);
         card.addView(buildSectionSummary(block.getSummary(), false));
         return card;
     }
