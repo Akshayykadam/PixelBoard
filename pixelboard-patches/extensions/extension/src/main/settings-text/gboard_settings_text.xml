@@ -23,6 +23,7 @@
     </string>
     <string name="gboard_patches_header_badge">
         <translation locale="en">Gboard</translation>
+        <translation locale="ar">Gboard</translation>
     </string>
     <string name="gboard_patches_header_title">
         <translation locale="en">Advanced settings</translation>
@@ -47,6 +48,7 @@
     </string>
     <string name="gboard_patches_header_summary">
         <translation locale="en"/>
+        <translation locale="ar"/>
     </string>
     <string name="gboard_patches_preview_label">
         <translation locale="en">Preview</translation>
@@ -176,18 +178,23 @@
     </string>
     <string name="gboard_patches_keyboard_preview_action">
         <translation locale="en">Open keyboard</translation>
+        <translation locale="ar">فتح لوحة المفاتيح</translation>
     </string>
     <string name="gboard_patches_keyboard_preview_title">
         <translation locale="en">Gboard Patches</translation>
+        <translation locale="ar">ترقيعات Gboard</translation>
     </string>
     <string name="gboard_patches_keyboard_preview_input_accessibility">
         <translation locale="en">Keyboard test field</translation>
+        <translation locale="ar">حقل اختبار لوحة المفاتيح</translation>
     </string>
     <string name="gboard_patches_dialog_error_positive">
         <translation locale="en">Enter a positive number.</translation>
+        <translation locale="ar">يُرجى إدخال رقم موجب.</translation>
     </string>
     <string name="gboard_patches_dialog_error_save_failed">
         <translation locale="en">Failed to save setting.</translation>
+        <translation locale="ar">تعذّر حفظ الإعداد.</translation>
     </string>
     <string name="gboard_patches_section_preferences">
         <translation locale="en">Preferences</translation>
@@ -285,7 +292,7 @@
         <translation locale="ja">パッチバージョン</translation>
         <translation locale="ko">패치 버전</translation>
         <translation locale="zh">补丁版本</translation>
-        <translation locale="ar">إصدار التصحيح</translation>
+        <translation locale="ar">إصدار الترقيع</translation>
         <translation locale="in">Versi Patch</translation>
         <translation locale="tr">Yama Sürümü</translation>
         <translation locale="vi">Phiên bản bản vá</translation>
@@ -296,24 +303,31 @@
     </string>
     <string name="gboard_patches_error_header_title">
         <translation locale="en">Feature unavailable</translation>
+        <translation locale="ar">الميزة غير متوفرة</translation>
     </string>
     <string name="gboard_patches_error_header_summary">
         <translation locale="en">This settings page failed to load and was safely disabled.</translation>
+        <translation locale="ar">تعذّر تحميل صفحة الإعدادات هذه وتم تعطيلها بأمان.</translation>
     </string>
     <string name="gboard_patches_error_row_title">
         <translation locale="en">Unable to load feature</translation>
+        <translation locale="ar">تعذّر تحميل الميزة</translation>
     </string>
     <string name="gboard_patches_error_row_summary">
         <translation locale="en">The host app stayed alive. Reopen PixelBoard settings and try again.</translation>
+        <translation locale="ar">ظل التطبيق المضيف يعمل. أعد فتح إعدادات PixelBoard وحاول مجدداً.</translation>
     </string>
     <string name="gboard_patches_fatal_fallback_title">
         <translation locale="en">Patches temporarily unavailable</translation>
+        <translation locale="ar">الترقيعات غير متوفرة مؤقتاً</translation>
     </string>
     <string name="gboard_patches_fatal_fallback_summary">
         <translation locale="en">This screen hit an internal error and was safely disabled. Gboard stays alive. Reopen settings and try again.</translation>
+        <translation locale="ar">حدث خطأ داخلي في هذه الشاشة وتم تعطيلها بأمان، مع بقاء Gboard قيد التشغيل. أعد فتح الإعدادات وحاول مجدداً.</translation>
     </string>
     <string name="gboard_patches_preview_load_failed">
         <translation locale="en">Failed to load preview media.</translation>
+        <translation locale="ar">تعذّر تحميل وسائط المعاينة.</translation>
     </string>
     <string name="gboard_patches_navigate_up">
         <translation locale="en">Navigate up</translation>
@@ -359,63 +373,83 @@
     </string>
     <string name="gboard_patches_restart_failed">
         <translation locale="en">Gboard could not be restarted. Reopen PixelBoard settings and try again.</translation>
+        <translation locale="ar">تعذّرت إعادة تشغيل Gboard. أعد فتح إعدادات PixelBoard وحاول مجدداً.</translation>
     </string>
     <string name="gboard_patches_language_title">
         <translation locale="en">Language</translation>
+        <translation locale="ar">اللغة</translation>
     </string>
     <string name="gboard_patches_language_summary">
         <translation locale="en"/>
+        <translation locale="ar"/>
     </string>
     <string name="gboard_patches_language_system_label">
         <translation locale="en">System default</translation>
+        <translation locale="ar">الافتراضي للنظام</translation>
     </string>
     <string name="gboard_patches_language_english_label">
         <translation locale="en">English</translation>
+        <translation locale="ar">الإنجليزية</translation>
     </string>
     <string name="gboard_patches_language_system_value">
         <translation locale="en">System default (%1$s)</translation>
+        <translation locale="ar">الافتراضي للنظام (%1$s)</translation>
     </string>
     <string name="gboard_patches_group_ai_voice_title">
         <translation locale="en">AI &amp; Voice</translation>
+        <translation locale="ar">الذكاء الاصطناعي والصوت</translation>
     </string>
     <string name="gboard_patches_group_ai_voice_summary">
         <translation locale="en">AI writing tools, advanced voice typing, and Bluetooth microphone.</translation>
+        <translation locale="ar">أدوات الكتابة بالذكاء الاصطناعي، والكتابة الصوتية المتقدمة، وميكروفون البلوتوث.</translation>
     </string>
     <string name="gboard_patches_group_keyboard_header_summary">
         <translation locale="en"/>
+        <translation locale="ar"/>
     </string>
     <string name="gboard_patches_group_keyboard_empty_title">
         <translation locale="en">No keyboard settings available</translation>
+        <translation locale="ar">لا تتوفر إعدادات للوحة المفاتيح</translation>
     </string>
     <string name="gboard_patches_group_keyboard_empty_summary">
         <translation locale="en">This build does not include any keyboard settings features.</translation>
+        <translation locale="ar">لا يتضمن هذا الإصدار أي ميزات لإعدادات لوحة المفاتيح.</translation>
     </string>
     <string name="gboard_patches_developer_options_package_warning_title">
         <translation locale="en">Unsupported Gboard package</translation>
+        <translation locale="ar">حزمة Gboard غير مدعومة</translation>
     </string>
     <string name="gboard_patches_developer_options_package_warning_message">
         <translation locale="en">The current Gboard package is %1$s. PixelBoard Patches supports only the official package com.google.android.inputmethod.latin and com.akshaykadam.pixelboard. Mixing Gboard builds from multiple sources may cause instability.</translation>
+        <translation locale="ar">حزمة Gboard الحالية هي %1$s. تدعم ترقيعات PixelBoard الحزمة الرسمية com.google.android.inputmethod.latin وحزمة com.akshaykadam.pixelboard فقط. قد يؤدي خلط إصدارات Gboard من مصادر متعددة إلى عدم الاستقرار.</translation>
     </string>
     <string name="gboard_patches_developer_options_try_anyway">
         <translation locale="en">Try anyway</translation>
+        <translation locale="ar">المتابعة على أي حال</translation>
     </string>
     <string name="gboard_patches_developer_options_launch_failed">
         <translation locale="en">Unable to open Developer options for %1$s.</translation>
+        <translation locale="ar">تعذّر فتح خيارات المطور لـ %1$s.</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_title">
         <translation locale="en">AI Writing Tools</translation>
+        <translation locale="ar">أدوات الكتابة بالذكاء الاصطناعي</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_summary">
         <translation locale="en">Controls Gboard AI Writing Tools availability, keyboard support, and backend routing.</translation>
+        <translation locale="ar">التحكم في توفر أدوات الكتابة بالذكاء الاصطناعي في Gboard، ودعم لوحات المفاتيح، وتوجيه المعالجة الخلفية.</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_header_summary">
         <translation locale="en"/>
+        <translation locale="ar"/>
     </string>
     <string name="gboard_patches_ai_writing_tools_error_title">
         <translation locale="en">AI Writing Tools unavailable</translation>
+        <translation locale="ar">أدوات الكتابة بالذكاء الاصطناعي غير متوفرة</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_error_summary">
         <translation locale="en">The AI Writing Tools settings screen failed to load. Reopen PixelBoard settings and try again.</translation>
+        <translation locale="ar">تعذّر تحميل شاشة إعدادات أدوات الكتابة بالذكاء الاصطناعي. أعد فتح إعدادات PixelBoard وحاول مجدداً.</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_enabled_title">
         <translation locale="en">Enable AI Writing Tools</translation>
@@ -503,39 +537,51 @@
     </string>
     <string name="gboard_patches_ai_writing_tools_backend_type_title">
         <translation locale="en">AI Processing Backend</translation>
+        <translation locale="ar">محرك معالجة الذكاء الاصطناعي</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_backend_type_summary">
         <translation locale="en">Choose between Google Cloud processing or private on-device inference (AICore / Astrea).</translation>
+        <translation locale="ar">الاختيار بين المعالجة عبر سحابة Google أو الاستنتاج الخاص على الجهاز (AICore / Astrea).</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_backend_type_dialog_title">
         <translation locale="en">AI Processing Backend</translation>
+        <translation locale="ar">محرك معالجة الذكاء الاصطناعي</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_v2_title">
         <translation locale="en">Writing Tools V2</translation>
+        <translation locale="ar">أدوات الكتابة (الإصدار 2)</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_v2_summary">
         <translation locale="en">Enable \'Suggested\' style chips and \'Describe your edit\' freeform instruction bar.</translation>
+        <translation locale="ar">تفعيل شرائح نمط \'المقترحة\' وشريط التعليمات الحرة \'صف تعديلك\'.</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_v2_badge">
         <translation locale="en">BETA</translation>
+        <translation locale="ar">تجريبي</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_section_behavior">
         <translation locale="en">Behavior</translation>
+        <translation locale="ar">السلوك</translation>
     </string>
     <string name="gboard_patches_advanced_voice_title">
         <translation locale="en">Advanced Voice Typing</translation>
+        <translation locale="ar">الكتابة الصوتية المتقدمة</translation>
     </string>
     <string name="gboard_patches_advanced_voice_summary">
         <translation locale="en">Controls whether Advanced Voice Typing is forced on.</translation>
+        <translation locale="ar">التحكم في فرض تفعيل الكتابة الصوتية المتقدمة.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_header_summary">
         <translation locale="en">Voice typing -&gt; Advanced features, Add punctuation</translation>
+        <translation locale="ar">الكتابة بالصوت -> الميزات المتقدمة، إضافة علامات الترقيم</translation>
     </string>
     <string name="gboard_patches_advanced_voice_error_title">
         <translation locale="en">Advanced Voice Typing unavailable</translation>
+        <translation locale="ar">الكتابة الصوتية المتقدمة غير متوفرة</translation>
     </string>
     <string name="gboard_patches_advanced_voice_error_summary">
         <translation locale="en">The Advanced Voice Typing settings screen failed to load. Reopen PixelBoard settings and try again.</translation>
+        <translation locale="ar">تعذّر تحميل شاشة إعدادات الكتابة الصوتية المتقدمة. أعد فتح إعدادات PixelBoard وحاول مجدداً.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_enabled_title">
         <translation locale="en">Enable Advanced Voice Typing</translation>
@@ -581,108 +627,143 @@
     </string>
     <string name="gboard_patches_advanced_voice_section_behavior">
         <translation locale="en">Behavior</translation>
+        <translation locale="ar">السلوك</translation>
     </string>
     <string name="gboard_patches_advanced_voice_section_information">
         <translation locale="en">Information</translation>
+        <translation locale="ar">معلومات</translation>
     </string>
     <string name="gboard_patches_advanced_voice_section_offline_speech_model">
         <translation locale="en">Offline speech model</translation>
+        <translation locale="ar">نموذج التعرف الصوتي بلا اتصال</translation>
     </string>
     <string name="gboard_patches_advanced_voice_section_supported_languages">
         <translation locale="en">Supported languages</translation>
+        <translation locale="ar">اللغات المدعومة</translation>
     </string>
     <string name="gboard_patches_advanced_voice_supported_languages_title">
         <translation locale="en">Supported languages</translation>
+        <translation locale="ar">اللغات المدعومة</translation>
     </string>
     <string name="gboard_patches_advanced_voice_supported_languages_summary">
         <translation locale="en">Only en-US supports the complete feature set.\n\nEnglish en-AU, en-CA, en-GB, en-IE, en-IN, en-SG, en-US\nGerman de-AT, de-BE, de-CH, de-DE\nFrench fr-BE, fr-CA, fr-CH, fr-FR\nItalian it-CH, it-IT\nJapanese ja-JP\nSpanish es-ES, es-US</translation>
+        <translation locale="ar">تدعم en-US فقط مجموعة الميزات الكاملة.\n\nالإنجليزية: en-AU، en-CA، en-GB، en-IE، en-IN، en-SG، en-US\nالألمانية: de-AT، de-BE، de-CH، de-DE\nالفرنسية: fr-BE، fr-CA، fr-CH، fr-FR\nالإيطالية: it-CH، it-IT\nاليابانية: ja-JP\nالإسبانية: es-ES، es-US</translation>
     </string>
     <string name="gboard_patches_advanced_voice_github_star_title">
         <translation locale="en">Support this project on GitHub 😊</translation>
+        <translation locale="ar">ادعم هذا المشروع على GitHub 😊</translation>
     </string>
     <string name="gboard_patches_advanced_voice_github_star_summary">
         <translation locale="en">This feature took a significant amount of time to build. If it helps you, please give the project a Star on GitHub.</translation>
+        <translation locale="ar">استغرق بناء هذه الميزة وقتاً وجهداً كبيرين. إذا نالت إعجابك وأفادتك، يُرجى دعم المشروع بنجمة على GitHub.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_speech_services_present_title">
         <translation locale="en">Speech Recognition &amp; Synthesis (Installed)</translation>
+        <translation locale="ar">خدمات التعرف على الكلام وتحويل النص إلى كلام (مثبّتة)</translation>
     </string>
     <string name="gboard_patches_advanced_voice_speech_services_absent_title">
         <translation locale="en">Speech Recognition &amp; Synthesis (Not installed)</translation>
+        <translation locale="ar">خدمات التعرف على الكلام وتحويل النص إلى كلام (غير مثبّتة)</translation>
     </string>
     <string name="gboard_patches_advanced_voice_speech_services_unknown_title">
         <translation locale="en">Speech Recognition &amp; Synthesis (Unable to verify)</translation>
+        <translation locale="ar">خدمات التعرف على الكلام وتحويل النص إلى كلام (تعذّر التحقق)</translation>
     </string>
     <string name="gboard_patches_advanced_voice_speech_services_status_summary">
         <translation locale="en">Package: com.google.android.tts. Required for Advanced Voice Typing: install Speech Recognition &amp; Synthesis and download the offline speech recognition model for every language you use. Tap to open its Google Play page.</translation>
+        <translation locale="ar">الحزمة: com.google.android.tts. متطلب للكتابة الصوتية المتقدمة: تثبيت خدمات \'التعرف على الكلام وتحويل النص إلى كلام\' وتنزيل نموذج التعرف الصوتي بلا اتصال لكل لغة تستخدمها. انقر لفتح صفحته على Google Play.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_speech_services_open_failed">
         <translation locale="en">Unable to open the Speech Recognition &amp; Synthesis Google Play page.</translation>
+        <translation locale="ar">تعذّر فتح صفحة خدمات \'التعرف على الكلام وتحويل النص إلى كلام\' على Google Play.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_title">
         <translation locale="en">Downloaded offline languages</translation>
+        <translation locale="ar">اللغات المنزّلة بلا اتصال</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_loading_summary">
         <translation locale="en">Checking downloaded offline languages…</translation>
+        <translation locale="ar">جارٍ التحقق من اللغات المنزّلة بلا اتصال…</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_empty_summary">
         <translation locale="en">No downloaded offline languages detected.</translation>
+        <translation locale="ar">لم يتم العثور على أي لغات منزّلة بلا اتصال.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_unsupported_summary">
         <translation locale="en">This Android version cannot query downloaded offline languages.</translation>
+        <translation locale="ar">لا يمكن لإصدار Android هذا الاستعلام عن اللغات المنزّلة بلا اتصال.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_unavailable_summary">
         <translation locale="en">No on-device speech recognition service is available.</translation>
+        <translation locale="ar">لا تتوفر خدمة تعرف صوتي على الجهاز.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_error_summary">
         <translation locale="en">Unable to read downloaded offline languages. Check them in Live Transcribe.</translation>
+        <translation locale="ar">تعذّرت قراءة اللغات المنزّلة بلا اتصال. تحقق منها في تطبيق الكتابة المباشرة (Live Transcribe).</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_separator">
         <translation locale="en">, </translation>
+        <translation locale="ar">، </translation>
     </string>
     <string name="gboard_patches_advanced_voice_live_transcribe_manage_title">
         <translation locale="en">Manage languages with Live Transcribe</translation>
+        <translation locale="ar">إدارة اللغات عبر تطبيق الكتابة المباشرة</translation>
     </string>
     <string name="gboard_patches_advanced_voice_live_transcribe_manage_summary">
         <translation locale="en">Use Google’s official Live Transcribe app to download the Speech Recognition &amp; Synthesis offline recognition models required for Advanced Voice Typing. In Live Transcribe, open Settings → More settings → Primary language.\nTap to open Live Transcribe.</translation>
+        <translation locale="ar">استخدم تطبيق الكتابة المباشرة (Live Transcribe) الرسمي من Google لتنزيل نماذج التعرف الصوتي بلا اتصال المطلوبة للكتابة الصوتية المتقدمة. في التطبيق، افتح الإعدادات ← المزيد من الإعدادات ← اللغة الأساسية.\nانقر لفتح التطبيق.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_live_transcribe_open_failed">
         <translation locale="en">Unable to open Live Transcribe or its Google Play page.</translation>
+        <translation locale="ar">تعذّر فتح تطبيق الكتابة المباشرة أو صفحته على Google Play.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_present_title">
         <translation locale="en">Dictation payload (Installed)</translation>
+        <translation locale="ar">حزمة الإملاء الصوتي (مثبّتة)</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_present_summary">
         <translation locale="en">The currently installed %1$s meets the APK payload requirement for Advanced Voice Typing.</translation>
+        <translation locale="ar">تفي حزمة %1$s المثبتة حالياً بمتطلبات حزمة APK للكتابة الصوتية المتقدمة.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_present_requirement_title">
         <translation locale="en">Installation requirement (currently met)</translation>
+        <translation locale="ar">متطلبات التثبيت (مستوفاة حالياً)</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_present_requirement_summary">
         <translation locale="en">No download is needed right now. For future updates or reinstalls, you must still use a bundle or split APKM and apply the patch with PixelBoard Patcher; a standalone APK cannot work.\nTap to view the APKMirror download page</translation>
+        <translation locale="ar">لا يلزم أي تنزيل حالياً. بالنسبة للتحديثات المستقبلية أو إعادة التثبيت، يجب عليك استخدام حزمة مجمّعة (Bundle) أو حزم مجزأة (APKM) وتطبيق الترقيع عبر PixelBoard Patcher؛ فحزم APK المستقلة لن تعمل.\nانقر لعرض صفحة التنزيل على APKMirror</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_title">
         <translation locale="en">Dictation payload (Not installed)</translation>
+        <translation locale="ar">حزمة الإملاء الصوتي (غير مثبّتة)</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_summary">
         <translation locale="en">The currently installed %1$s does not contain libdictation_jni.so, which Advanced Voice Typing requires.</translation>
+        <translation locale="ar">لا تحتوي حزمة %1$s المثبتة حالياً على مكتبة libdictation_jni.so المطلوبة للكتابة الصوتية المتقدمة.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_requirement_title">
         <translation locale="en">Get a bundle or split APKM</translation>
+        <translation locale="ar">الحصول على حزمة مجمّعة أو مجزأة (APKM)</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_requirement_summary">
         <translation locale="en">Get a bundle or split APKM and apply the patch with PixelBoard Patcher; a standalone APK cannot work.\nTap to open the APKMirror download page</translation>
+        <translation locale="ar">احصل على حزمة مجمّعة أو مجزأة (APKM) وطبّق الترقيع عبر PixelBoard Patcher؛ فحزم APK المستقلة لن تعمل.\nانقر لفتح صفحة التنزيل على APKMirror</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_unknown_title">
         <translation locale="en">Dictation payload (Unable to verify)</translation>
+        <translation locale="ar">حزمة الإملاء الصوتي (تعذّر التحقق)</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_unknown_summary">
         <translation locale="en">The installed APK files for the selected Gboard package could not be inspected.</translation>
+        <translation locale="ar">تعذّر فحص ملفات APK المثبتة لحزمة Gboard المحددة.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_unknown_requirement_title">
         <translation locale="en">Verify the installation source</translation>
+        <translation locale="ar">التحقق من مصدر التثبيت</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_unknown_requirement_summary">
         <translation locale="en">It is currently unclear whether another download is needed. Verify that you used a bundle or split APKM and applied the patch with PixelBoard Patcher; a standalone APK cannot work.\nTap to view the APKMirror download page</translation>
+        <translation locale="ar">من غير الواضح حالياً ما إذا كان يلزم تنزيل آخر. تأكد من أنك استخدمت حزمة مجمّعة أو مجزأة (APKM) وطبّقت الترقيع عبر PixelBoard Patcher؛ فحزم APK المستقلة لن تعمل.\nانقر لعرض صفحة التنزيل على APKMirror</translation>
     </string>
     <string name="gboard_patches_rounded_keys_enabled_title">
         <translation locale="en">Rounded Keys</translation>
@@ -696,7 +777,7 @@
         <translation locale="ja">角丸キー</translation>
         <translation locale="ko">둥근 키</translation>
         <translation locale="zh">圆角按键</translation>
-        <translation locale="ar">مفاتيح دائرية</translation>
+        <translation locale="ar">مفاتيح مستديرة</translation>
         <translation locale="in">Tombol Membulat</translation>
         <translation locale="tr">Yuvarlatılmış Tuşlar</translation>
         <translation locale="vi">Phím bo tròn</translation>
@@ -717,7 +798,7 @@
         <translation locale="ja">Material 3 Expressiveの角丸（Belka）キースタイルを有効にします。</translation>
         <translation locale="ko">Material 3 Expressive 둥근(Belka) 키 스타일을 사용합니다.</translation>
         <translation locale="zh">启用 Material 3 Expressive 圆角 (Belka) 按键样式。</translation>
-        <translation locale="ar">تفعيل نمط المفاتيح الدائرية Material 3 Expressive (Belka).</translation>
+        <translation locale="ar">تفعيل نمط المفاتيح المستديرة Material 3 Expressive (Belka).</translation>
         <translation locale="in">Aktifkan gaya tombol membulat Material 3 Expressive (Belka).</translation>
         <translation locale="tr">Material 3 Expressive yuvarlatılmış (Belka) tuş stilini etkinleştirin.</translation>
         <translation locale="vi">Bật kiểu phím bo tròn Material 3 Expressive (Belka).</translation>
