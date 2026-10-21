@@ -64,6 +64,8 @@ import android.view.WindowInsetsController;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.LinearInterpolator;
+import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
@@ -91,9 +93,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.ExecutorService;
@@ -172,6 +176,13 @@ public final class GboardPatchesSettingsActivity extends Activity
                     GboardPatchesSettingsContract.Intent>();
     private final GboardPatchesSettingsScrollState scrollState =
             new GboardPatchesSettingsScrollState();
+    // Every screen apply rebuilds all rows, which drops TalkBack's focus. Rows report when
+    // TalkBack focuses them, so the same row (by title) can get focus back after the rebuild,
+    // and after returning from a sub-page.
+    private final Map<String, View> rowViewsByAccessibilityKey = new HashMap<String, View>();
+    private final Map<Integer, String> accessibilityFocusKeyByDepth = new HashMap<Integer, String>();
+    private String accessibilityFocusedRowKey;
+    private int appliedScreenDepth = -1;
     private boolean featuresInitialized;
     private Object backInvokedCallback;
     private final Handler screenRefreshHandler = new Handler(Looper.getMainLooper());
@@ -1697,6 +1708,9 @@ public final class GboardPatchesSettingsActivity extends Activity
         toolbarTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
         toolbarTitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         toolbarTitleView.setSingleLine(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            toolbarTitleView.setAccessibilityHeading(true);
+        }
         toolbarTitleView.setLayoutParams(new LinearLayout.LayoutParams(
                 0,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -2678,6 +2692,13 @@ public final class GboardPatchesSettingsActivity extends Activity
     }
 
     private void applyScreen(GboardPatchesSettingsContract.Screen screen) {
+        GboardPatchesSettingsOrchestrator.State<GboardPatchesSettingsContract.Feature> state =
+                settingsOrchestrator.snapshot();
+        int screenDepth = state.getBackStack().size() + (state.getCurrent() == null ? 0 : 1);
+        if (appliedScreenDepth >= 0) {
+            accessibilityFocusKeyByDepth.put(appliedScreenDepth, accessibilityFocusedRowKey);
+        }
+        rowViewsByAccessibilityKey.clear();
         toolbarTitleView.setText(screen.getToolbarTitle());
         headerBadgeView.setText(screen.getHeaderBadge());
         headerTitleView.setText(screen.getHeaderTitle());
@@ -2706,6 +2727,58 @@ public final class GboardPatchesSettingsActivity extends Activity
         if (requestedScrollY >= 0) {
             scrollContentToPositionAfterLayout(requestedScrollY);
         }
+        restoreAccessibilityFocus(screenDepth);
+    }
+
+    /**
+     * Puts TalkBack's focus back after a rebuild: on the same row when the screen refreshed or
+     * the user came back from a sub-page, and on the page title when a new page opened, so the
+     * new page is announced instead of focus being lost.
+     */
+    private void restoreAccessibilityFocus(int screenDepth) {
+        int previousDepth = appliedScreenDepth;
+        appliedScreenDepth = screenDepth;
+        String rowKey = screenDepth > previousDepth
+                ? null
+                : accessibilityFocusKeyByDepth.get(screenDepth);
+        accessibilityFocusKeyByDepth.keySet().removeIf(depth -> depth >= screenDepth);
+        accessibilityFocusedRowKey = rowKey;
+        if (previousDepth < 0 || !isScreenReaderActive()) {
+            return;
+        }
+        View target = rowKey == null ? null : rowViewsByAccessibilityKey.get(rowKey);
+        if (target == null && screenDepth != previousDepth) {
+            target = toolbarTitleView;
+        }
+        if (target == null) {
+            return;
+        }
+        View focusTarget = target;
+        postToDecorView(() -> focusTarget.performAccessibilityAction(
+                AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null));
+    }
+
+    private boolean isScreenReaderActive() {
+        AccessibilityManager manager =
+                (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+        return manager != null && manager.isEnabled() && manager.isTouchExplorationEnabled();
+    }
+
+    private void trackAccessibilityFocus(View rowView, CharSequence title) {
+        if (title == null || title.length() == 0) {
+            return;
+        }
+        String rowKey = title.toString();
+        rowViewsByAccessibilityKey.put(rowKey, rowView);
+        rowView.setAccessibilityDelegate(new View.AccessibilityDelegate() {
+            @Override
+            public boolean performAccessibilityAction(View host, int action, Bundle arguments) {
+                if (action == AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS) {
+                    accessibilityFocusedRowKey = rowKey;
+                }
+                return super.performAccessibilityAction(host, action, arguments);
+            }
+        });
     }
 
     private void applyPanelStyle(GboardPatchesSettingsContract.PanelStyle panelStyle) {
@@ -3624,6 +3697,7 @@ public final class GboardPatchesSettingsActivity extends Activity
                     card.addView(divider, dividerParams);
                 }
                 View rowView = createRowView(item);
+                trackAccessibilityFocus(rowView, item.getTitle());
                 card.addView(rowView);
                 first = false;
             }
@@ -3956,6 +4030,9 @@ public final class GboardPatchesSettingsActivity extends Activity
         titleView.setTypeface(Typeface.DEFAULT_BOLD);
         titleView.setAllCaps(false);
         titleView.setPadding(dp(20), dp(16), dp(20), dp(6));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            titleView.setAccessibilityHeading(true);
+        }
         return titleView;
     }
 
