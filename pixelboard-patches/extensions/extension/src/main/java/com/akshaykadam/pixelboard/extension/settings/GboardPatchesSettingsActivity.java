@@ -61,9 +61,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.LinearInterpolator;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -459,15 +463,15 @@ public final class GboardPatchesSettingsActivity extends Activity
         ListAdapter adapter = new ArrayAdapter<String>(this, 0, labels) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                LinearLayout row;
+                AccessibleRow row;
                 RadioButton radio;
                 TextView label;
-                if (convertView instanceof LinearLayout) {
-                    row = (LinearLayout) convertView;
+                if (convertView instanceof AccessibleRow) {
+                    row = (AccessibleRow) convertView;
                     radio = (RadioButton) row.getChildAt(0);
                     label = (TextView) row.getChildAt(1);
                 } else {
-                    row = new LinearLayout(getContext());
+                    row = new AccessibleRow(getContext());
                     row.setOrientation(LinearLayout.HORIZONTAL);
                     row.setGravity(Gravity.CENTER_VERTICAL);
                     row.setPadding(dp(20), dp(12), dp(20), dp(12));
@@ -476,6 +480,7 @@ public final class GboardPatchesSettingsActivity extends Activity
                     radio = new RadioButton(getContext());
                     radio.setClickable(false);
                     radio.setFocusable(false);
+                    row.describeAs(radio, RadioButton.class);
                     ColorStateList radioTint = new ColorStateList(
                             new int[][] {
                                     new int[] { android.R.attr.state_checked },
@@ -1752,6 +1757,11 @@ public final class GboardPatchesSettingsActivity extends Activity
                 path.lineTo(left + (9.5f * scale), top + (9.5f * scale));
                 canvas.drawPath(path, paint);
             }
+
+            @Override
+            public CharSequence getAccessibilityClassName() {
+                return Button.class.getName();
+            }
         };
         restartButton.setContentDescription(restartLabel);
         restartButton.setLayoutParams(new LinearLayout.LayoutParams(dp(48), dp(48)));
@@ -1950,6 +1960,11 @@ public final class GboardPatchesSettingsActivity extends Activity
                 path.lineTo(left + (7.8f * scale), top + (12f * scale));
                 path.lineTo(left + (12.9f * scale), top + (17f * scale));
                 canvas.drawPath(path, paint);
+            }
+
+            @Override
+            public CharSequence getAccessibilityClassName() {
+                return Button.class.getName();
             }
         };
         backButton.setContentDescription(text(R.string.gboard_patches_navigate_up));
@@ -3159,6 +3174,16 @@ public final class GboardPatchesSettingsActivity extends Activity
     }
 
     private View createRowView(GboardPatchesSettingsContract.Row row) {
+        View rowView = createRowContentView(row);
+        GboardPatchesSettingsContract.PreviewSpec previewSpec = row.getPreviewSpec();
+        if (previewSpec != null && rowView instanceof AccessibleRow accessibleRow) {
+            accessibleRow.setPreviewAction(text(R.string.gboard_patches_preview_label),
+                    () -> runSafely("show row preview", () -> showPreviewDialog(previewSpec)));
+        }
+        return rowView;
+    }
+
+    private View createRowContentView(GboardPatchesSettingsContract.Row row) {
         if (row instanceof GboardPatchesSettingsContract.ToggleRow toggleRow) {
             return createToggleRow(toggleRow);
         }
@@ -3217,7 +3242,7 @@ public final class GboardPatchesSettingsActivity extends Activity
     }
 
     private View createToggleRow(GboardPatchesSettingsContract.ToggleRow rowModel) {
-        LinearLayout row = buildBaseRow();
+        AccessibleRow row = buildBaseRow();
         LinearLayout textColumn = buildRowTextColumn(true);
         TextView titleView = buildRowTitle(rowModel.getTitle());
         TextView summaryView = buildRowSummary(rowModel.getSummary(), false);
@@ -3275,6 +3300,7 @@ public final class GboardPatchesSettingsActivity extends Activity
 
         row.addView(textColumn);
         row.addView(switchView);
+        row.describeAs(switchView, Switch.class);
         bindSwitchRowState(row, titleView, summaryView, toggleSupportLine, switchView,
                 rowModel.isEnabled());
         row.setOnClickListener(view -> {
@@ -3339,7 +3365,7 @@ public final class GboardPatchesSettingsActivity extends Activity
     }
 
     private View createRadioRow(GboardPatchesSettingsContract.RadioRow rowModel) {
-        LinearLayout row = buildBaseRow();
+        AccessibleRow row = buildBaseRow();
 
         if (rowModel.getIconDrawable() != null) {
             ImageView iconView = new ImageView(this);
@@ -3392,6 +3418,7 @@ public final class GboardPatchesSettingsActivity extends Activity
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         radioParams.gravity = Gravity.CENTER_VERTICAL;
         row.addView(radioButton, radioParams);
+        row.describeAs(radioButton, RadioButton.class);
 
         row.setEnabled(rowModel.isEnabled());
         row.setClickable(rowModel.isEnabled());
@@ -3839,8 +3866,8 @@ public final class GboardPatchesSettingsActivity extends Activity
         }
     }
 
-    private LinearLayout buildBaseRow() {
-        LinearLayout row = new LinearLayout(this);
+    private AccessibleRow buildBaseRow() {
+        AccessibleRow row = new AccessibleRow(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setMinimumHeight(dp(64));
@@ -3983,9 +4010,11 @@ public final class GboardPatchesSettingsActivity extends Activity
         supportLine.setLayoutParams(params);
 
         if (hasCurrentValue) {
-            int unusedLabelRes = R.string.gboard_patches_current_value_label;
-            supportLine.addView(buildCurrentValueChip(rowModel.getCurrentValue()),
-                    supportChipLayoutParams(0));
+            TextView currentValueChip = buildCurrentValueChip(rowModel.getCurrentValue());
+            currentValueChip.setContentDescription(
+                    text(R.string.gboard_patches_current_value_label) + ": "
+                            + rowModel.getCurrentValue());
+            supportLine.addView(currentValueChip, supportChipLayoutParams(0));
         }
         if (previewButton != null) {
             supportLine.addView(previewButton, supportChipLayoutParams(hasCurrentValue ? dp(8) : 0));
@@ -4050,6 +4079,7 @@ public final class GboardPatchesSettingsActivity extends Activity
     private TextView buildChevronView() {
         TextView chevronView = new TextView(this);
         chevronView.setText("\u203a");
+        chevronView.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         chevronView.setTextColor(palette.textSecondary);
         chevronView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f);
         chevronView.setTypeface(Typeface.DEFAULT_BOLD);
@@ -4071,6 +4101,7 @@ public final class GboardPatchesSettingsActivity extends Activity
         previewButton.setBackground(buildChipDrawable(palette.infoContainer, palette.surfaceStroke));
         previewButton.setOnClickListener(view ->
                 runSafely("show row preview", () -> showPreviewDialog(previewSpec)));
+        previewButton.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         return previewButton;
     }
 
@@ -4272,6 +4303,74 @@ public final class GboardPatchesSettingsActivity extends Activity
 
     private int dp(float value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    /**
+     * A settings row that TalkBack reads as a single control. When it holds a switch or radio
+     * button, the row takes that control's role and checked state and the control itself is
+     * hidden, so TalkBack has one stop that says "on" or "off" instead of an unlabelled second
+     * stop. A row with a preview offers it in the TalkBack actions menu.
+     */
+    private static final class AccessibleRow extends LinearLayout {
+        // Any id that is not a platform action id works for a custom action.
+        private static final int ACTION_PREVIEW = 0x50420001;
+
+        private CompoundButton stateControl;
+        private CharSequence accessibilityClassName;
+        private CharSequence previewLabel;
+        private Runnable previewAction;
+
+        AccessibleRow(Context context) {
+            super(context);
+        }
+
+        void describeAs(CompoundButton control, Class<?> role) {
+            stateControl = control;
+            accessibilityClassName = role.getName();
+            control.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+        }
+
+        void setPreviewAction(CharSequence label, Runnable action) {
+            previewLabel = label;
+            previewAction = action;
+        }
+
+        @Override
+        public CharSequence getAccessibilityClassName() {
+            return accessibilityClassName != null
+                    ? accessibilityClassName
+                    : super.getAccessibilityClassName();
+        }
+
+        @Override
+        public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+            super.onInitializeAccessibilityNodeInfo(info);
+            if (stateControl != null) {
+                info.setCheckable(true);
+                info.setChecked(stateControl.isChecked());
+            }
+            if (previewAction != null && isEnabled()) {
+                info.addAction(new AccessibilityNodeInfo.AccessibilityAction(
+                        ACTION_PREVIEW, previewLabel));
+            }
+        }
+
+        @Override
+        public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+            super.onInitializeAccessibilityEvent(event);
+            if (stateControl != null) {
+                event.setChecked(stateControl.isChecked());
+            }
+        }
+
+        @Override
+        public boolean performAccessibilityAction(int action, Bundle arguments) {
+            if (action == ACTION_PREVIEW && previewAction != null && isEnabled()) {
+                previewAction.run();
+                return true;
+            }
+            return super.performAccessibilityAction(action, arguments);
+        }
     }
 
     private static final class PendingTextDocumentWrite {
