@@ -179,8 +179,7 @@ public final class GboardKeyboardPreviewController {
         container.setPadding(dp(24), dp(8), dp(24), dp(8));
 
         EditText input = new RichContentSinkEditText(activity);
-        input.setContentDescription(text(
-                R.string.gboard_patches_keyboard_preview_input_accessibility));
+        input.setHint(text(R.string.gboard_patches_keyboard_preview_input_accessibility));
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         input.setSingleLine(true);
         container.addView(input, new LinearLayout.LayoutParams(
