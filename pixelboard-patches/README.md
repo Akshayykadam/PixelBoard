@@ -39,6 +39,7 @@
 
 This repository contains the patch definitions and extension bytecode for **PixelBoard**, specifically configured for:
 - **Gemini Rambler Voice Dictation**: Speech cleanup, sentence restructuring, auto-punctuation, Gboard 18.4.1 obfuscated selector hooks, standalone out-of-the-box initialization (`enable_jetson = true`), and idle battery drain fix.
+- **Microphone Tap Modes**: Optional **Hybrid** (tap for Standard, double tap for Rambler) and **Quick switch** (double tap swaps between Standard and Rambler, tap starts the selected one) for the Gboard 18.4.1 microphone, under Advanced Voice Typing. **Default** keeps the original microphone.
 - **In-Line AI Writing Assistant**: Proofread, rewrite with tone selection (Professional, Casual, Concise, Emotive), smart editing, and Android 16 Quick Insert crash safeguard.
 - **Modern Spell Checker Suggestion Chips & Grammar Checking**: Enforces Android 12+ inline spellcheck suggestion chips and add-to-dictionary UI on all devices (`GboardSpellCheckerChipsPatch`).
 - **Scan Text / Camera OCR & Floating Screenshot Banner**: Direct optical character recognition camera tool and floating screenshot suggestion chips with permissions.

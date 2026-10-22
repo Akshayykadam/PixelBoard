@@ -849,4 +849,22 @@
         <translation locale="th">เปิดใช้รูปแบบปุ่มโค้งมน Material 3 Expressive (Belka)</translation>
         <translation locale="uk">Увімкнути закруглений стиль клавіш Material 3 Expressive (Belka).</translation>
     </string>
+    <string name="gboard_patches_mic_gesture_title">
+        <translation locale="en">Microphone tap</translation>
+    </string>
+    <string name="gboard_patches_mic_gesture_summary">
+        <translation locale="en">Hybrid: tap for Standard, double tap for Rambler. Quick switch: double tap swaps between Standard and Rambler, tap starts the selected one. A tap waits 300 ms for a second tap.</translation>
+    </string>
+    <string name="gboard_patches_mic_gesture_default">
+        <translation locale="en">Default</translation>
+    </string>
+    <string name="gboard_patches_mic_gesture_hybrid">
+        <translation locale="en">Hybrid</translation>
+    </string>
+    <string name="gboard_patches_mic_gesture_quick_switch">
+        <translation locale="en">Quick switch</translation>
+    </string>
+    <string name="gboard_patches_mic_gesture_accessibility">
+        <translation locale="en">Voice typing. Tap to start or finish dictation. Double tap for Rambler, or in Quick switch to swap between Standard and Rambler.</translation>
+    </string>
 </settings-text>
