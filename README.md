@@ -17,7 +17,7 @@
 
 <!-- Primary Action: Clear download choices with zero confusion -->
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/PixelBoard-18.4.1-V7.apk">
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.2.0/PixelBoard-18.4.1-V7.apk">
     <img src="https://img.shields.io/badge/📥_Direct_Download_(APK)-v18.4.1_V7_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Ready-to-Install APK"/>
   </a>
   &nbsp;&nbsp;
@@ -46,7 +46,7 @@
 
 | Package | Type | Description |
 | :--- | :--- | :--- |
-| [**PixelBoard-18.4.1-V7.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/PixelBoard-18.4.1-V7.apk) | **Signed APK** *(Recommended)* | **Ready to install.** Installs side-by-side with stock Gboard without root (`com.akshaykadam.pixelboard`). |
+| [**PixelBoard-18.4.1-V7.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.2.0/PixelBoard-18.4.1-V7.apk) | **Signed APK** *(Recommended)* | **Ready to install.** Installs side-by-side with stock Gboard without root (`com.akshaykadam.pixelboard`). |
 | [**patches-1.2.0.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/patches-1.2.0.mpp) | **Morphe Patch Bundle** | Standalone patch file for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher) to patch your own base APK. |
 | [**Stock Gboard v18.4.1**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) | **Base APK** |  Official unmodified base APK from APKMirror *(only required if patching manually with Morphe)*. |
 
