@@ -17,11 +17,11 @@
 
 <!-- Primary Action: Clear download choices with zero confusion -->
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/PixelBoard-18.4.1-V7.apk">
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.2.0/PixelBoard-18.4.1-V7.apk">
     <img src="https://img.shields.io/badge/📥_Direct_Download_(APK)-v18.4.1_V7_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Ready-to-Install APK"/>
   </a>
   &nbsp;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/patches-1.2.0.mpp">
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.2.0/patches-1.2.0.mpp">
     <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.2.0_(1.6_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Morphe Patch Bundle"/>
   </a>
 </p>
@@ -233,7 +233,7 @@ adb shell am force-stop com.akshaykadam.pixelboard
 You can patch your stock Gboard APK directly on your phone using **Morphe Manager**:
 1. Install **Morphe Manager** on your Android device.
 2. Get the two required files:
-   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.2.0.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/patches-1.2.0.mpp))
+   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.2.0.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.2.0/patches-1.2.0.mpp))
    - **Stock Base APK**: Download the official base bundle from [**APKMirror (Gboard v18.4.1 Release)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/).
 3. In Morphe Manager, select **Storage**, choose the stock Gboard APK, and load `PixelBoard.mpp` as the patch source.
 4. Tap **Patch** and then **Install**!
