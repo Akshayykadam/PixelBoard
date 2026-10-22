@@ -3130,8 +3130,17 @@ public final class GboardPatchesSettingsActivity extends Activity
                 value -> {
                     if (voicePrefs != null) {
                         GboardAdvancedVoiceSettings.writeEnabled(voicePrefs, value);
+                        renderCurrentScreenSafely();
                     }
                 }));
+
+        GboardPatchesSettingsContract.Row micTapRow =
+                com.akshaykadam.pixelboard.extension.advancedvoice.GboardAdvancedVoiceSettingsFeature
+                        .micTapRow(this, context, patchesPrefs, advancedVoiceEnabled,
+                                this::renderCurrentScreenSafely);
+        if (micTapRow != null) {
+            rows.add(micTapRow);
+        }
 
         rows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_rounded_keys_enabled_title),
