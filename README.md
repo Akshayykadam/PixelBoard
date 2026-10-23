@@ -1,6 +1,6 @@
 <div align="center">
 
-# PixelBoard
+# KeyOS
 
 **Supercharged Gboard Mod featuring Google Pixel 11 series's Rambler Voice Typing, AI Writing Assistant & Writing Tools V2 [No Root].**
 
