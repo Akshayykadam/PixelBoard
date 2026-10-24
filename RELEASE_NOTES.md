@@ -63,7 +63,7 @@ A huge thank you to the community contributors whose pull requests, testing, and
 
 | Package | Type | Size | Description |
 | :--- | :--- | :--- | :--- |
-| [**PixelBoard-18.5.3-V1.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.5.3-Stable-V1/PixelBoard-18.5.3-V1.apk) | **Signed APK** *(Recommended)* | ~79 MB | **Ready to install.** Signed stable APK (v18.5.3 release base, versionCode 176049646, side-by-side coexistence). |
+| [**PixelBoard-1.3.0.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.0/PixelBoard-1.3.0.apk) | **Signed APK** *(Recommended)* | ~79 MB | **Ready to install.** Signed stable APK (v18.5.3 release base, versionCode 176049646, side-by-side coexistence). |
 | [**patches-1.3.0.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.0/patches-1.3.0.mpp) | **Morphe Patch Bundle** | ~1.6 MB | Standalone patch file (v1.3.0) for [Morphe Manager](#option-3-patch-via-morphe-manager) to patch your own base APK. |
 | [**Stock Gboard v18.5.3**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/) | **Base APK** | ~67 MB | Official unmodified base APK from APKMirror *(only required if patching manually with Morphe)*. |
 
@@ -72,14 +72,14 @@ A huge thank you to the community contributors whose pull requests, testing, and
 ## Installation
 
 ### Option 1: Direct APK Installation (Recommended)
-1. Download [**PixelBoard-18.5.3-V1.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.5.3-Stable-V1/PixelBoard-18.5.3-V1.apk) directly to your Android device.
+1. Download [**PixelBoard-1.3.0.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.0/PixelBoard-1.3.0.apk) directly to your Android device.
 2. Tap the downloaded APK in your file manager or browser downloads.
 3. Allow installation from unknown sources if prompted, and complete installation (supports updating in-place over earlier builds).
 4. Enable PixelBoard in **Settings > System > Languages & input > On-screen keyboard**.
 
 ### Option 2: ADB Sideload
 ```bash
-adb install -r PixelBoard-18.5.3-V1.apk
+adb install -r PixelBoard-1.3.0.apk
 adb shell am force-stop com.akshaykadam.pixelboard
 ```
 
