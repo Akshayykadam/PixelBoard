@@ -11,19 +11,25 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 REBUILD_PATCH=false
+INPUT_APK="input/gboard.apk"
 for arg in "$@"; do
     case "$arg" in
         -r|--rebuild|--compile|-c)
             REBUILD_PATCH=true
             ;;
         -h|--help)
-            echo "Usage: ./build.sh [options]"
+            echo "Usage: ./build.sh [options] [input_apk]"
             echo "Options:"
             echo "  -r, --rebuild    Recompile patch bundle from pixelboard-patches/ using Gradle"
             echo "  -h, --help       Show this help message"
             echo ""
             echo "By default, ./build.sh runs 100% offline using the pre-bundled patches/PixelBoard.mpp."
             exit 0
+            ;;
+        *)
+            if [[ -f "$arg" ]]; then
+                INPUT_APK="$arg"
+            fi
             ;;
     esac
 done
@@ -81,12 +87,12 @@ if [[ -z "$JAVA_BIN" ]]; then
 fi
 echo "☕ Using Java 21+: $JAVA_BIN"
 
-if [[ ! -f "input/gboard.apk" ]]; then
-    echo "⚠️ Note: Place stock Gboard APK at input/gboard.apk to generate output APK."
+if [[ ! -f "$INPUT_APK" ]]; then
+    echo "⚠️ Note: Place stock Gboard APK at $INPUT_APK to generate output APK."
     exit 0
 fi
 
-echo "=== 🔨 Applying Patches to input/gboard.apk ==="
+echo "=== 🔨 Applying Patches to $INPUT_APK ==="
 mkdir -p output
 mkdir -p tools/patcher-data
 
@@ -117,11 +123,22 @@ fi
     --temporary-files-path="tools/patcher-data/tmp" \
     -o=output/PixelBoard.apk \
     -r=output/patching-result.json \
-    input/gboard.apk
+    "$INPUT_APK"
 
-cp output/PixelBoard.apk output/PixelBoard-18.4.1-V7.apk
+if [[ -f "output/patching-result.json" ]]; then
+    GBOARD_VER=$(grep -o '"packageVersion":"[^"]*"' output/patching-result.json | cut -d'"' -f4 | cut -d'-' -f1)
+    GBOARD_SHORT_VER=$(echo "$GBOARD_VER" | cut -d'.' -f1-3)
+    if [[ -n "$GBOARD_VER" ]]; then
+        cp output/PixelBoard.apk "output/PixelBoard-${GBOARD_VER}.apk"
+        echo "📦 Versioned APK saved to: output/PixelBoard-${GBOARD_VER}.apk"
+    fi
+    if [[ -n "$GBOARD_SHORT_VER" ]] && [[ "$GBOARD_SHORT_VER" != "$GBOARD_VER" ]]; then
+        cp output/PixelBoard.apk "output/PixelBoard-${GBOARD_SHORT_VER}.apk"
+        echo "📦 Short-versioned APK saved to: output/PixelBoard-${GBOARD_SHORT_VER}.apk"
+    fi
+fi
 if [[ -n "${PATCH_VERSION:-}" ]]; then
     cp output/PixelBoard.apk "output/PixelBoard-${PATCH_VERSION}.apk"
 fi
 
-echo "🎉 Successfully built output/PixelBoard.apk and output/PixelBoard-18.4.1-V7.apk!"
+echo "🎉 Successfully built output/PixelBoard.apk!"

@@ -18,6 +18,18 @@ import com.android.tools.smali.dexlib2.iface.reference.FieldReference
 
 private val clipboardOnStartInputViewTargets = listOf(
     GboardMethodTarget(
+        classType = "Lfrc;",
+        name = "ft",
+        parameterTypes = listOf(
+            "Lpev;",
+            "Landroid/view/inputmethod/EditorInfo;",
+            "Z",
+            "Ljava/util/Map;",
+            "Lohr;",
+        ),
+        returnType = "Z",
+    ),
+    GboardMethodTarget(
         classType = "Lfml;",
         name = "ft",
         parameterTypes = listOf(
@@ -47,7 +59,8 @@ internal val gboardClipboardSyncPatch = bytecodePatch(
         }
 
         val igetFIndex = instructions.indexOfFirst { instruction ->
-            instruction.isFieldReference("Lfml;->f:Lfmg;") ||
+            instruction.isFieldReference("Lfrc;->f:Lfqx;") ||
+                instruction.isFieldReference("Lfml;->f:Lfmg;") ||
                 (instruction.opcode == Opcode.IGET_OBJECT &&
                     ((instruction as? ReferenceInstruction)?.reference as? FieldReference)?.name == "f")
         }

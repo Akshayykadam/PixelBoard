@@ -107,7 +107,20 @@ public final class GboardRambler1803OfficialSelectionRuntime {
 
             ClassLoader loader = context.getClassLoader();
 
-            // 0. In 18.4.1+: check mvq.a(Context) only if it confirms true
+            // 0. In 18.5.3+: check nca.a(Context) only if it confirms true
+            try {
+                Class<?> support = Class.forName("nca", false, loader);
+                Method selection = support.getDeclaredMethod("a", Context.class);
+                selection.setAccessible(true);
+                Object value = selection.invoke(null, context);
+                if (Boolean.TRUE.equals(value)) {
+                    officialRamblerSelected = Boolean.TRUE;
+                    return Boolean.TRUE;
+                }
+            } catch (Throwable ignored) {
+            }
+
+            // 1. In 18.4.1+: check mvq.a(Context) only if it confirms true
             try {
                 Class<?> support = Class.forName("mvq", false, loader);
                 Method selection = support.getDeclaredMethod("a", Context.class);
@@ -120,7 +133,7 @@ public final class GboardRambler1803OfficialSelectionRuntime {
             } catch (Throwable ignored) {
             }
 
-            // 1. In 18.3.1+: check aaeo.a(Context) only if it confirms true
+            // 2. In 18.3.1+: check aaeo.a(Context) only if it confirms true
             try {
                 Class<?> support = Class.forName("aaeo", false, loader);
                 Method selection = support.getDeclaredMethod("a", Context.class);
@@ -133,7 +146,7 @@ public final class GboardRambler1803OfficialSelectionRuntime {
             } catch (Throwable ignored) {
             }
 
-            // 2. In 18.0.3: check mqk.a(Context) only if it confirms true
+            // 3. In 18.0.3: check mqk.a(Context) only if it confirms true
             try {
                 Class<?> support = Class.forName("mqk", false, loader);
                 Method selection = support.getDeclaredMethod("a", Context.class);

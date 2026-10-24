@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.akshaykadam.pixelboard.extension.clipboard.GboardClipboardHistorySettingsFeature;
 import com.akshaykadam.pixelboard.extension.keyboard.GboardAiVoiceSettingsGroupFeature;
 
 public final class GboardPatchesSettingsFeatureRegistry {
@@ -26,6 +27,7 @@ public final class GboardPatchesSettingsFeatureRegistry {
         List<GboardPatchesSettingsContract.Feature> features =
                 new ArrayList<GboardPatchesSettingsContract.Feature>();
         addIfAvailable(context, features, new GboardAiVoiceSettingsGroupFeature(context));
+        addIfAvailable(context, features, new GboardClipboardHistorySettingsFeature(context));
         return Collections.unmodifiableList(features);
     }
 

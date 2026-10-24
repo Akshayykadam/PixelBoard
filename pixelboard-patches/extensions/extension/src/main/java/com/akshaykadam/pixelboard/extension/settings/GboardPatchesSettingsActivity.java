@@ -455,7 +455,8 @@ public final class GboardPatchesSettingsActivity extends Activity
     static boolean isSupportedDeveloperOptionsTargetVersion(String versionName) {
         return SUPPORTED_DEVELOPER_OPTIONS_TARGET_VERSION.equals(versionName)
                 || "18.3.1.977415014-release-arm64-v8a".equals(versionName)
-                || "18.4.1.985164140-release-arm64-v8a".equals(versionName);
+                || "18.4.1.985164140-release-arm64-v8a".equals(versionName)
+                || "18.5.3.993608717-release-arm64-v8a".equals(versionName);
     }
 
     private static boolean isSupportedTargetPackage(String packageName) {
@@ -1687,7 +1688,7 @@ public final class GboardPatchesSettingsActivity extends Activity
             }
         } catch (Throwable ignored) {
         }
-        return "1.2.0";
+        return "1.3.0";
     }
 
     private View buildToolbar() {
