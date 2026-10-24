@@ -30,6 +30,36 @@ public class GboardClipboardSyncRuntimeTest {
         }
     }
 
+    static class FakeClipboardDataHandlerWithScreenshot extends FakeClipboardDataHandler {
+        android.database.ContentObserver p;
+        final AtomicBoolean qCalled = new AtomicBoolean(false);
+        final AtomicBoolean rCalled = new AtomicBoolean(false);
+        final AtomicBoolean observerDispatched = new AtomicBoolean(false);
+
+        FakeClipboardDataHandlerWithScreenshot(Context context) {
+            super(context);
+            this.p = new android.database.ContentObserver(null) {
+                @Override
+                public void onChange(boolean selfChange, android.net.Uri uri) {
+                    observerDispatched.set(true);
+                }
+
+                @Override
+                public void onChange(boolean selfChange) {
+                    observerDispatched.set(true);
+                }
+            };
+        }
+
+        public void q(boolean enable) {
+            qCalled.set(enable);
+        }
+
+        public void r() {
+            rCalled.set(true);
+        }
+    }
+
     @Test
     public void testSyncOnStartInputView_nullHandlerDoesNotThrow() {
         GboardClipboardSyncRuntime.syncOnStartInputView(null);
@@ -45,6 +75,23 @@ public class GboardClipboardSyncRuntimeTest {
 
         // ClipboardManager must have been initialized from Context
         assertNotNull(handler.d);
+        // onPrimaryClipChanged must have been invoked
+        assertTrue(handler.clipChangedCalled.get());
+    }
+
+    @Test
+    public void testSyncOnStartInputView_triggersScreenshotObserverAndCheck() {
+        Context context = RuntimeEnvironment.getApplication();
+        FakeClipboardDataHandlerWithScreenshot handler = new FakeClipboardDataHandlerWithScreenshot(context);
+
+        GboardClipboardSyncRuntime.syncOnStartInputView(handler);
+
+        // ContentObserver q(true) must have been invoked
+        assertTrue(handler.qCalled.get());
+        // observer dispatchChange must have triggered onChange
+        assertTrue(handler.observerDispatched.get());
+        // r() screenshot check method must have been invoked
+        assertTrue(handler.rCalled.get());
         // onPrimaryClipChanged must have been invoked
         assertTrue(handler.clipChangedCalled.get());
     }

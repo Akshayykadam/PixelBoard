@@ -537,10 +537,10 @@ private fun validateSettingsIdentity(
                     GBOARD_PATCHES_SETTINGS_ACTIVITY_CLASS
             }
             .toList()
-        check(matchingIntents.size <= 1) {
-            "Expected at most one Gboard patches settings intent, found ${matchingIntents.size}"
+        check(matchingIntents.size <= 2) {
+            "Expected at most two Gboard patches settings intents, found ${matchingIntents.size}"
         }
-        matchingIntents.singleOrNull()?.let { intent ->
+        matchingIntents.map { intent ->
             val targetPackage = intent.androidAttribute("targetPackage")
                 ?: error("Gboard patches settings intent is missing android:targetPackage")
             check(targetPackage.value == expectedPackage) {
@@ -553,20 +553,20 @@ private fun validateSettingsIdentity(
 
     val hasProvider = providerAuthority != null
     val hasAllSettingsIntents =
-        settingsDocuments.isNotEmpty() && targetPackagesByDocument.all { it != null }
-    val hasAnySettingsIntent = targetPackagesByDocument.any { it != null }
+        settingsDocuments.isNotEmpty() && targetPackagesByDocument.all { it.size == 2 }
+    val hasAnySettingsIntent = targetPackagesByDocument.any { it.isNotEmpty() }
     check(
         (!hasProvider && !hasAnySettingsIntent) ||
             (hasProvider && hasAllSettingsIntents),
     ) {
         "Partial Gboard patches settings identity: provider=$hasProvider, " +
-            "settingsIntents=${targetPackagesByDocument.count { it != null }}/" +
-            settingsDocuments.size
+            "settingsIntents=${targetPackagesByDocument.sumOf { it.size }}/" +
+            (settingsDocuments.size * 2)
     }
 
     return SettingsIdentity(
         providerAuthority = providerAuthority,
-        targetPackages = targetPackagesByDocument.filterNotNull(),
+        targetPackages = targetPackagesByDocument.flatten(),
     )
 }
 

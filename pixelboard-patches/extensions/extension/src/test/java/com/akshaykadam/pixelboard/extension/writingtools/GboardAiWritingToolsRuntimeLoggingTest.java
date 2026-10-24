@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 
+import com.akshaykadam.pixelboard.extension.settings.GboardEmojiSettings;
 import com.akshaykadam.pixelboard.extension.settings.GboardRoundedKeysSettings;
 
 import org.junit.After;
@@ -286,16 +287,16 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 new SpellCheckerExtensionFlagReceiver();
 
         ShadowLog.clear();
-        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                chipsUiReceiver, Boolean.TRUE));
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
                 chipsUiReceiver, Boolean.FALSE));
-        Assert.assertEquals(1L, warningCount(
-                "flag=enable_spellchecker_chips_ui, original=Boolean(false), enforced=Boolean(true)"));
 
         ShadowLog.clear();
-        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                webViewReceiver, Boolean.TRUE));
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
                 webViewReceiver, Boolean.FALSE));
-        Assert.assertEquals(1L, warningCount(
-                "flag=enable_spellchecker_chips_ui_web_view, original=Boolean(false), enforced=Boolean(true)"));
 
         ShadowLog.clear();
         Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
@@ -326,13 +327,6 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 trainingCacheReceiver, Boolean.FALSE));
         Assert.assertEquals(1L, warningCount(
                 "flag=enable_spell_checker_training_cache, original=Boolean(false), enforced=Boolean(true)"));
-
-        // Already true
-        ShadowLog.clear();
-        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                chipsUiReceiver, Boolean.TRUE));
-        Assert.assertEquals(0L, warningCount(
-                "flag=enable_spellchecker_chips_ui, original=Boolean(false), enforced=Boolean(true)"));
 
         // Non-boolean preserved
         Integer nonBool = 123;
@@ -382,9 +376,9 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_ACCESS_POINT_KEYBOARD));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_AUTOFILL_IME_INTEGRATION));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELLCHECKER_CHIPS_UI));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELL_CHECKER_EXTENSION));
@@ -483,10 +477,10 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_SYSTEM_CLIPBOARD_DIRECT_PASTE_FOR_QUICK_PASTE));
 
-        // Emoji Picker Dedicated Recent/Frequent Tabs & Palette V2 flags
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        // Emoji Picker Palette V2 flag is stock enforced; frequent emoji tab is dynamically configured via GboardEmojiSettings
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_FREQUENT_EMOJI_RECENT_TAB));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJI_FREQUENT_RECENT_SWITCH_OPTION));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_EMOJI_PALETTE_V2));
@@ -574,6 +568,26 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     }
 
     @Test
+    public void frequentEmojiTabRespectsGboardEmojiSettings() {
+        Context context = RuntimeEnvironment.getApplication();
+        SharedPreferences preferences = GboardEmojiSettings.preferences(context);
+        FrequentEmojiRecentTabFlagReceiver receiver = new FrequentEmojiRecentTabFlagReceiver();
+
+        // Default: false (Recently used emojis)
+        GboardEmojiSettings.writeFrequentEmojisEnabled(preferences, false);
+        Object enforcedFalse = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(receiver, Boolean.TRUE);
+        Assert.assertEquals(Boolean.FALSE, enforcedFalse);
+
+        // When toggled on: true (Frequently used emojis)
+        GboardEmojiSettings.writeFrequentEmojisEnabled(preferences, true);
+        Object enforcedTrue = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(receiver, Boolean.FALSE);
+        Assert.assertEquals(Boolean.TRUE, enforcedTrue);
+
+        // Reset
+        GboardEmojiSettings.writeFrequentEmojisEnabled(preferences, false);
+    }
+
+    @Test
     public void intendedOovMinCountEnforcesTwoAndLogsDiagnostics() throws Exception {
         IntendedOovMinCountFlagReceiver receiver = new IntendedOovMinCountFlagReceiver();
 
@@ -614,7 +628,7 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
         Assert.assertTrue(defaultPrefs.contains("pref_key_enable_emoji_suggestion"));
         Assert.assertTrue(defaultPrefs.getBoolean("pref_key_enable_emoji_suggestion", false));
         Assert.assertTrue(defaultPrefs.contains("spellchecker_enable_chips_ui"));
-        Assert.assertTrue(defaultPrefs.getBoolean("spellchecker_enable_chips_ui", false));
+        Assert.assertFalse(defaultPrefs.getBoolean("spellchecker_enable_chips_ui", false));
         Assert.assertTrue(defaultPrefs.contains("enable_mark_misspelled_words"));
         Assert.assertTrue(defaultPrefs.getBoolean("enable_mark_misspelled_words", false));
         Assert.assertTrue(defaultPrefs.contains("pref_key_enable_grammar_checker"));
@@ -873,6 +887,11 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     private static final class RoundedKeysFlagReceiver {
         @SuppressWarnings("unused")
         private final String a = GboardRoundedKeysSettings.FLAG_BELKA_ROUNDED_KEYBOARD;
+    }
+
+    private static final class FrequentEmojiRecentTabFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_ENABLE_FREQUENT_EMOJI_RECENT_TAB;
     }
 
     private static final class ThrowingSharedPreferencesContext extends ContextWrapper {

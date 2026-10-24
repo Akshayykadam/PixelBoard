@@ -849,6 +849,48 @@
         <translation locale="th">เปิดใช้รูปแบบปุ่มโค้งมน Material 3 Expressive (Belka)</translation>
         <translation locale="uk">Увімкнути закруглений стиль клавіш Material 3 Expressive (Belka).</translation>
     </string>
+    <string name="gboard_patches_frequently_used_emojis_title">
+        <translation locale="en">Frequently used emojis</translation>
+        <translation locale="es">Emojis de uso frecuente</translation>
+        <translation locale="fr">Émojis fréquemment utilisés</translation>
+        <translation locale="de">Häufig verwendete Emojis</translation>
+        <translation locale="it">Emoji usati di frequente</translation>
+        <translation locale="pt">Emojis usados com frequência</translation>
+        <translation locale="ru">Часто используемые эмодзи</translation>
+        <translation locale="hi">अक्सर उपयोग किए जाने वाले इमोजी</translation>
+        <translation locale="ja">よく使う絵文字</translation>
+        <translation locale="ko">자주 사용하는 그림문자</translation>
+        <translation locale="zh">常用表情符号</translation>
+        <translation locale="ar">الرموز التعبيرية الأكثر استخداماً</translation>
+        <translation locale="in">Emoji yang sering digunakan</translation>
+        <translation locale="tr">Sık kullanılan emojiler</translation>
+        <translation locale="vi">Biểu tượng cảm xúc thường dùng</translation>
+        <translation locale="pl">Często używane emotikony</translation>
+        <translation locale="nl">Veelgebruikte emoji\'s</translation>
+        <translation locale="th">อีโมจิที่ใช้บ่อย</translation>
+        <translation locale="uk">Часто використовувані емодзі</translation>
+    </string>
+    <string name="gboard_patches_frequently_used_emojis_summary">
+        <translation locale="en">Show frequently used emojis instead of recently used emojis in the emoji drawer</translation>
+        <translation locale="es">Mostrar emojis de uso frecuente en lugar de emojis recientes en el panel de emojis</translation>
+        <translation locale="fr">Afficher les émojis fréquemment utilisés au lieu des récents dans le tiroir d\'émojis</translation>
+        <translation locale="de">Häufig verwendete Emojis anstelle von zuletzt verwendeten Emojis im Emoji-Bereich anzeigen</translation>
+        <translation locale="it">Mostra gli emoji usati di frequente anziché quelli recenti nel cassetto delle emoji</translation>
+        <translation locale="pt">Mostrar emojis usados com frequência em vez de emojis recentes na gaveta de emojis</translation>
+        <translation locale="ru">Показывать часто используемые эмодзи вместо недавних на панели эмодзи</translation>
+        <translation locale="hi">इमोजी ड्रॉअर में हाल ही में उपयोग किए गए इमोजी के बजाय अक्सर उपयोग किए जाने वाले इमोजी दिखाएं</translation>
+        <translation locale="ja">絵文字ドロワーで最近使用した絵文字の代わりによく使う絵文字を表示します</translation>
+        <translation locale="ko">그림문자 서랍에 최근 사용한 그림문자 대신 자주 사용하는 그림문자를 표시합니다</translation>
+        <translation locale="zh">在表情面板中显示常用表情而不是最近使用的表情</translation>
+        <translation locale="ar">إظهار الرموز التعبيرية الأكثر استخداماً بدلاً من المستخدمة حديثاً في درج الرموز التعبيرية</translation>
+        <translation locale="in">Tampilkan emoji yang sering digunakan alih-alih emoji terbaru di laci emoji</translation>
+        <translation locale="tr">Emoji çekmecesinde son kullanılan emojiler yerine sık kullanılan emojileri göster</translation>
+        <translation locale="vi">Hiển thị biểu tượng cảm xúc thường dùng thay vì biểu tượng gần đây trong ngăn biểu tượng</translation>
+        <translation locale="pl">Pokaż często używane emotikony zamiast ostatnio używanych w panelu emotikonów</translation>
+        <translation locale="nl">Toon veelgebruikte emoji\'s in plaats van recent gebruikte emoji\'s in het emojipaneel</translation>
+        <translation locale="th">แสดงอีโมจิที่ใช้บ่อยแทนอีโมจิที่ใช้ล่าสุดในลิ้นชักอีโมจิ</translation>
+        <translation locale="uk">Показувати часто використовувані емодзі замість нещодавніх на панелі емодзі</translation>
+    </string>
     <string name="gboard_patches_clipboard_history_title">
         <translation locale="en">Clipboard history</translation>
         <translation locale="ar">سجل الحافظة</translation>
@@ -904,5 +946,117 @@
     <string name="gboard_patches_clipboard_history_section_behavior">
         <translation locale="en">Retention behavior</translation>
         <translation locale="ar">سلوك الاحتفاظ</translation>
+    </string>
+    <string name="gboard_patches_update_title">
+        <translation locale="en">PixelBoard updates</translation>
+        <translation locale="ar">تحديثات PixelBoard</translation>
+    </string>
+    <string name="gboard_patches_update_summary">
+        <translation locale="en">Check for updates, view changelog &amp; download APK</translation>
+        <translation locale="ar">التحقق من وجود تحديثات وعرض سجل التغييرات وتنزيل APK</translation>
+    </string>
+    <string name="gboard_patches_update_header_title">
+        <translation locale="en">Updates</translation>
+        <translation locale="ar">التحديثات</translation>
+    </string>
+    <string name="gboard_patches_update_header_summary">
+        <translation locale="en">Direct updates, changelogs &amp; APK downloads from GitHub</translation>
+        <translation locale="ar">تحديثات مباشرة وسجلات التغيير وتنزيل APK من GitHub</translation>
+    </string>
+    <string name="gboard_patches_update_status_checking_title">
+        <translation locale="en">Checking for updates...</translation>
+        <translation locale="ar">جارٍ التحقق من وجود تحديثات...</translation>
+    </string>
+    <string name="gboard_patches_update_status_checking_summary">
+        <translation locale="en">Connecting to GitHub Releases repository...</translation>
+        <translation locale="ar">جارٍ الاتصال بمستودع إصدارات GitHub...</translation>
+    </string>
+    <string name="gboard_patches_update_status_available_title">
+        <translation locale="en">Update available</translation>
+        <translation locale="ar">التحديث متوفر</translation>
+    </string>
+    <string name="gboard_patches_update_status_available_summary">
+        <translation locale="en">A new version of PixelBoard is available for download.</translation>
+        <translation locale="ar">يتوفر إصدار جديد من PixelBoard للتنزيل.</translation>
+    </string>
+    <string name="gboard_patches_update_status_downloading_title">
+        <translation locale="en">Downloading update...</translation>
+        <translation locale="ar">جارٍ تنزيل التحديث...</translation>
+    </string>
+    <string name="gboard_patches_update_status_downloading_summary">
+        <translation locale="en">Downloading APK via Download Manager. Check notification bar for progress.</translation>
+        <translation locale="ar">جارٍ تنزيل APK عبر مدير التنزيل. تحقق من شريط الإشعارات لمعرفة التقدم.</translation>
+    </string>
+    <string name="gboard_patches_update_status_downloaded_title">
+        <translation locale="en">Download completed</translation>
+        <translation locale="ar">اكتمل التنزيل</translation>
+    </string>
+    <string name="gboard_patches_update_status_downloaded_summary">
+        <translation locale="en">Update APK has been downloaded. Tap Install below.</translation>
+        <translation locale="ar">تم تنزيل ملف APK للتحديث. اضغط على تثبيت أدناه.</translation>
+    </string>
+    <string name="gboard_patches_update_status_uptodate_title">
+        <translation locale="en">You\'re up to date</translation>
+        <translation locale="ar">أنت على آخر تحديث</translation>
+    </string>
+    <string name="gboard_patches_update_status_uptodate_summary">
+        <translation locale="en">PixelBoard v%1$s is currently the latest release.</translation>
+        <translation locale="ar">PixelBoard v%1$s هو أحدث إصدار حالياً.</translation>
+    </string>
+    <string name="gboard_patches_update_status_error_title">
+        <translation locale="en">Unable to check for updates</translation>
+        <translation locale="ar">تعذر التحقق من وجود تحديثات</translation>
+    </string>
+    <string name="gboard_patches_update_status_error_summary">
+        <translation locale="en">Could not connect to GitHub. Please check your internet connection.</translation>
+        <translation locale="ar">تعذر الاتصال بـ GitHub. يرجى التحقق من اتصال الإنترنت الخاص بك.</translation>
+    </string>
+    <string name="gboard_patches_update_status_idle_summary">
+        <translation locale="en">Tap \'Check for updates\' to query the latest releases from GitHub.</translation>
+        <translation locale="ar">اضغط على \'التحقق من وجود تحديثات\' للاستعلام عن أحدث الإصدارات من GitHub.</translation>
+    </string>
+    <string name="gboard_patches_update_action_download">
+        <translation locale="en">Download &amp; Install APK</translation>
+        <translation locale="ar">تنزيل وتثبيت APK</translation>
+    </string>
+    <string name="gboard_patches_update_action_view_github">
+        <translation locale="en">View on GitHub</translation>
+        <translation locale="ar">عرض على GitHub</translation>
+    </string>
+    <string name="gboard_patches_update_action_view_github_summary">
+        <translation locale="en">Open the release page in your browser</translation>
+        <translation locale="ar">افتح صفحة الإصدار في متصفحك</translation>
+    </string>
+    <string name="gboard_patches_update_action_check_now">
+        <translation locale="en">Check for updates</translation>
+        <translation locale="ar">التحقق من وجود تحديثات</translation>
+    </string>
+    <string name="gboard_patches_update_action_view_all_releases">
+        <translation locale="en">View all releases on GitHub</translation>
+        <translation locale="ar">عرض جميع الإصدارات على GitHub</translation>
+    </string>
+    <string name="gboard_patches_update_action_view_all_releases_summary">
+        <translation locale="en">Open the releases page in your browser</translation>
+        <translation locale="ar">افتح صفحة الإصدارات في متصفحك</translation>
+    </string>
+    <string name="gboard_patches_update_section_actions">
+        <translation locale="en">Actions</translation>
+        <translation locale="ar">الإجراءات</translation>
+    </string>
+    <string name="gboard_patches_update_pref_autocheck_title">
+        <translation locale="en">Auto-check for updates</translation>
+        <translation locale="ar">التحقق التلقائي من التحديثات</translation>
+    </string>
+    <string name="gboard_patches_update_pref_autocheck_summary">
+        <translation locale="en">Check for new releases when opening PixelBoard settings</translation>
+        <translation locale="ar">التحقق من الإصدارات الجديدة عند فتح إعدادات PixelBoard</translation>
+    </string>
+    <string name="gboard_patches_update_section_preferences">
+        <translation locale="en">Preferences</translation>
+        <translation locale="ar">التفضيلات</translation>
+    </string>
+    <string name="gboard_patches_update_section_info">
+        <translation locale="en">Build Information</translation>
+        <translation locale="ar">معلومات البناء</translation>
     </string>
 </settings-text>

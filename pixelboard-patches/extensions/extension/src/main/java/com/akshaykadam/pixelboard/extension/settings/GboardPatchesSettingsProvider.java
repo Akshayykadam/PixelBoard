@@ -2,9 +2,13 @@ package com.akshaykadam.pixelboard.extension.settings;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public final class GboardPatchesSettingsProvider extends ContentProvider {
     private static final String TAG = "PixelBoard";
@@ -27,8 +31,20 @@ public final class GboardPatchesSettingsProvider extends ContentProvider {
     }
 
     @Override
+    public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
+        Context context = getContext();
+        if (context != null) {
+            File apk = new File(context.getApplicationInfo().sourceDir);
+            if (apk.exists()) {
+                return ParcelFileDescriptor.open(apk, ParcelFileDescriptor.MODE_READ_ONLY);
+            }
+        }
+        throw new FileNotFoundException("APK file not found");
+    }
+
+    @Override
     public String getType(Uri uri) {
-        return null;
+        return "application/vnd.android.package-archive";
     }
 
     @Override

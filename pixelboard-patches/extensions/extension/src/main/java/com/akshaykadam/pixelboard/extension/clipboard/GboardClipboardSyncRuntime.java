@@ -22,7 +22,10 @@ public final class GboardClipboardSyncRuntime {
     private static final String TAG = "PixelBoardClipboard";
     private static volatile Field clipboardManagerField;
     private static volatile Field contextField;
+    private static volatile Field contentObserverField;
     private static volatile Method syncMethod;
+    private static volatile Method screenshotObserverMethod;
+    private static volatile Method checkScreenshotMethod;
 
     private GboardClipboardSyncRuntime() {
     }
@@ -39,6 +42,7 @@ public final class GboardClipboardSyncRuntime {
         try {
             ensureClipboardManager(handler);
             ensureScreenshotObserver(handler);
+            triggerScreenshotCheck(handler);
 
             // Gboard's ClipboardDataHandler implements ClipboardManager.OnPrimaryClipChangedListener.
             // Invoking onPrimaryClipChanged() evaluates the user's opt-in setting and asynchronously
@@ -60,9 +64,37 @@ public final class GboardClipboardSyncRuntime {
 
     private static void ensureScreenshotObserver(Object handler) {
         try {
-            Method qMethod = handler.getClass().getDeclaredMethod("q", boolean.class);
-            qMethod.setAccessible(true);
-            qMethod.invoke(handler, Boolean.TRUE);
+            Method qMethod = resolveScreenshotObserverMethod(handler);
+            if (qMethod != null) {
+                qMethod.invoke(handler, Boolean.TRUE);
+            }
+        } catch (Throwable ignored) {
+        }
+    }
+
+    private static void triggerScreenshotCheck(Object handler) {
+        // 1. Dispatch change through the ContentObserver (p) if initialized
+        try {
+            Field observerField = resolveContentObserverField(handler);
+            if (observerField != null) {
+                Object observer = observerField.get(handler);
+                if (observer instanceof android.database.ContentObserver) {
+                    try {
+                        ((android.database.ContentObserver) observer).dispatchChange(false, null);
+                    } catch (Throwable ignored) {
+                        ((android.database.ContentObserver) observer).dispatchChange(false);
+                    }
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+
+        // 2. Directly invoke r() (check screenshot) on handler if available
+        try {
+            Method rMethod = resolveCheckScreenshotMethod(handler);
+            if (rMethod != null) {
+                rMethod.invoke(handler);
+            }
         } catch (Throwable ignored) {
         }
     }
@@ -123,5 +155,56 @@ public final class GboardClipboardSyncRuntime {
             }
         }
         return syncMethod;
+    }
+
+    private static Method resolveScreenshotObserverMethod(Object handler) {
+        if (screenshotObserverMethod == null) {
+            Class<?> clazz = handler.getClass();
+            while (clazz != null && clazz != Object.class) {
+                try {
+                    Method m = clazz.getDeclaredMethod("q", boolean.class);
+                    m.setAccessible(true);
+                    screenshotObserverMethod = m;
+                    return screenshotObserverMethod;
+                } catch (NoSuchMethodException ignored) {
+                }
+                clazz = clazz.getSuperclass();
+            }
+        }
+        return screenshotObserverMethod;
+    }
+
+    private static Method resolveCheckScreenshotMethod(Object handler) {
+        if (checkScreenshotMethod == null) {
+            Class<?> clazz = handler.getClass();
+            while (clazz != null && clazz != Object.class) {
+                try {
+                    Method m = clazz.getDeclaredMethod("r");
+                    m.setAccessible(true);
+                    checkScreenshotMethod = m;
+                    return checkScreenshotMethod;
+                } catch (NoSuchMethodException ignored) {
+                }
+                clazz = clazz.getSuperclass();
+            }
+        }
+        return checkScreenshotMethod;
+    }
+
+    private static Field resolveContentObserverField(Object handler) {
+        if (contentObserverField == null) {
+            Class<?> clazz = handler.getClass();
+            while (clazz != null && clazz != Object.class) {
+                for (Field field : clazz.getDeclaredFields()) {
+                    if (android.database.ContentObserver.class.isAssignableFrom(field.getType())) {
+                        field.setAccessible(true);
+                        contentObserverField = field;
+                        return contentObserverField;
+                    }
+                }
+                clazz = clazz.getSuperclass();
+            }
+        }
+        return contentObserverField;
     }
 }

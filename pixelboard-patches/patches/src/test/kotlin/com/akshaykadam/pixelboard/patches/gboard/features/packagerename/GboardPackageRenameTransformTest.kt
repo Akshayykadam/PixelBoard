@@ -429,7 +429,7 @@ class GboardPackageRenameTransformTest {
         val manifest = loadManifest()
         val settings = loadSettingsDocuments()
         applyGboardPatchesSettings(manifest, settings)
-        val legacyIntent = elements(settings.last(), "intent").single { intent ->
+        val legacyIntent = elements(settings.last(), "intent").first { intent ->
             androidAttribute(intent, "targetClass") == SETTINGS_ACTIVITY_CLASS
         }
         legacyIntent.parentNode.removeChild(legacyIntent)
@@ -578,8 +578,10 @@ class GboardPackageRenameTransformTest {
             val matchingIntents = elements(document, "intent").filter { intent ->
                 androidAttribute(intent, "targetClass") == SETTINGS_ACTIVITY_CLASS
             }
-            assertEquals(1, matchingIntents.size)
-            assertEquals(FINAL_PACKAGE, androidAttribute(matchingIntents.single(), "targetPackage"))
+            assertEquals(2, matchingIntents.size)
+            matchingIntents.forEach { intent ->
+                assertEquals(FINAL_PACKAGE, androidAttribute(intent, "targetPackage"))
+            }
             val xml = serialize(document)
             assertFalse(xml.contains("targetPackage=\"$SOURCE_PACKAGE\""))
             assertFalse(xml.contains(DOUBLE_PREFIX))

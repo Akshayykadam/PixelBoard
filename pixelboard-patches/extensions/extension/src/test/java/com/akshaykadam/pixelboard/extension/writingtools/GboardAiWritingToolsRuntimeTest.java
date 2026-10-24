@@ -373,6 +373,52 @@ public final class GboardAiWritingToolsRuntimeTest {
         }
     }
 
+    static class TestFlagReceiver {
+        private final String a;
+
+        TestFlagReceiver(String name) {
+            this.a = name;
+        }
+    }
+
+    @Test
+    public void autoCorrectionAndDecoderFlagsAreEnforced() {
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_TRY_INITIALIZE_DECODER_AFTER_LM_LOADS));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_PK_AUTO_CAPITALIZATION_USE_AUTO_CORRECTION));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_AUTO_CORRECTION_STATS));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_CORRECTION_COMMIT_ANIMATION));
+
+        Object delayResult = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_DELAY_TO_WAIT_FOR_SUGGESTIONS_BEFORE_COMMIT_MS),
+                Long.valueOf(40L));
+        Assert.assertEquals(Long.valueOf(150L), delayResult);
+
+        Object webTextResult = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_WEB_TEXT),
+                "*");
+        Assert.assertEquals("", webTextResult);
+
+        Object appsResult = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION),
+                "com.example.app");
+        Assert.assertEquals("", appsResult);
+
+        Object specialTypesResult = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_SPECIAL_TYPES),
+                "com.example.special");
+        Assert.assertEquals("", specialTypesResult);
+    }
+
     private static Boolean distinctBoolean(boolean value) throws Exception {
         return Boolean.class.getDeclaredConstructor(boolean.class).newInstance(value);
     }

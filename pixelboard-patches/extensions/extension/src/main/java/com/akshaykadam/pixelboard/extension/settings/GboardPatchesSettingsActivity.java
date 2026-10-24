@@ -97,6 +97,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.Set;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.ExecutorService;
@@ -106,6 +107,8 @@ import java.util.concurrent.RejectedExecutionException;
 import com.akshaykadam.pixelboard.extension.R;
 import com.akshaykadam.pixelboard.extension.BuildConfig;
 import com.akshaykadam.pixelboard.extension.settings.keyboardpreview.GboardKeyboardPreviewController;
+import com.akshaykadam.pixelboard.extension.updater.PixelBoardUpdateFeature;
+import com.akshaykadam.pixelboard.extension.updater.PixelBoardUpdateManager;
 
 public final class GboardPatchesSettingsActivity extends Activity
         implements GboardPatchesSettingsContract.Host {
@@ -153,8 +156,11 @@ public final class GboardPatchesSettingsActivity extends Activity
     private static final String DOCUMENT_PICKER_FAILED = "Unable to open file picker.";
     private static final String DOCUMENT_WRITE_FAILED = "Failed to export file.";
     private static final String DOCUMENT_READ_FAILED = "Failed to import file.";
+    public static final String ACTION_UPDATES =
+            "com.akshaykadam.pixelboard.action.UPDATES";
+    private boolean standaloneFeatureMode;
     private Palette palette;
-    private LinearLayout toolbarView;
+    private FrameLayout toolbarView;
     private TextView toolbarTitleView;
     private View restartButton;
     private ObjectAnimator restartButtonAnimator;
@@ -180,6 +186,7 @@ public final class GboardPatchesSettingsActivity extends Activity
     // and after returning from a sub-page.
     private final Map<String, View> rowViewsByAccessibilityKey = new HashMap<String, View>();
     private final Map<Integer, String> accessibilityFocusKeyByDepth = new HashMap<Integer, String>();
+    private final Map<View, ObjectAnimator> rowIconAnimators = new WeakHashMap<>();
     private String accessibilityFocusedRowKey;
     private int appliedScreenDepth = -1;
     private boolean featuresInitialized;
@@ -224,6 +231,23 @@ public final class GboardPatchesSettingsActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(resolveActivityTheme());
+        try {
+            int dynamicAttr = getResources().getIdentifier("dynamicColorThemeOverlay", "attr", getPackageName());
+            if (dynamicAttr != 0) {
+                TypedValue tv = new TypedValue();
+                if (getTheme().resolveAttribute(dynamicAttr, tv, true) && tv.data != 0) {
+                    getTheme().applyStyle(tv.data, true);
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+        try {
+            int settingsOverlay = getResources().getIdentifier("style_0x7f1504f7", "style", getPackageName());
+            if (settingsOverlay != 0) {
+                getTheme().applyStyle(settingsOverlay, true);
+            }
+        } catch (Throwable ignored) {
+        }
         super.onCreate(savedInstanceState);
         try {
             scheduleRestartCrashRecoveryGuardRestore();
@@ -273,6 +297,7 @@ public final class GboardPatchesSettingsActivity extends Activity
         applyOrchestration(settingsOrchestrator.accept(
                 GboardPatchesSettingsOrchestrator.Event.pause()));
         setRestartButtonPending(false);
+        stopRowIconAnimations();
         cancelDeferredRender();
         cancelOfflineSpeechLanguageQuery();
         unregisterBackCallback();
@@ -1583,6 +1608,21 @@ public final class GboardPatchesSettingsActivity extends Activity
 
     private int resolveActivityTheme() {
         try {
+            int expressiveTheme = getResources().getIdentifier(
+                    Build.VERSION.SDK_INT >= 36 ? "style_0x7f150337" : "style_0x7f150336",
+                    "style", getPackageName());
+            if (expressiveTheme == 0) {
+                expressiveTheme = getResources().getIdentifier("style_0x7f150336", "style", getPackageName());
+            }
+            if (expressiveTheme == 0) {
+                expressiveTheme = getResources().getIdentifier("style_0x7f150337", "style", getPackageName());
+            }
+            if (expressiveTheme != 0) {
+                return expressiveTheme;
+            }
+        } catch (Throwable ignored) {
+        }
+        try {
             ActivityInfo info = getPackageManager().getActivityInfo(
                     new ComponentName(this, "com.google.android.apps.inputmethod.latin.preference.SettingsActivity"),
                     0);
@@ -1688,37 +1728,58 @@ public final class GboardPatchesSettingsActivity extends Activity
             }
         } catch (Throwable ignored) {
         }
-        return "1.3.0";
+        return "1.3.1";
     }
 
     private View buildToolbar() {
-        toolbarView = new LinearLayout(this);
-        toolbarView.setOrientation(LinearLayout.HORIZONTAL);
-        toolbarView.setGravity(Gravity.CENTER_VERTICAL);
+        toolbarView = new FrameLayout(this);
         toolbarView.setBackgroundColor(palette.windowBackground);
         toolbarView.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 dp(TOOLBAR_HEIGHT_DP)));
-        toolbarView.setPadding(dp(4), 0, dp(12), 0);
 
         View backButton = buildBackButton();
+        FrameLayout.LayoutParams backParams = new FrameLayout.LayoutParams(
+                dp(48),
+                dp(48),
+                Gravity.START | Gravity.CENTER_VERTICAL);
+        backParams.leftMargin = dp(4);
+        backParams.setMarginStart(dp(4));
 
         toolbarTitleView = new TextView(this);
         toolbarTitleView.setTextColor(palette.textPrimary);
         toolbarTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
         toolbarTitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         toolbarTitleView.setSingleLine(true);
+        toolbarTitleView.setEllipsize(TextUtils.TruncateAt.END);
+        toolbarTitleView.setGravity(Gravity.CENTER);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            toolbarTitleView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             toolbarTitleView.setAccessibilityHeading(true);
         }
-        toolbarTitleView.setLayoutParams(new LinearLayout.LayoutParams(
-                0,
+        FrameLayout.LayoutParams titleParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f));
+                Gravity.CENTER);
+        titleParams.leftMargin = dp(56);
+        titleParams.rightMargin = dp(56);
+        titleParams.setMarginStart(dp(56));
+        titleParams.setMarginEnd(dp(56));
+        toolbarTitleView.setLayoutParams(titleParams);
 
-        toolbarView.addView(backButton);
+        View restart = buildRestartButton();
+        FrameLayout.LayoutParams restartParams = new FrameLayout.LayoutParams(
+                dp(48),
+                dp(48),
+                Gravity.END | Gravity.CENTER_VERTICAL);
+        restartParams.rightMargin = dp(4);
+        restartParams.setMarginEnd(dp(4));
+
         toolbarView.addView(toolbarTitleView);
-        toolbarView.addView(buildRestartButton());
+        toolbarView.addView(backButton, backParams);
+        toolbarView.addView(restart, restartParams);
         return toolbarView;
     }
 
@@ -1953,10 +2014,12 @@ public final class GboardPatchesSettingsActivity extends Activity
 
     private View buildBackButton() {
         View backButton = new View(this) {
+            private final Paint bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
             private final Path path = new Path();
 
             {
+                bgPaint.setStyle(Paint.Style.FILL);
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeCap(Paint.Cap.ROUND);
                 paint.setStrokeJoin(Paint.Join.ROUND);
@@ -1965,8 +2028,14 @@ public final class GboardPatchesSettingsActivity extends Activity
 
             @Override
             protected void onDraw(Canvas canvas) {
-                super.onDraw(canvas);
                 float density = getResources().getDisplayMetrics().density;
+                float cx = getWidth() / 2f;
+                float cy = getHeight() / 2f;
+                float bgRadius = density * 20f;
+                bgPaint.setColor(palette.backButtonBackground);
+                canvas.drawCircle(cx, cy, bgRadius, bgPaint);
+
+                super.onDraw(canvas);
                 float iconSize = density * 24f;
                 float left = (getWidth() - iconSize) / 2f;
                 float top = (getHeight() - iconSize) / 2f;
@@ -1989,7 +2058,7 @@ public final class GboardPatchesSettingsActivity extends Activity
         };
         backButton.setContentDescription(text(R.string.gboard_patches_navigate_up));
         backButton.setLayoutParams(new LinearLayout.LayoutParams(dp(48), dp(48)));
-        backButton.setBackground(buildRippleDrawable(dp(24)));
+        backButton.setBackground(buildRippleDrawable(dp(20)));
         backButton.setOnClickListener(view -> goBackOrFinish());
         return backButton;
     }
@@ -2301,6 +2370,9 @@ public final class GboardPatchesSettingsActivity extends Activity
     }
 
     private boolean navigateBack() {
+        if (standaloneFeatureMode) {
+            return true;
+        }
         GboardPatchesSettingsOrchestrator.State<GboardPatchesSettingsContract.Feature> state =
                 settingsOrchestrator.snapshot();
         if (state.getCurrent() != null) {
@@ -2666,7 +2738,7 @@ public final class GboardPatchesSettingsActivity extends Activity
             layoutParams.height = targetHeight;
             toolbarView.setLayoutParams(layoutParams);
         }
-        toolbarView.setPadding(dp(4), topInset, dp(12), 0);
+        toolbarView.setPadding(0, topInset, 0, 0);
     }
 
     private int resolveTopInset(WindowInsets insets) {
@@ -2706,12 +2778,16 @@ public final class GboardPatchesSettingsActivity extends Activity
         }
         rowViewsByAccessibilityKey.clear();
         toolbarTitleView.setText(screen.getToolbarTitle());
+        if (restartButton != null) {
+            restartButton.setVisibility(screen.isRestartActionVisible() ? View.VISIBLE : View.GONE);
+        }
         headerBadgeView.setText(screen.getHeaderBadge());
         headerTitleView.setText(screen.getHeaderTitle());
         headerSummaryView.setText(screen.getHeaderSummary());
         headerSummaryView.setVisibility(
                 TextUtils.isEmpty(screen.getHeaderSummary()) ? View.GONE : View.VISIBLE);
         applyPanelStyle(screen.getPanelStyle());
+        stopRowIconAnimations();
         panelContainer.removeAllViews();
         for (GboardPatchesSettingsContract.StatusBlock statusBlock : screen.getStatusBlocks()) {
             panelContainer.addView(createStatusBlockView(statusBlock));
@@ -2824,6 +2900,24 @@ public final class GboardPatchesSettingsActivity extends Activity
         if (intent == null) {
             return false;
         }
+        if (ACTION_UPDATES.equals(intent.getAction())) {
+            standaloneFeatureMode = true;
+            for (GboardPatchesSettingsContract.Feature feature : features) {
+                if (feature instanceof PixelBoardUpdateFeature) {
+                    List<GboardPatchesSettingsContract.Feature> path =
+                            Collections.singletonList(feature);
+                    runOnUiThread(() -> {
+                        scrollState.resetForDirectPath(0);
+                        requestScrollPositionOnNextScreenApply(0);
+                        applyOrchestration(settingsOrchestrator.accept(
+                                GboardPatchesSettingsOrchestrator.Event.replacePath(path)));
+                    });
+                    return true;
+                }
+            }
+        } else {
+            standaloneFeatureMode = false;
+        }
         if (restoreNavigationPathFromIntent(intent)) {
             return true;
         }
@@ -2896,6 +2990,7 @@ public final class GboardPatchesSettingsActivity extends Activity
         settingsOrchestrator.accept(GboardPatchesSettingsOrchestrator.Event.fatal());
         cancelScheduledScreenRefresh();
         setRestartButtonPending(false);
+        stopRowIconAnimations();
         Log.e(TAG, reason, throwable);
         detachKeyboardPreviewSafely();
         if (palette == null) {
@@ -2998,6 +3093,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 || GboardAdvancedVoiceSettings.readEnabled(voicePrefs);
         boolean roundedKeysEnabled = patchesPrefs == null
                 || GboardRoundedKeysSettings.readEnabled(patchesPrefs);
+        boolean frequentEmojisEnabled = patchesPrefs != null
+                && GboardEmojiSettings.readFrequentEmojisEnabled(patchesPrefs);
 
         List<GboardPatchesSettingsContract.Row> rows =
                 new ArrayList<GboardPatchesSettingsContract.Row>();
@@ -3045,6 +3142,18 @@ public final class GboardPatchesSettingsActivity extends Activity
                     if (patchesPrefs != null) {
                         GboardRoundedKeysSettings.writeEnabled(patchesPrefs, value);
                         GboardRoundedKeysSettings.applyToGboardPreferences(context, value);
+                        renderCurrentScreenSafely();
+                    }
+                }));
+
+        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+                GboardSettingsText.get(context, R.string.gboard_patches_frequently_used_emojis_title),
+                GboardSettingsText.get(context, R.string.gboard_patches_frequently_used_emojis_summary),
+                true,
+                frequentEmojisEnabled,
+                value -> {
+                    if (patchesPrefs != null) {
+                        GboardEmojiSettings.writeFrequentEmojisEnabled(patchesPrefs, value);
                         renderCurrentScreenSafely();
                     }
                 }));
@@ -3622,7 +3731,26 @@ public final class GboardPatchesSettingsActivity extends Activity
     }
 
     private View createCommandRow(GboardPatchesSettingsContract.CommandRow rowModel) {
-        LinearLayout row = buildBaseRow();
+        AccessibleRow row = buildBaseRow();
+
+        Drawable icon = rowModel.getIconDrawable();
+        if (icon == null && rowModel instanceof GboardPatchesSettingsContract.PrimaryCommandRow) {
+            icon = createSyncIcon(palette.accent);
+        }
+        ImageView iconView = null;
+        if (icon != null) {
+            iconView = new ImageView(this);
+            iconView.setImageDrawable(icon);
+            LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(dp(24), dp(24));
+            iconParams.rightMargin = dp(16);
+            iconParams.gravity = Gravity.CENTER_VERTICAL;
+            row.addView(iconView, iconParams);
+
+            if (rowModel.isAnimating()) {
+                startRowIconAnimation(iconView);
+            }
+        }
+
         LinearLayout textColumn = buildRowTextColumn(true);
         TextView titleView = buildRowTitle(rowModel.getTitle());
         TextView summaryView = buildRowSummary(rowModel.getSummary(), false);
@@ -3634,12 +3762,123 @@ public final class GboardPatchesSettingsActivity extends Activity
             row.addView(previewButton, trailingLayoutParams(dp(10)));
         }
         bindActionRowState(row, titleView, summaryView, null, rowModel.isEnabled());
+        if (rowModel.isAnimating()) {
+            row.setAlpha(1f);
+        }
+        if (rowModel instanceof GboardPatchesSettingsContract.PrimaryCommandRow) {
+            if (rowModel.isEnabled() || rowModel.isAnimating()) {
+                titleView.setTextColor(palette.accent);
+                titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            }
+        }
+        final ImageView finalIconView = iconView;
         row.setOnClickListener(view -> {
             if (row.isEnabled()) {
+                if (finalIconView != null) {
+                    startRowIconAnimation(finalIconView);
+                }
                 runSafely("handle command row", rowModel.getAction());
             }
         });
         return row;
+    }
+
+    private void startRowIconAnimation(View iconView) {
+        if (iconView == null) {
+            return;
+        }
+        ObjectAnimator existing = rowIconAnimators.get(iconView);
+        if (existing != null && existing.isRunning()) {
+            return;
+        }
+        if (existing != null) {
+            existing.cancel();
+        }
+        ObjectAnimator animator = ObjectAnimator.ofFloat(iconView, View.ROTATION, 0f, 360f);
+        animator.setDuration(1000L);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.start();
+        rowIconAnimators.put(iconView, animator);
+    }
+
+    private void stopRowIconAnimations() {
+        for (Map.Entry<View, ObjectAnimator> entry : rowIconAnimators.entrySet()) {
+            ObjectAnimator animator = entry.getValue();
+            if (animator != null) {
+                animator.cancel();
+            }
+            View view = entry.getKey();
+            if (view != null) {
+                view.setRotation(0f);
+            }
+        }
+        rowIconAnimators.clear();
+    }
+
+    private Drawable createSyncIcon(int color) {
+        return new Drawable() {
+            private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            private final Path path = new Path();
+            {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(color);
+            }
+
+            @Override
+            public void draw(Canvas canvas) {
+                Rect bounds = getBounds();
+                int width = bounds.width() > 0 ? bounds.width() : dp(24);
+                int height = bounds.height() > 0 ? bounds.height() : dp(24);
+                canvas.save();
+                canvas.translate(bounds.left, bounds.top);
+                float scale = Math.min(width, height) / 24f;
+
+                path.reset();
+                path.moveTo(17.65f * scale, 6.35f * scale);
+                path.cubicTo(16.2f * scale, 4.9f * scale, 14.21f * scale, 4f * scale, 12f * scale, 4f * scale);
+                path.cubicTo(7.58f * scale, 4f * scale, 4.01f * scale, 7.58f * scale, 4.01f * scale, 12f * scale);
+                path.cubicTo(4.01f * scale, 16.42f * scale, 7.58f * scale, 20f * scale, 12f * scale, 20f * scale);
+                path.cubicTo(15.73f * scale, 20f * scale, 18.84f * scale, 17.45f * scale, 19.73f * scale, 14f * scale);
+                path.lineTo(17.65f * scale, 14f * scale);
+                path.cubicTo(16.83f * scale, 16.33f * scale, 14.61f * scale, 18f * scale, 12f * scale, 18f * scale);
+                path.cubicTo(8.69f * scale, 18f * scale, 6f * scale, 15.31f * scale, 6f * scale, 12f * scale);
+                path.cubicTo(6f * scale, 8.69f * scale, 8.69f * scale, 6f * scale, 12f * scale, 6f * scale);
+                path.cubicTo(13.66f * scale, 6f * scale, 15.14f * scale, 6.69f * scale, 16.22f * scale, 7.78f * scale);
+                path.lineTo(13f * scale, 11f * scale);
+                path.lineTo(20f * scale, 11f * scale);
+                path.lineTo(20f * scale, 4f * scale);
+                path.close();
+
+                canvas.drawPath(path, paint);
+                canvas.restore();
+            }
+
+            @Override
+            public int getIntrinsicWidth() {
+                return dp(24);
+            }
+
+            @Override
+            public int getIntrinsicHeight() {
+                return dp(24);
+            }
+
+            @Override
+            public void setAlpha(int alpha) {
+                paint.setAlpha(alpha);
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter colorFilter) {
+                paint.setColorFilter(colorFilter);
+            }
+
+            @Override
+            public int getOpacity() {
+                return PixelFormat.TRANSLUCENT;
+            }
+        };
     }
 
     private View createDangerRow(GboardPatchesSettingsContract.DangerRow rowModel) {
@@ -3671,7 +3910,172 @@ public final class GboardPatchesSettingsActivity extends Activity
         return card;
     }
 
+    private View createChangelogSectionView(GboardPatchesSettingsContract.Section section) {
+        LinearLayout container = buildSectionContainer(false);
+
+        List<GboardPatchesSettingsContract.Row> items = section.getItems();
+        if (items == null || items.isEmpty()) {
+            return container;
+        }
+
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setBackground(buildCardDrawable(
+                palette.surfaceAlt,
+                blendAlpha(palette.accent, 0.28f),
+                dp(26)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            card.setClipToOutline(true);
+        }
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        cardParams.leftMargin = dp(16);
+        cardParams.rightMargin = dp(16);
+        cardParams.topMargin = dp(6);
+        cardParams.bottomMargin = dp(14);
+        card.setLayoutParams(cardParams);
+        card.setPadding(dp(20), dp(22), dp(20), dp(20));
+
+        // --- 1. HEADER (Clean text, no emoji, no tag pills) ---
+        TextView categoryLabel = new TextView(this);
+        categoryLabel.setText("WHAT'S NEW");
+        categoryLabel.setTextColor(palette.accent);
+        categoryLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11.5f);
+        categoryLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        card.addView(categoryLabel);
+
+        // Main Title (e.g. "PixelBoard v1.3.1")
+        TextView titleView = new TextView(this);
+        String displayTitle = section.getTitle();
+        if (displayTitle == null || displayTitle.isEmpty()) {
+            displayTitle = "PixelBoard v1.3.1";
+        }
+        titleView.setText(displayTitle);
+        titleView.setTextColor(palette.textPrimary);
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
+        titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        titleParams.topMargin = dp(4);
+        card.addView(titleView, titleParams);
+
+        // Subtitle / Summary (e.g. "Highlights and improvements in this release")
+        String subtitleText = section.getDescription();
+        if (subtitleText == null || subtitleText.isEmpty()) {
+            subtitleText = "Highlights and key improvements in this release";
+        }
+        TextView subtitleView = new TextView(this);
+        subtitleView.setText(subtitleText);
+        subtitleView.setTextColor(palette.textSecondary);
+        subtitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13.5f);
+        subtitleView.setLineSpacing(0, 1.2f);
+        LinearLayout.LayoutParams subParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        subParams.topMargin = dp(3);
+        card.addView(subtitleView, subParams);
+
+        // Subtle Divider Line below the header
+        View divider = new View(this);
+        divider.setBackgroundColor(blendAlpha(palette.textSecondary, 0.18f));
+        LinearLayout.LayoutParams divParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                dp(1));
+        divParams.topMargin = dp(16);
+        divParams.bottomMargin = dp(16);
+        card.addView(divider, divParams);
+
+        // --- 2. HIGHLIGHT ITEMS (Clean bold titles and descriptions, no tags) ---
+        for (int i = 0; i < items.size(); i++) {
+            GboardPatchesSettingsContract.Row item = items.get(i);
+            boolean isLast = (i == items.size() - 1);
+
+            if (item instanceof GboardPatchesSettingsContract.CommandRow commandRow) {
+                // Action Button at bottom of card
+                LinearLayout actionButton = new LinearLayout(this);
+                actionButton.setOrientation(LinearLayout.HORIZONTAL);
+                actionButton.setGravity(Gravity.CENTER);
+                actionButton.setBackground(buildInteractiveButtonDrawable(
+                        blendAlpha(palette.accent, 0.12f),
+                        blendAlpha(palette.accent, 0.35f),
+                        dp(22)));
+                actionButton.setPadding(dp(18), dp(11), dp(18), dp(11));
+                actionButton.setClickable(true);
+                actionButton.setFocusable(true);
+                actionButton.setOnClickListener(v -> {
+                    if (commandRow.getAction() != null) {
+                        commandRow.getAction().run();
+                    }
+                });
+
+                TextView label = new TextView(this);
+                label.setText(commandRow.getTitle());
+                label.setTextColor(palette.accent);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13.5f);
+                label.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+                actionButton.addView(label);
+
+                LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                btnParams.topMargin = dp(6);
+                card.addView(actionButton, btnParams);
+                continue;
+            }
+
+            // Regular Highlight Row
+            LinearLayout itemBlock = new LinearLayout(this);
+            itemBlock.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            itemParams.bottomMargin = isLast ? 0 : dp(16);
+            itemBlock.setLayoutParams(itemParams);
+
+            // Item Title
+            String rawTitle = item.getTitle() != null ? item.getTitle().toString() : "";
+            String cleanTitle = rawTitle;
+            if (cleanTitle.startsWith("[")) {
+                int closing = cleanTitle.indexOf(']');
+                if (closing > 0) {
+                    cleanTitle = cleanTitle.substring(closing + 1).trim();
+                }
+            }
+            TextView itemTitleView = new TextView(this);
+            itemTitleView.setText(cleanTitle);
+            itemTitleView.setTextColor(palette.textPrimary);
+            itemTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f);
+            itemTitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+            itemBlock.addView(itemTitleView);
+
+            // Item Summary / Description
+            String summary = item.getSummary();
+            if (summary != null && !summary.isEmpty()) {
+                TextView descView = new TextView(this);
+                descView.setText(summary);
+                descView.setTextColor(palette.textSecondary);
+                descView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13.5f);
+                descView.setLineSpacing(0, 1.25f);
+                LinearLayout.LayoutParams descParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                descParams.topMargin = dp(4);
+                itemBlock.addView(descView, descParams);
+            }
+
+            card.addView(itemBlock);
+        }
+
+        container.addView(card);
+        return container;
+    }
+
     private View createSectionView(GboardPatchesSettingsContract.Section section) {
+        if (section.getStyle() == GboardPatchesSettingsContract.SectionStyle.CHANGELOG) {
+            return createChangelogSectionView(section);
+        }
         LinearLayout container = buildSectionContainer(
                 section.getStyle() == GboardPatchesSettingsContract.SectionStyle.ADVANCED);
         if (section.getTitle() != null && !section.getTitle().isEmpty()) {
@@ -3790,11 +4194,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 fillPaint.setColor(isEnabled ? palette.accent : blendAlpha(palette.accent, 0.38f));
                 canvas.drawRoundRect(bounds.left, bounds.top, bounds.right, bounds.bottom, radius, radius, fillPaint);
             } else {
-                fillPaint.setColor(blendAlpha(palette.windowBackground, 0.5f));
+                fillPaint.setColor(isEnabled ? palette.switchTrackUnchecked : blendAlpha(palette.switchTrackUnchecked, 0.38f));
                 canvas.drawRoundRect(bounds.left, bounds.top, bounds.right, bounds.bottom, radius, radius, fillPaint);
-                strokePaint.setColor(isEnabled ? blendAlpha(palette.textSecondary, 0.45f) : blendAlpha(palette.textDisabled, 0.3f));
-                float inset = dp(1);
-                canvas.drawRoundRect(bounds.left + inset, bounds.top + inset, bounds.right - inset, bounds.bottom - inset, radius, radius, strokePaint);
             }
         }
 
@@ -3875,7 +4276,7 @@ public final class GboardPatchesSettingsActivity extends Activity
             float density = getResources().getDisplayMetrics().density;
 
             if (isChecked) {
-                thumbPaint.setColor(isEnabled ? palette.windowBackground : blendAlpha(palette.windowBackground, 0.6f));
+                thumbPaint.setColor(isEnabled ? palette.onPrimary : blendAlpha(palette.onPrimary, 0.6f));
                 canvas.drawCircle(cx, cy, 12f * density, thumbPaint);
 
                 checkPaint.setColor(isEnabled ? palette.accent : blendAlpha(palette.accent, 0.6f));
@@ -3885,7 +4286,7 @@ public final class GboardPatchesSettingsActivity extends Activity
                 checkPath.lineTo(cx + (4.5f * density), cy - (3.2f * density));
                 canvas.drawPath(checkPath, checkPaint);
             } else {
-                thumbPaint.setColor(isEnabled ? blendAlpha(palette.textSecondary, 0.8f) : blendAlpha(palette.textDisabled, 0.5f));
+                thumbPaint.setColor(isEnabled ? palette.switchThumbUnchecked : blendAlpha(palette.switchThumbUnchecked, 0.38f));
                 canvas.drawCircle(cx, cy, 8f * density, thumbPaint);
             }
         }
@@ -4376,6 +4777,22 @@ public final class GboardPatchesSettingsActivity extends Activity
                 mask);
     }
 
+    private Drawable buildInteractiveButtonDrawable(int fillColor, int strokeColor, int radiusDp) {
+        GradientDrawable content = new GradientDrawable();
+        content.setColor(fillColor);
+        content.setCornerRadius(radiusDp);
+        if (strokeColor != 0) {
+            content.setStroke(dp(1), strokeColor);
+        }
+        GradientDrawable mask = new GradientDrawable();
+        mask.setColor(Color.WHITE);
+        mask.setCornerRadius(radiusDp);
+        return new RippleDrawable(
+                ColorStateList.valueOf(palette.pressedOverlay),
+                content,
+                mask);
+    }
+
     private static int blendAlpha(int color, float alphaFraction) {
         int alpha = Math.round(Color.alpha(color) * alphaFraction);
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
@@ -4494,10 +4911,16 @@ public final class GboardPatchesSettingsActivity extends Activity
         final int textDisabled;
         final int accent;
         final int pressedOverlay;
+        final int onPrimary;
+        final int switchTrackUnchecked;
+        final int switchThumbUnchecked;
+        final int backButtonBackground;
 
         Palette(int windowBackground, int surface, int surfaceAlt, int surfaceStroke,
                 int infoContainer, int warningContainer, int advancedContainer, int textPrimary,
-                int textSecondary, int textDisabled, int accent, int pressedOverlay) {
+                int textSecondary, int textDisabled, int accent, int pressedOverlay,
+                int onPrimary, int switchTrackUnchecked, int switchThumbUnchecked,
+                int backButtonBackground) {
             this.windowBackground = windowBackground;
             this.surface = surface;
             this.surfaceAlt = surfaceAlt;
@@ -4510,6 +4933,19 @@ public final class GboardPatchesSettingsActivity extends Activity
             this.textDisabled = textDisabled;
             this.accent = accent;
             this.pressedOverlay = pressedOverlay;
+            this.onPrimary = onPrimary;
+            this.switchTrackUnchecked = switchTrackUnchecked;
+            this.switchThumbUnchecked = switchThumbUnchecked;
+            this.backButtonBackground = backButtonBackground;
+        }
+
+        Palette(int windowBackground, int surface, int surfaceAlt, int surfaceStroke,
+                int infoContainer, int warningContainer, int advancedContainer, int textPrimary,
+                int textSecondary, int textDisabled, int accent, int pressedOverlay) {
+            this(windowBackground, surface, surfaceAlt, surfaceStroke,
+                    infoContainer, warningContainer, advancedContainer, textPrimary,
+                    textSecondary, textDisabled, accent, pressedOverlay,
+                    accent, surfaceAlt, textSecondary, surfaceAlt);
         }
 
         static Palette forConfiguration(Configuration configuration) {
@@ -4525,7 +4961,7 @@ public final class GboardPatchesSettingsActivity extends Activity
                     int windowBackground;
                     int surface;
                     int surfaceAlt;
-                    int surfaceStroke;
+                    int surfaceStroke = 0;
                     int infoContainer;
                     int warningContainer;
                     int advancedContainer;
@@ -4534,34 +4970,82 @@ public final class GboardPatchesSettingsActivity extends Activity
                     int textDisabled;
                     int accent;
                     int pressedOverlay;
+                    int onPrimary;
+                    int switchTrackUnchecked;
+                    int switchThumbUnchecked;
+                    int backButtonBackground;
 
                     if (nightMode) {
-                        windowBackground = context.getColor(android.R.color.system_neutral1_900);
-                        surface = context.getColor(android.R.color.system_neutral1_900);
-                        surfaceAlt = context.getColor(android.R.color.system_neutral1_800);
-                        surfaceStroke = blendAlpha(context.getColor(android.R.color.system_neutral2_700), 0.35f);
-                        accent = context.getColor(android.R.color.system_accent1_200);
-                        textPrimary = context.getColor(android.R.color.system_neutral1_100);
-                        int rawSecondary = resolveThemeColor(context, android.R.attr.textColorSecondary,
-                                context.getColor(android.R.color.system_neutral2_200));
-                        textSecondary = blendAlpha(rawSecondary, 0.70f);
+                        windowBackground = resolveSystemColor(context, "system_surface_container_dark",
+                                resolveThemeColor(context, android.R.attr.colorBackground,
+                                        resolveSystemColor(context, "system_accent1_900",
+                                                context.getColor(android.R.color.system_neutral1_900))));
+                        surfaceAlt = resolveSystemColor(context, "system_surface_bright_dark",
+                                resolveSystemColor(context, "system_surface_container_dark",
+                                        resolveSystemColor(context, "system_accent1_800",
+                                                context.getColor(android.R.color.system_neutral1_800))));
+                        surface = surfaceAlt;
+                        accent = resolveSystemColor(context, "system_primary_dark",
+                                resolveThemeColor(context, android.R.attr.colorAccent,
+                                        resolveThemeColor(context, android.R.attr.colorPrimary,
+                                                context.getColor(android.R.color.system_accent1_200))));
+                        textPrimary = resolveThemeColor(context, android.R.attr.textColorPrimary,
+                                resolveSystemColor(context, "system_on_surface_dark",
+                                        context.getColor(android.R.color.system_neutral1_100)));
+                        textSecondary = resolveThemeColor(context, android.R.attr.textColorSecondary,
+                                resolveSystemColor(context, "system_on_surface_variant_dark",
+                                        context.getColor(android.R.color.system_neutral2_200)));
                         textDisabled = blendAlpha(textSecondary, 0.45f);
-                        infoContainer = context.getColor(android.R.color.system_accent1_800);
+                        onPrimary = resolveSystemColor(context, "system_on_primary_dark",
+                                resolveAttrByName(context, "materialColorOnPrimary",
+                                        Color.parseColor("#002D64")));
+                        switchTrackUnchecked = resolveSystemColor(context, "system_surface_container_highest_dark",
+                                resolveSystemColor(context, "system_neutral2_800",
+                                        Color.parseColor("#122256")));
+                        switchThumbUnchecked = resolveSystemColor(context, "system_outline_dark",
+                                resolveSystemColor(context, "system_neutral2_700",
+                                        Color.parseColor("#6A749D")));
+                        backButtonBackground = resolveSystemColor(context, "system_surface_container_highest_dark",
+                                resolveSystemColor(context, "system_accent1_800",
+                                        Color.parseColor("#122256")));
+                        infoContainer = resolveSystemColor(context, "system_accent1_800",
+                                context.getColor(android.R.color.system_accent1_800));
                         warningContainer = Color.parseColor("#3F2D16");
                         advancedContainer = surfaceAlt;
                         pressedOverlay = blendAlpha(accent, 0.15f);
                     } else {
-                        windowBackground = context.getColor(android.R.color.system_neutral1_50);
+                        windowBackground = resolveSystemColor(context, "system_surface_container_light",
+                                resolveThemeColor(context, android.R.attr.colorBackground,
+                                        context.getColor(android.R.color.system_neutral1_50)));
+                        surfaceAlt = resolveSystemColor(context, "system_surface_bright_light",
+                                resolveSystemColor(context, "system_surface_container_lowest_light",
+                                        Color.WHITE));
                         surface = Color.WHITE;
-                        surfaceAlt = Color.WHITE;
-                        surfaceStroke = blendAlpha(context.getColor(android.R.color.system_neutral2_200), 0.5f);
-                        accent = context.getColor(android.R.color.system_accent1_600);
-                        textPrimary = context.getColor(android.R.color.system_neutral1_900);
-                        int rawSecondary = resolveThemeColor(context, android.R.attr.textColorSecondary,
-                                context.getColor(android.R.color.system_neutral2_700));
-                        textSecondary = blendAlpha(rawSecondary, 0.72f);
+                        accent = resolveSystemColor(context, "system_primary_light",
+                                resolveThemeColor(context, android.R.attr.colorAccent,
+                                        resolveThemeColor(context, android.R.attr.colorPrimary,
+                                                context.getColor(android.R.color.system_accent1_600))));
+                        textPrimary = resolveThemeColor(context, android.R.attr.textColorPrimary,
+                                resolveSystemColor(context, "system_on_surface_light",
+                                        context.getColor(android.R.color.system_neutral1_900)));
+                        textSecondary = resolveThemeColor(context, android.R.attr.textColorSecondary,
+                                resolveSystemColor(context, "system_on_surface_variant_light",
+                                        context.getColor(android.R.color.system_neutral2_700)));
                         textDisabled = blendAlpha(textSecondary, 0.45f);
-                        infoContainer = context.getColor(android.R.color.system_accent1_100);
+                        onPrimary = resolveSystemColor(context, "system_on_primary_light",
+                                resolveAttrByName(context, "materialColorOnPrimary",
+                                        Color.WHITE));
+                        switchTrackUnchecked = resolveSystemColor(context, "system_surface_container_highest_light",
+                                resolveSystemColor(context, "system_neutral2_200",
+                                        Color.parseColor("#D5DBFF")));
+                        switchThumbUnchecked = resolveSystemColor(context, "system_outline_light",
+                                resolveSystemColor(context, "system_neutral2_500",
+                                        Color.parseColor("#717B9B")));
+                        backButtonBackground = resolveSystemColor(context, "system_surface_container_high_light",
+                                resolveSystemColor(context, "system_neutral1_100",
+                                        Color.parseColor("#DCE1FF")));
+                        infoContainer = resolveSystemColor(context, "system_accent1_100",
+                                context.getColor(android.R.color.system_accent1_100));
                         warningContainer = Color.parseColor("#FEF3C7");
                         advancedContainer = Color.WHITE;
                         pressedOverlay = blendAlpha(accent, 0.15f);
@@ -4570,7 +5054,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                     return new Palette(
                             windowBackground, surface, surfaceAlt, surfaceStroke,
                             infoContainer, warningContainer, advancedContainer,
-                            textPrimary, textSecondary, textDisabled, accent, pressedOverlay);
+                            textPrimary, textSecondary, textDisabled, accent, pressedOverlay,
+                            onPrimary, switchTrackUnchecked, switchThumbUnchecked, backButtonBackground);
                 } catch (Throwable ignored) {
                 }
             }
@@ -4578,60 +5063,103 @@ public final class GboardPatchesSettingsActivity extends Activity
             if (context != null) {
                 try {
                     int themeBg = resolveThemeColor(context, android.R.attr.colorBackground,
-                            nightMode ? Color.parseColor("#1D192B") : Color.parseColor("#FEF7FF"));
+                            nightMode ? Color.parseColor("#081642") : Color.parseColor("#FEF7FF"));
                     int themePrimary = resolveThemeColor(context, android.R.attr.colorAccent,
                             resolveThemeColor(context, android.R.attr.colorPrimary,
-                                    nightMode ? Color.parseColor("#D0BCFF") : Color.parseColor("#6750A4")));
+                                    nightMode ? Color.parseColor("#83AEFF") : Color.parseColor("#0058B9")));
                     int themeTextPri = resolveThemeColor(context, android.R.attr.textColorPrimary,
-                            nightMode ? Color.parseColor("#E6E0E9") : Color.parseColor("#1D1B20"));
-                    int themeTextSec = blendAlpha(resolveThemeColor(context, android.R.attr.textColorSecondary,
-                            nightMode ? Color.parseColor("#CAC4D0") : Color.parseColor("#49454F")), 0.72f);
+                            nightMode ? Color.parseColor("#E0E4FF") : Color.parseColor("#1D1B20"));
+                    int themeTextSec = resolveThemeColor(context, android.R.attr.textColorSecondary,
+                            nightMode ? Color.parseColor("#A0A9D5") : Color.parseColor("#505A81"));
 
                     return new Palette(
                             themeBg,
                             nightMode ? themeBg : Color.WHITE,
-                            nightMode ? Color.parseColor("#2B243B") : Color.WHITE,
-                            nightMode ? Color.parseColor("#1FFFFFFF") : Color.parseColor("#00000000"),
-                            nightMode ? Color.parseColor("#381E72") : Color.parseColor("#EADDFF"),
+                            nightMode ? Color.parseColor("#172860") : Color.WHITE,
+                            0,
+                            nightMode ? Color.parseColor("#1B2F59") : Color.parseColor("#D9E2FF"),
                             nightMode ? Color.parseColor("#3F2D16") : Color.parseColor("#FEF3C7"),
-                            nightMode ? Color.parseColor("#2B243B") : Color.WHITE,
+                            nightMode ? Color.parseColor("#172860") : Color.WHITE,
                             themeTextPri,
                             themeTextSec,
-                            blendAlpha(themeTextSec, 0.5f),
+                            blendAlpha(themeTextSec, 0.45f),
                             themePrimary,
-                            blendAlpha(themePrimary, 0.15f));
+                            blendAlpha(themePrimary, 0.15f),
+                            nightMode ? Color.parseColor("#002D64") : Color.WHITE,
+                            nightMode ? Color.parseColor("#122256") : Color.parseColor("#D5DBFF"),
+                            nightMode ? Color.parseColor("#6A749D") : Color.parseColor("#717B9B"),
+                            nightMode ? Color.parseColor("#122256") : Color.parseColor("#DCE1FF"));
                 } catch (Throwable ignored) {
                 }
             }
 
             if (nightMode) {
                 return new Palette(
-                        Color.parseColor("#1D192B"),
-                        Color.parseColor("#1D192B"),
-                        Color.parseColor("#2B243B"),
-                        Color.parseColor("#1FFFFFFF"),
-                        Color.parseColor("#381E72"),
+                        Color.parseColor("#081642"),
+                        Color.parseColor("#081642"),
+                        Color.parseColor("#172860"),
+                        0,
+                        Color.parseColor("#1B2F59"),
                         Color.parseColor("#3F2D16"),
-                        Color.parseColor("#2B243B"),
-                        Color.parseColor("#E6E0E9"),
-                        Color.parseColor("#CAC4D0"),
-                        Color.parseColor("#938F99"),
-                        Color.parseColor("#D0BCFF"),
-                        Color.parseColor("#33D0BCFF"));
+                        Color.parseColor("#172860"),
+                        Color.parseColor("#E0E4FF"),
+                        Color.parseColor("#A0A9D5"),
+                        Color.parseColor("#546190"),
+                        Color.parseColor("#83AEFF"),
+                        Color.parseColor("#3383AEFF"),
+                        Color.parseColor("#002D64"),
+                        Color.parseColor("#122256"),
+                        Color.parseColor("#6A749D"),
+                        Color.parseColor("#122256"));
             }
             return new Palette(
-                    Color.parseColor("#FEF7FF"),
+                    Color.parseColor("#E4E7FF"),
                     Color.WHITE,
                     Color.WHITE,
-                    Color.parseColor("#00000000"),
-                    Color.parseColor("#EADDFF"),
+                    0,
+                    Color.parseColor("#D9E2FF"),
                     Color.parseColor("#FEF3C7"),
                     Color.WHITE,
-                    Color.parseColor("#1D1B20"),
-                    Color.parseColor("#49454F"),
-                    Color.parseColor("#79747E"),
-                    Color.parseColor("#6750A4"),
-                    Color.parseColor("#1F6750A4"));
+                    Color.parseColor("#232D51"),
+                    Color.parseColor("#505A81"),
+                    Color.parseColor("#717B9B"),
+                    Color.parseColor("#0058B9"),
+                    Color.parseColor("#1F0058B9"),
+                    Color.WHITE,
+                    Color.parseColor("#D5DBFF"),
+                    Color.parseColor("#717B9B"),
+                    Color.parseColor("#DCE1FF"));
+        }
+
+        private static int resolveSystemColor(Context context, String name, int fallback) {
+            if (context == null) {
+                return fallback;
+            }
+            try {
+                int id = context.getResources().getIdentifier(name, "color", "android");
+                if (id != 0) {
+                    return context.getColor(id);
+                }
+            } catch (Throwable ignored) {
+            }
+            return fallback;
+        }
+
+        private static int resolveAttrByName(Context context, String name, int fallback) {
+            if (context == null) {
+                return fallback;
+            }
+            try {
+                int id = context.getResources().getIdentifier(name, "attr", context.getPackageName());
+                if (id == 0) {
+                    id = context.getResources().getIdentifier(name, "attr", "android");
+                }
+                if (id != 0) {
+                    return resolveThemeColor(context, id, fallback);
+                }
+            } catch (Throwable ignored) {
+            }
+            return fallback;
         }
 
         private static int resolveThemeColor(Context context, int attrId, int fallback) {

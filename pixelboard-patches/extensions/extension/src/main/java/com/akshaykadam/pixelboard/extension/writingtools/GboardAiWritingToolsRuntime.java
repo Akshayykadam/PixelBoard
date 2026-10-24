@@ -3,6 +3,7 @@ package com.akshaykadam.pixelboard.extension.writingtools;
 import android.content.Context;
 import android.util.Log;
 
+import com.akshaykadam.pixelboard.extension.settings.GboardEmojiSettings;
 import com.akshaykadam.pixelboard.extension.settings.GboardRoundedKeysSettings;
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -172,6 +173,27 @@ public final class GboardAiWritingToolsRuntime {
             "auto_correct_with_replace_text";
     static final String FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK =
             "enable_revert_auto_correct_on_pk";
+
+    // Decoder & Spacebar Auto-Correction Consistency
+    static final String FLAG_DELAY_TO_WAIT_FOR_SUGGESTIONS_BEFORE_COMMIT_MS =
+            "delay_to_wait_for_suggestions_before_commit_ms";
+    static final Long ENFORCED_DELAY_TO_WAIT_FOR_SUGGESTIONS_BEFORE_COMMIT_MS = 150L;
+    static final String FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK =
+            "enable_decoder_response_wait_without_lock";
+    static final String FLAG_TRY_INITIALIZE_DECODER_AFTER_LM_LOADS =
+            "try_initialize_decoder_after_lm_loads";
+    static final String FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_WEB_TEXT =
+            "apps_to_respect_no_auto_correction_in_web_text";
+    static final String FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION =
+            "apps_to_respect_no_auto_correction";
+    static final String FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_SPECIAL_TYPES =
+            "apps_to_respect_no_auto_correction_in_special_types";
+    static final String FLAG_PK_AUTO_CAPITALIZATION_USE_AUTO_CORRECTION =
+            "pk_auto_capitalization_use_auto_correction";
+    static final String FLAG_ENABLE_AUTO_CORRECTION_STATS =
+            "enable_auto_correction_stats";
+    static final String FLAG_ENABLE_CORRECTION_COMMIT_ANIMATION =
+            "enable_correction_commit_animation";
 
     // Scan Text (OCR Camera Input)
     static final String FLAG_ENABLE_OCR =
@@ -358,8 +380,6 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_ACCESS_POINTS_MENU_REDESIGN.equals(flagName)
                 || FLAG_ENABLE_ACCESS_POINT_KEYBOARD.equals(flagName)
                 || FLAG_ENABLE_AUTOFILL_IME_INTEGRATION.equals(flagName)
-                || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI.equals(flagName)
-                || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW.equals(flagName)
                 || FLAG_ENABLE_SPELL_CHECKER_EXTENSION.equals(flagName)
                 || FLAG_WRITING_HELPER_CHIP_IN_SPELLCHECKER.equals(flagName)
                 || FLAG_ENABLE_SPELL_CHECKER_HIGHLIGHT_ON_WEB_INPUT.equals(flagName)
@@ -401,8 +421,6 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_CLIPBOARD_RECENT_SCREENSHOT.equals(flagName)
                 || FLAG_ENABLE_EXTENDED_CLIPBOARD_HISTORY.equals(flagName)
                 || FLAG_ENABLE_SYSTEM_CLIPBOARD_DIRECT_PASTE_FOR_QUICK_PASTE.equals(flagName)
-                || FLAG_ENABLE_FREQUENT_EMOJI_RECENT_TAB.equals(flagName)
-                || FLAG_ENABLE_EMOJI_FREQUENT_RECENT_SWITCH_OPTION.equals(flagName)
                 || FLAG_EMOJI_PALETTE_V2.equals(flagName)
                 || FLAG_SUPER_INSERT.equals(flagName)
                 || FLAG_SUPER_INSERT_VK.equals(flagName)
@@ -430,7 +448,12 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_LEARNING_FOR_EDITOR_WITHOUT_AUTO_CORRECTION.equals(flagName)
                 || FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS.equals(flagName)
                 || FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT.equals(flagName)
-                || FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK.equals(flagName);
+                || FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK.equals(flagName)
+                || FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK.equals(flagName)
+                || FLAG_TRY_INITIALIZE_DECODER_AFTER_LM_LOADS.equals(flagName)
+                || FLAG_PK_AUTO_CAPITALIZATION_USE_AUTO_CORRECTION.equals(flagName)
+                || FLAG_ENABLE_AUTO_CORRECTION_STATS.equals(flagName)
+                || FLAG_ENABLE_CORRECTION_COMMIT_ANIMATION.equals(flagName);
     }
 
     public static Object applyOverriddenFlagValue(Object receiver, Object originalResult) {
@@ -486,7 +509,17 @@ public final class GboardAiWritingToolsRuntime {
                     && originalResult instanceof Long) {
                 return 1L;
             }
-            if (FLAG_ON_DEMAND_FEATURE_SPLIT.equals(flagName)
+            if (FLAG_DELAY_TO_WAIT_FOR_SUGGESTIONS_BEFORE_COMMIT_MS.equals(flagName)
+                    && originalResult instanceof Long) {
+                return ENFORCED_DELAY_TO_WAIT_FOR_SUGGESTIONS_BEFORE_COMMIT_MS;
+            }
+            if ((FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_WEB_TEXT.equals(flagName)
+                    || FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION.equals(flagName)
+                    || FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_SPECIAL_TYPES.equals(flagName))
+                    && originalResult instanceof String) {
+                return "";
+            }
+            if ((FLAG_ON_DEMAND_FEATURE_SPLIT.equals(flagName)
                     || FLAG_ENABLE_SIGNBOARD.equals(flagName)
                     || FLAG_SIGNBOARD_PROMPT_MANUAL_TRIGGER.equals(flagName)
                     || FLAG_AUTO_SHOW_SIGNBOARD.equals(flagName)
@@ -494,7 +527,10 @@ public final class GboardAiWritingToolsRuntime {
                     || FLAG_SIGNBOARD_DOWNLOAD.equals(flagName)
                     || FLAG_SIGNBOARD_DOWNLOAD_DIALOG.equals(flagName)
                     || FLAG_SIGNBOARD_MOVE_AP_PROMPT.equals(flagName)
-                    || FLAG_USE_4C_IN_SIGNBOARD.equals(flagName)) {
+                    || FLAG_USE_4C_IN_SIGNBOARD.equals(flagName)
+                    || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI.equals(flagName)
+                    || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW.equals(flagName))
+                    && originalResult instanceof Boolean) {
                 return Boolean.FALSE;
             }
             if (isStockPhenotypeEnforcedFlag(flagName)
@@ -511,6 +547,23 @@ public final class GboardAiWritingToolsRuntime {
                                     + ", enforced=" + describe(Boolean.TRUE));
                 }
                 return Boolean.TRUE;
+            }
+            if (FLAG_ENABLE_FREQUENT_EMOJI_RECENT_TAB.equals(flagName)
+                    && originalResult instanceof Boolean) {
+                boolean frequent = context != null
+                        && GboardEmojiSettings.isFrequentEmojisEnabled(context);
+                Boolean target = Boolean.valueOf(frequent);
+                if (!target.equals(originalResult)) {
+                    logLimited(FLAG_LOG_COUNT,
+                            "flag=" + flagName
+                                    + ", original=" + describe(originalResult)
+                                    + ", enforced=" + describe(target));
+                }
+                return target;
+            }
+            if (FLAG_ENABLE_EMOJI_FREQUENT_RECENT_SWITCH_OPTION.equals(flagName)
+                    && originalResult instanceof Boolean) {
+                return Boolean.FALSE;
             }
             if (context == null) {
                 return originalResult;
@@ -825,11 +878,12 @@ public final class GboardAiWritingToolsRuntime {
                 if (editor == null) editor = prefs.edit();
                 editor.putBoolean("pref_key_enable_emoji_suggestion", true);
             }
-            if (!prefs.getBoolean("spellchecker_enable_chips_ui", false)) {
+            if (!prefs.contains("spellchecker_enable_chips_ui")
+                    || prefs.getBoolean("spellchecker_enable_chips_ui", false)) {
                 if (editor == null) editor = prefs.edit();
-                editor.putBoolean("spellchecker_enable_chips_ui", true);
+                editor.putBoolean("spellchecker_enable_chips_ui", false);
             }
-            if (!prefs.contains("enable_mark_misspelled_words")) {
+            if (!prefs.getBoolean("enable_mark_misspelled_words", false)) {
                 if (editor == null) editor = prefs.edit();
                 editor.putBoolean("enable_mark_misspelled_words", true);
             }

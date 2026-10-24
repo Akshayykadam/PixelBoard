@@ -363,7 +363,8 @@ public final class GboardPatchesSettingsContract {
 
     public enum SectionStyle {
         DEFAULT,
-        ADVANCED
+        ADVANCED,
+        CHANGELOG
     }
 
     public enum StatusTone {
@@ -628,9 +629,19 @@ public final class GboardPatchesSettingsContract {
                     refreshPolicy, panelStyle, null);
         }
 
+        private final boolean restartActionVisible;
+
         public Screen(String toolbarTitle, String headerBadge, String headerTitle,
                 String headerSummary, List<StatusBlock> statusBlocks, List<Section> sections,
                 RefreshPolicy refreshPolicy, PanelStyle panelStyle, CommandRow primaryAction) {
+            this(toolbarTitle, headerBadge, headerTitle, headerSummary, statusBlocks, sections,
+                    refreshPolicy, panelStyle, primaryAction, true);
+        }
+
+        public Screen(String toolbarTitle, String headerBadge, String headerTitle,
+                String headerSummary, List<StatusBlock> statusBlocks, List<Section> sections,
+                RefreshPolicy refreshPolicy, PanelStyle panelStyle, CommandRow primaryAction,
+                boolean restartActionVisible) {
             this.toolbarTitle = toolbarTitle;
             this.headerBadge = headerBadge;
             this.headerTitle = headerTitle;
@@ -640,6 +651,11 @@ public final class GboardPatchesSettingsContract {
             this.refreshPolicy = refreshPolicy == null ? RefreshPolicy.none() : refreshPolicy;
             this.panelStyle = panelStyle == null ? PanelStyle.FLAT : panelStyle;
             this.primaryAction = primaryAction;
+            this.restartActionVisible = restartActionVisible;
+        }
+
+        public boolean isRestartActionVisible() {
+            return restartActionVisible;
         }
 
         public String getToolbarTitle() {
@@ -892,19 +908,62 @@ public final class GboardPatchesSettingsContract {
 
     public static class CommandRow extends Row {
         private final Runnable action;
+        private final android.graphics.drawable.Drawable iconDrawable;
+        private final boolean animating;
 
         public CommandRow(CharSequence title, String summary, boolean enabled, Runnable action) {
-            this(title, summary, enabled, action, null);
+            this(title, summary, enabled, action, null, null, false);
         }
 
         public CommandRow(CharSequence title, String summary, boolean enabled, Runnable action,
                 PreviewSpec previewSpec) {
+            this(title, summary, enabled, action, previewSpec, null, false);
+        }
+
+        public CommandRow(CharSequence title, String summary, boolean enabled, Runnable action,
+                PreviewSpec previewSpec, android.graphics.drawable.Drawable iconDrawable) {
+            this(title, summary, enabled, action, previewSpec, iconDrawable, false);
+        }
+
+        public CommandRow(CharSequence title, String summary, boolean enabled, Runnable action,
+                PreviewSpec previewSpec, android.graphics.drawable.Drawable iconDrawable, boolean animating) {
             super(title, summary, enabled, previewSpec);
             this.action = action;
+            this.iconDrawable = iconDrawable;
+            this.animating = animating;
         }
 
         public Runnable getAction() {
             return action;
+        }
+
+        public android.graphics.drawable.Drawable getIconDrawable() {
+            return iconDrawable;
+        }
+
+        public boolean isAnimating() {
+            return animating;
+        }
+    }
+
+    public static class PrimaryCommandRow extends CommandRow {
+        public PrimaryCommandRow(CharSequence title, String summary, boolean enabled, Runnable action) {
+            this(title, summary, enabled, action, false);
+        }
+
+        public PrimaryCommandRow(CharSequence title, String summary, boolean enabled, Runnable action,
+                boolean animating) {
+            super(title, summary, enabled, action, null, null, animating);
+        }
+
+        public PrimaryCommandRow(CharSequence title, String summary, boolean enabled, Runnable action,
+                android.graphics.drawable.Drawable iconDrawable) {
+            this(title, summary, enabled, action, iconDrawable, false);
+        }
+
+        public PrimaryCommandRow(CharSequence title, String summary, boolean enabled, Runnable action,
+                android.graphics.drawable.Drawable iconDrawable, boolean animating) {
+            super(title, summary, enabled, action, null, iconDrawable, animating);
         }
     }
 
