@@ -849,4 +849,60 @@
         <translation locale="th">เปิดใช้รูปแบบปุ่มโค้งมน Material 3 Expressive (Belka)</translation>
         <translation locale="uk">Увімкнути закруглений стиль клавіш Material 3 Expressive (Belka).</translation>
     </string>
+    <string name="gboard_patches_clipboard_history_title">
+        <translation locale="en">Clipboard history</translation>
+        <translation locale="ar">سجل الحافظة</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_summary">
+        <translation locale="en">Manage clipboard retention duration</translation>
+        <translation locale="ar">إدارة مدة الاحتفاظ بالحافظة</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_header_summary">
+        <translation locale="en">Configure how long clipboard items are kept</translation>
+        <translation locale="ar">تكوين مدة الاحتفاظ بعناصر الحافظة</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_error_title">
+        <translation locale="en">Clipboard settings unavailable</translation>
+        <translation locale="ar">إعدادات الحافظة غير متوفرة</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_error_summary">
+        <translation locale="en">Could not load clipboard history preferences</translation>
+        <translation locale="ar">تعذر تحميل تفضيلات سجل الحافظة</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_duration_title">
+        <translation locale="en">History retention</translation>
+        <translation locale="ar">مدة الاحتفاظ بالسجل</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_duration_summary">
+        <translation locale="en">Choose how long unpinned items are kept</translation>
+        <translation locale="ar">اختر مدة الاحتفاظ بالعناصر غير المثبتة</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_duration_dialog_title">
+        <translation locale="en">Clipboard history duration</translation>
+        <translation locale="ar">مدة سجل الحافظة</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_duration_1h">
+        <translation locale="en">1 hour</translation>
+        <translation locale="ar">ساعة واحدة</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_duration_24h">
+        <translation locale="en">24 hours (Current maximum)</translation>
+        <translation locale="ar">24 ساعة (الحد الأقصى الحالي)</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_duration_7d">
+        <translation locale="en">7 days</translation>
+        <translation locale="ar">7 أيام</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_duration_30d">
+        <translation locale="en">30 days</translation>
+        <translation locale="ar">30 يوماً</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_duration_never">
+        <translation locale="en">Never (Unlimited / Manual deletion only)</translation>
+        <translation locale="ar">أبداً (غير محدود / الحذف اليدوي فقط)</translation>
+    </string>
+    <string name="gboard_patches_clipboard_history_section_behavior">
+        <translation locale="en">Retention behavior</translation>
+        <translation locale="ar">سلوك الاحتفاظ</translation>
+    </string>
 </settings-text>

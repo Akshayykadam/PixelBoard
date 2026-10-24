@@ -435,6 +435,7 @@ object GboardTargetBuildCompiler {
             "18.3.1.977415014-beta-arm64-v8a",
             "18.3.1.977415014-release-arm64-v8a",
             "18.4.1.985164140-release-arm64-v8a",
+            "18.5.3.993608717-release-arm64-v8a",
         ),
     )
 }

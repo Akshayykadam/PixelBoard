@@ -60,9 +60,15 @@ internal val gboardAdvancedVoice1803ZhTwPatch = bytecodePatch(
     dependsOn(gboardPatchesExtensionCarrierPatch)
 
     execute {
-        // Verified against 18.4.1.985164140-release-arm64-v8a.
+        // Verified against 18.4.1 and 18.5.3 release-arm64-v8a.
         // Keep the old locale/MDD hooks restricted to their 18.0.3 targets.
         val fusedReadiness = findMutableMethodOrNull(
+            GboardMethodTarget("Lssi;", "a", emptyList(), "Z"),
+        )?.takeIf { method ->
+            val body = method.implementation?.instructions.orEmpty()
+            body.any { it.isMethodReference("Lqlp;->e(Lqll;)Z") } &&
+                body.any { it.isFieldReference("Loiz;->b:Lqll;") }
+        } ?: findMutableMethodOrNull(
             GboardMethodTarget("Lslc;", "a", emptyList(), "Z"),
         )?.takeIf { method ->
             val body = method.implementation?.instructions.orEmpty()

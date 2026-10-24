@@ -34,6 +34,7 @@ private data class RamblerTargets(
     val selectionWrite: GboardMethodTarget,
     val selectionRead: GboardMethodTarget,
     val defaultSelection: GboardMethodTarget,
+    val micActivation: GboardMethodTarget? = null,
 )
 
 private val RAMBLER_1803_TARGETS = RamblerTargets(
@@ -97,6 +98,29 @@ private val RAMBLER_1841_TARGETS = RamblerTargets(
     ),
     selectionRead = method("Lmvq;", "a", listOf("Landroid/content/Context;"), "Z"),
     defaultSelection = method("Lfde;", "hT", emptyList(), "V"),
+    micActivation = method("Lmjz;", "B", listOf("Landroid/content/Context;"), "Z"),
+)
+
+private val RAMBLER_1853_TARGETS = RamblerTargets(
+    layout = method(VOICE_SETTINGS, "aC", emptyList(), "I"),
+    setup = method(VOICE_SETTINGS, "ac", emptyList(), "V"),
+    create = method(VOICE_SETTINGS, "f", listOf("Landroid/os/Bundle;"), "V"),
+    selectionWrite = method(
+        VOICE_SETTINGS,
+        "aE",
+        listOf(
+            "Z",
+            "Lqvt;",
+            "Lcom/google/android/libraries/inputmethod/preferencewidgets/" +
+                "CustomSelectorWithWidgetPreference;",
+            "Lcom/google/android/libraries/inputmethod/preferencewidgets/" +
+                "CustomSelectorWithWidgetPreference;",
+        ),
+        "V",
+    ),
+    selectionRead = method("Lnca;", "a", listOf("Landroid/content/Context;"), "Z"),
+    defaultSelection = method("Lfhv;", "hU", emptyList(), "V"),
+    micActivation = method("Lmql;", "B", listOf("Landroid/content/Context;"), "Z"),
 )
 
 private fun method(
@@ -114,9 +138,10 @@ internal val gboardRambler1803OfficialSelectorPatch = bytecodePatch(
 
     execute {
         val targets = when {
-            findMutableMethodOrNull(RAMBLER_1841_TARGETS.layout) != null -> RAMBLER_1841_TARGETS
-            findMutableMethodOrNull(RAMBLER_1831_TARGETS.layout) != null -> RAMBLER_1831_TARGETS
-            findMutableMethodOrNull(RAMBLER_1803_TARGETS.layout) != null -> RAMBLER_1803_TARGETS
+            findMutableMethodOrNull(RAMBLER_1853_TARGETS.selectionRead) != null -> RAMBLER_1853_TARGETS
+            findMutableMethodOrNull(RAMBLER_1841_TARGETS.selectionRead) != null -> RAMBLER_1841_TARGETS
+            findMutableMethodOrNull(RAMBLER_1831_TARGETS.selectionRead) != null -> RAMBLER_1831_TARGETS
+            findMutableMethodOrNull(RAMBLER_1803_TARGETS.selectionRead) != null -> RAMBLER_1803_TARGETS
             else -> return@execute
         }
         findMutableMethodOrThrow(targets.layout)
@@ -143,11 +168,15 @@ internal val gboardRambler1803OfficialSelectorPatch = bytecodePatch(
                 RuntimeCallId.RAMBLER_RUNTIME_ENTER_DEFAULT_SELECTION_SUPPRESSION,
                 RuntimeCallId.RAMBLER_RUNTIME_EXIT_DEFAULT_SELECTION_SUPPRESSION,
             )
+        targets.micActivation?.let { target ->
+            findMutableMethodOrNull(target)?.applyToolbarMicActivation()
+        }
         suppressRamblerFeedbackAccessPoint()
     }
 }
 
 private val ramblerFeedbackTargets = listOf(
+    method("Lfhm;", "a", listOf("Landroid/content/Context;"), "Z"),
     method("Lfcx;", "a", listOf("Landroid/content/Context;"), "Z"),
 )
 
@@ -231,4 +260,24 @@ private fun MutableMethod.applySelectionReadObserver() {
         check(resultRegister <= 15) { "Rambler selection result register is not invoke-35c safe" }
         addInstructions(returnIndex, RuntimeCallEmitter.invoke(call, "v$resultRegister"))
     }
+}
+
+private fun MutableMethod.applyToolbarMicActivation() {
+    val call = RuntimeCallId.RAMBLER_RUNTIME_SHOULD_ENABLE_AGENTIC_DICTATION
+    val reference = RuntimeAbiCatalog.abi(call).reference
+    val instructions = implementation?.instructions ?: return
+    if (instructions.any { it.isMethodReference(reference) }) {
+        return
+    }
+    addInstructions(
+        0,
+        """
+        ${RuntimeCallEmitter.invoke(call, "")}
+        move-result v0
+        if-eqz v0, :cond_stock_mic
+        const/4 v0, 0x1
+        return v0
+        :cond_stock_mic
+        """.trimIndent(),
+    )
 }

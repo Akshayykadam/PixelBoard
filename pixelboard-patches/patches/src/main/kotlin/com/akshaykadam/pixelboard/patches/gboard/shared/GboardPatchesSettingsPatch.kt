@@ -16,8 +16,10 @@ import org.w3c.dom.Element
 
 import com.akshaykadam.pixelboard.patches.gboard.features.emoji.gboardCandidateEmojiVibrancyPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardSyncPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardHistorySliderPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.spellchecker.gboardSpellCheckerChipsPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.accessibility.gboardFeaturesMenuAccessibilityPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRamblerDictationPromptFixPatch
 
 internal val gboardPatchesSettingsPatch = resourcePatch(
     description = "Add Patches entry to the bottom of Gboard settings."
@@ -28,8 +30,10 @@ internal val gboardPatchesSettingsPatch = resourcePatch(
         gboardPatchesExtensionCarrierPatch,
         gboardCandidateEmojiVibrancyPatch,
         gboardClipboardSyncPatch,
+        gboardClipboardHistorySliderPatch,
         gboardSpellCheckerChipsPatch,
         gboardFeaturesMenuAccessibilityPatch,
+        gboardRamblerDictationPromptFixPatch,
     )
 
     finalize {

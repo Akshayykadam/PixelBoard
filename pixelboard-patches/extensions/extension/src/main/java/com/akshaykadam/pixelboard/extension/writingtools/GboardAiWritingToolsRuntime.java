@@ -429,15 +429,6 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_FIX_FIRST_AUTO_CORRECTION_COMMIT.equals(flagName)
                 || FLAG_LEARNING_FOR_EDITOR_WITHOUT_AUTO_CORRECTION.equals(flagName)
                 || FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS.equals(flagName)
-                || FLAG_ENABLE_SIGNBOARD.equals(flagName)
-                || FLAG_SIGNBOARD_PROMPT_MANUAL_TRIGGER.equals(flagName)
-                || FLAG_ON_DEMAND_FEATURE_SPLIT.equals(flagName)
-                || FLAG_AUTO_SHOW_SIGNBOARD.equals(flagName)
-                || FLAG_SIGNBOARD_AUTO_SHOW_PROMPT.equals(flagName)
-                || FLAG_SIGNBOARD_DOWNLOAD.equals(flagName)
-                || FLAG_SIGNBOARD_DOWNLOAD_DIALOG.equals(flagName)
-                || FLAG_SIGNBOARD_MOVE_AP_PROMPT.equals(flagName)
-                || FLAG_USE_4C_IN_SIGNBOARD.equals(flagName)
                 || FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT.equals(flagName)
                 || FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK.equals(flagName);
     }
@@ -494,6 +485,17 @@ public final class GboardAiWritingToolsRuntime {
             if (FLAG_SMART_COMPOSE_STATUS.equals(flagName)
                     && originalResult instanceof Long) {
                 return 1L;
+            }
+            if (FLAG_ON_DEMAND_FEATURE_SPLIT.equals(flagName)
+                    || FLAG_ENABLE_SIGNBOARD.equals(flagName)
+                    || FLAG_SIGNBOARD_PROMPT_MANUAL_TRIGGER.equals(flagName)
+                    || FLAG_AUTO_SHOW_SIGNBOARD.equals(flagName)
+                    || FLAG_SIGNBOARD_AUTO_SHOW_PROMPT.equals(flagName)
+                    || FLAG_SIGNBOARD_DOWNLOAD.equals(flagName)
+                    || FLAG_SIGNBOARD_DOWNLOAD_DIALOG.equals(flagName)
+                    || FLAG_SIGNBOARD_MOVE_AP_PROMPT.equals(flagName)
+                    || FLAG_USE_4C_IN_SIGNBOARD.equals(flagName)) {
+                return Boolean.FALSE;
             }
             if (isStockPhenotypeEnforcedFlag(flagName)
                     && originalResult instanceof Boolean) {

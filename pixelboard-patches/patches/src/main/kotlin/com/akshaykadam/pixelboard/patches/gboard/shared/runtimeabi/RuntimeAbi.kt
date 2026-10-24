@@ -14,6 +14,7 @@ internal enum class RuntimeCallId(internal val encodedAbi: String) {
     RAMBLER_RUNTIME_EXIT_DEFAULT_SELECTION_SUPPRESSION("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRambler1803OfficialSelectionRuntime;->exitDefaultSelectionSuppression()V"),
     RAMBLER_RUNTIME_EXIT_VOICE_SETTINGS_SCOPE("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRambler1803OfficialSelectionRuntime;->exitVoiceSettingsScope()V"),
     RAMBLER_RUNTIME_UPDATE_OFFICIAL_SELECTION("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRambler1803OfficialSelectionRuntime;->updateOfficialSelection(Z)V"),
+    RAMBLER_RUNTIME_SHOULD_ENABLE_AGENTIC_DICTATION("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRambler1803OfficialSelectionRuntime;->shouldEnableAgenticDictation()Z"),
     AI_WRITING_TOOLS_RUNTIME_APPLY_OVERRIDDEN_FLAG_VALUE("Lcom/akshaykadam/pixelboard/extension/writingtools/GboardAiWritingToolsRuntime;->applyOverriddenFlagValue(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"),
     AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_APPLY_GEN_AI_INIT_CLIENT_TYPE("Lcom/akshaykadam/pixelboard/extension/writingtools/GboardAiWritingToolsVoiceCommandRuntime;->applyGenAiInitClientType(Ljava/lang/Object;Z)Z"),
     AI_WRITING_TOOLS_VOICE_COMMAND_RUNTIME_APPLY_SMART_EDIT_INIT_CLIENT_TYPE("Lcom/akshaykadam/pixelboard/extension/writingtools/GboardAiWritingToolsVoiceCommandRuntime;->applySmartEditInitClientType(Ljava/lang/Object;Z)Z"),
@@ -25,6 +26,8 @@ internal enum class RuntimeCallId(internal val encodedAbi: String) {
     CLIPBOARD_SYNC_RUNTIME_SYNC_ON_START_INPUT_VIEW("Lcom/akshaykadam/pixelboard/extension/clipboard/GboardClipboardSyncRuntime;->syncOnStartInputView(Ljava/lang/Object;)V"),
     FEATURES_MENU_ACCESSIBILITY_ON_INFLATE("Lcom/akshaykadam/pixelboard/extension/accessibility/GboardFeaturesMenuAccessibilityRuntime;->onAccessPointsPanelInflated(Landroid/view/View;)V"),
     FEATURES_MENU_ACCESSIBILITY_ON_VISIBILITY_CHANGED("Lcom/akshaykadam/pixelboard/extension/accessibility/GboardFeaturesMenuAccessibilityRuntime;->onAccessPointsPanelVisibilityChanged(Landroid/view/View;)V"),
+    CLIPBOARD_HISTORY_RUNTIME_CONFIGURE_SLIDER("Lcom/akshaykadam/pixelboard/extension/clipboard/GboardClipboardHistoryRuntime;->configureClipboardHistorySlider(Ljava/lang/Object;Landroid/content/Context;)V"),
+    RAMBLER_DICTATION_RUNTIME_FILTER_VOICE_TEXT("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerDictationRuntime;->filterVoiceText(Ljava/lang/Object;)V"),
 }
 
 internal data class RuntimeAbi(

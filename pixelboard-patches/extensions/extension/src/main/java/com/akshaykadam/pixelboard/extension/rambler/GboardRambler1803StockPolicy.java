@@ -94,3 +94,4 @@ public final class GboardRambler1803StockPolicy {
                 || AD_ACTIVATION_TYPE_FLAG.equals(flagName);
     }
 }
+

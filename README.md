@@ -5,24 +5,24 @@
 **Supercharged Gboard Mod featuring Google Pixel 11 series's Rambler Voice Typing, AI Writing Assistant & Writing Tools V2 [No Root].**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.4.1-Stable-V7">
-    <img src="https://img.shields.io/badge/Release-v18.4.1--V7-8A2BE2?style=flat-square&logo=github&logoColor=white" alt="Latest Release"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.5.3-Stable-V1">
+    <img src="https://img.shields.io/badge/Release-v18.5.3--V1-8A2BE2?style=flat-square&logo=github&logoColor=white" alt="Latest Release"/>
   </a>
   <img src="https://img.shields.io/badge/Android-10%20to%2016-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android Support"/>
   <img src="https://img.shields.io/badge/Architecture-arm64--v8a-blue?style=flat-square" alt="Arch Support"/>
-  <img src="https://img.shields.io/badge/Base%20App-Gboard%20v18.4.1-orange?style=flat-square&logo=google" alt="Base Gboard"/>
+  <img src="https://img.shields.io/badge/Base%20App-Gboard%20v18.5.3-orange?style=flat-square&logo=google" alt="Base Gboard"/>
   <img src="https://img.shields.io/badge/Root-Not%20Required-success?style=flat-square" alt="No Root"/>
   <img src="https://img.shields.io/badge/License-GPL--3.0-lightgrey?style=flat-square" alt="License"/>
 </p>
 
 <!-- Primary Action: Clear download choices with zero confusion -->
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.2.0/PixelBoard-18.4.1-V7.apk">
-    <img src="https://img.shields.io/badge/📥_Direct_Download_(APK)-v18.4.1_V7_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Ready-to-Install APK"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.5.3-Stable-V1/PixelBoard-18.5.3-V1.apk">
+    <img src="https://img.shields.io/badge/📥_Direct_Download_(APK)-v18.5.3_V1_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Ready-to-Install APK"/>
   </a>
   &nbsp;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.2.0/patches-1.2.0.mpp">
-    <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.2.0_(1.6_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Morphe Patch Bundle"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.0/patches-1.3.0.mpp">
+    <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.3.0_(1.6_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Morphe Patch Bundle"/>
   </a>
 </p>
 
@@ -31,7 +31,7 @@
 </p>
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.4.1-Stable-V7"> <b>Release Notes</b></a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.5.3-Stable-V1"> <b>Release Notes</b></a> &nbsp;&bull;&nbsp;
   <a href="#installation-guide"> <b>Installation Guide</b></a> &nbsp;&bull;&nbsp;
   <a href="#visual-tour--screenshots"> <b>Screenshots</b></a> &nbsp;&bull;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/releases"> <b>All Releases</b></a>
@@ -42,13 +42,13 @@
 ---
 
 <a id="release-assets"></a>
-## 📥 Release Assets (v18.4.1-V7 / Patch v1.2.0)
+## 📥 Release Assets (v18.5.3-V1 / Patch v1.3.0)
 
 | Package | Type | Description |
 | :--- | :--- | :--- |
-| [**PixelBoard-18.4.1-V7.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/PixelBoard-18.4.1-V7.apk) | **Signed APK** *(Recommended)* | **Ready to install.** Installs side-by-side with stock Gboard without root (`com.akshaykadam.pixelboard`). |
-| [**patches-1.2.0.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/patches-1.2.0.mpp) | **Morphe Patch Bundle** | Standalone patch file for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher) to patch your own base APK. |
-| [**Stock Gboard v18.4.1**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) | **Base APK** |  Official unmodified base APK from APKMirror *(only required if patching manually with Morphe)*. |
+| [**PixelBoard-18.5.3-V1.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.5.3-Stable-V1/PixelBoard-18.5.3-V1.apk) | **Signed APK** *(Recommended)* | **Ready to install.** Installs side-by-side with stock Gboard without root (`com.akshaykadam.pixelboard`). Base Gboard v18.5.3 Release. |
+| [**patches-1.3.0.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.0/patches-1.3.0.mpp) | **Morphe Patch Bundle** | Standalone patch file for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher) to patch your own base APK. |
+| [**Stock Gboard v18.5.3**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/) | **Base APK** | Official unmodified base APK from APKMirror *(only required if patching manually with Morphe)*. |
 
 ---
 
@@ -76,7 +76,7 @@ Traditional voice-to-text transcribes every hesitation literally. PixelBoard unl
 - **Thought Completion**: Seamlessly fixes self-corrections on the fly (e.g., *"let's meet at two no, three PM"* &rarr; *"Let's meet at 3:00 PM"*).
 - **Auto-Punctuation & Capitalization**: Adds context-aware periods, commas, and proper noun capitalization without requiring voice commands.
 - **Multilingual Fluidity**: Mix and match languages seamlessly in a single sentence.
-- **Gboard 18.4.1 & Standalone Support**: Seamlessly hooked into Gboard 18.4.1's obfuscated `VoiceSettingsFragment` selector, with automatic preference initialization (`enable_jetson = true`) ensuring Rambler works out-of-the-box on the standalone package (`com.akshaykadam.pixelboard`) without relying on Google Play Services Phenotype flag sync.
+- **Gboard 18.5.3 / 18.4.1 & Standalone Support**: Seamlessly hooked into Gboard's obfuscated `VoiceSettingsFragment` selector, with automatic preference initialization (`enable_jetson = true`) ensuring Rambler works out-of-the-box on the standalone package (`com.akshaykadam.pixelboard`) without relying on Google Play Services Phenotype flag sync.
 - **Battery-Friendly Lifecycle**: Cleanly releases speech recognition bindings (`GoogleAsrService`) as soon as the keyboard is hidden, eliminating screen-off battery drain ([#3](https://github.com/Akshayykadam/PixelBoard/issues/3)).
 - **Cold Boot & Direct Boot Readiness**: Powered by Device-Protected Storage (DE), ensuring Rambler voice typing is ready immediately after device reboots without needing manual Gboard restarts ([#4](https://github.com/Akshayykadam/PixelBoard/issues/4)).
 
@@ -148,6 +148,24 @@ On supported devices (such as Google Pixel 8 Pro / 9 series), choose your prefer
 - **Signature Whitelist Bypass**: Pre-patched bytecode ensures Google Play signature checks and integrity verifications pass cleanly without root.
 - **Inline Autofill & Password Manager Suggestions**: Enables Android's `DeviceIntelligence` inline autofill chips for password managers (Bitwarden, 1Password, KeePass, etc.) in the renamed package ([#24](https://github.com/Akshayykadam/PixelBoard/pull/24)).
 
+### 16. Extended Clipboard History Retention Duration (New Feature)
+- **Save Clips for Up to 30 Days or Permanently**: Break free from stock Gboard's rigid 24-hour limit! PixelBoard lets you choose exactly how long copied text and items are saved in your clipboard history with 5 customizable tiers:
+  - **1 hour**
+  - **24 hours** (Stock default)
+  - **7 days** (1 week)
+  - **30 days** (1 month)
+  - **Never** (Permanent / Manual deletion only)
+- **Accessible Everywhere**: Configurable directly under Gboard **Settings > Clipboard** and inside **PixelBoard Settings**.
+- **Crash-Free Migration**: Automatically migrates previously saved retention preferences (e.g. stock 24h at index 6 &rarr; new index 1) and safely clamps slider values, eliminating layout crashes.
+
+### 17. Comprehensive TalkBack & Screen Reader Accessibility Overhaul ([#65](https://github.com/Akshayykadam/PixelBoard/pull/65), [#66](https://github.com/Akshayykadam/PixelBoard/pull/66), [#67](https://github.com/Akshayykadam/PixelBoard/pull/67))
+- **Unified Row Semantics**: Introduces `AccessibleRow` merging switch, radio, and choice rows into single TalkBack controls with unified roles and states, eliminating redundant navigation stops.
+- **Focus Preservation Across Dynamic Rebuilds**: Automatically tracks and restores TalkBack focus across real-time screen rebuilds or smoothly shifts focus to the page title on new pages.
+- **Accessible Headings & Spoken Feedback**: Marks section and toolbar titles as headings (API 28+), adds keyboard preview hints, announces spoken warnings, and speaks restart confirmations.
+
+### 18. Complete Arabic (ar) Localization ([#53](https://github.com/Akshayykadam/PixelBoard/pull/53))
+- **Full Arabic Translations**: Complete Arabic language localization covering all Advanced Settings, AI Writing Tools, and Rambler dictation preferences.
+
 > [!NOTE]
 > **Google Pixel Device Requirement**: New advanced features (such as **Writing Tools V2** and the **On-Device AI Inference Backend Selector**) are available **only on Google Pixel devices** (e.g., Pixel 8 Pro / Pixel 9 series) due to system AICore and hardware model requirements. On non-Pixel Android devices, these specific options are automatically hidden or gated to ensure complete stability, while core features like **Gemini Rambler Natural Voice Typing**, **AI Proofread**, and **Tone Rewriting** work across all supported devices.
 
@@ -216,7 +234,7 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ## Installation Guide
 
 ### Option A: Direct Download on Your Phone (Easiest)
-1. Download [**PixelBoard Stable APK (v18.4.1 V7, 127 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V7/PixelBoard-18.4.1-V7.apk) (or view the [**v18.4.1-V7 Release Page**](https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.4.1-Stable-V7)).
+1. Download [**PixelBoard Stable APK (v18.5.3 V1, 79 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.5.3-Stable-V1/PixelBoard-18.5.3-V1.apk) (or view the [**v18.5.3-V1 Release Page**](https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.5.3-Stable-V1)).
 2. Tap the downloaded `.apk` in your notification drawer or Downloads folder.
 3. If prompted, toggle **"Allow from this source"** and tap **Install**.
 4. Enable PixelBoard in **Settings > System > Languages & input > On-screen keyboard**.
@@ -224,17 +242,17 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ### Option B: Sideload via ADB (For Developers)
 Connect your Android phone via USB with USB Debugging enabled:
 ```bash
-adb install -r PixelBoard-18.4.1-V7.apk
+adb install -r PixelBoard-18.5.3-V1.apk
 adb shell am force-stop com.akshaykadam.pixelboard
 ```
-*(If building from source locally, use `adb install -r output/PixelBoard-18.4.1-V7.apk`)*
+*(If building from source locally, use `adb install -r output/PixelBoard-18.5.3-V1.apk`)*
 
 ### Option C: Patch via Morphe Manager (On-Device Patcher)
 You can patch your stock Gboard APK directly on your phone using **Morphe Manager**:
 1. Install **Morphe Manager** on your Android device.
 2. Get the two required files:
-   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.2.0.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.2.0/patches-1.2.0.mpp))
-   - **Stock Base APK**: Download the official base bundle from [**APKMirror (Gboard v18.4.1 Release)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/).
+   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.3.0.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.0/patches-1.3.0.mpp))
+   - **Stock Base APK**: Download the official base bundle from [**APKMirror (Gboard v18.5.3 Release)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/).
 3. In Morphe Manager, select **Storage**, choose the stock Gboard APK, and load `PixelBoard.mpp` as the patch source.
 4. Tap **Patch** and then **Install**!
 
@@ -264,10 +282,10 @@ GBoardMod/
 ├── build.sh                   # 1-click automated build & patching script (100% offline)
 ├── options.json               # Patch configuration profile
 ├── patches/
-│   ├── PixelBoard.mpp         # Pre-bundled offline patch pack (~1.4 MB)
+│   ├── PixelBoard.mpp         # Pre-bundled offline patch pack (~1.6 MB)
 │   └── patches-bundle.json    # Morphe Manager repository metadata
 ├── input/
-│   └── gboard.apk             # Base stock Gboard APK (v18.4.1 Release, ~122 MB)
+│   └── gboard.apk             # Base stock Gboard APK (v18.5.3 Release, ~67 MB)
 ├── output/
 │   ├── PixelBoard.apk         # Compiled APK (local build output / hosted on GitHub Releases)
 │   └── patching-result.json   # Patch verification report
@@ -324,14 +342,14 @@ java -jar tools/patcher.jar patch \
 | Property | Requirement |
 | :--- | :--- |
 | **Target Package** | `com.google.android.inputmethod.latin` |
-| **Primary Base Version** | `18.4.1.985164140-release-arm64-v8a` (Recommended) |
-| **Compatible Versions** | `18.4.1.985164140-beta-arm64-v8a`<br>`18.3.1.977415014-release-arm64-v8a` |
+| **Primary Base Version** | `18.5.3.993608717-release-arm64-v8a` (Recommended) |
+| **Compatible Versions** | `18.4.1.985164140-release-arm64-v8a`<br>`18.3.1.977415014-release-arm64-v8a`<br>`18.0.3.954559732-release-arm64-v8a` |
 | **Architecture** | `arm64-v8a` |
-| **Android Version** | Android 10 (API 29) through Android 16 Preview |
+| **Android Version** | Android 10 (API 29) through Android 16 / 17 Preview |
 | **Root Required** | **No** (Standalone side-by-side coexistence) |
 
 > [!NOTE]
-> **Google Pixel Device Support**: The new v18.4 features (**Writing Tools V2** and **On-Device Private AICore / Astrea inference**) are available **only on Google Pixel devices**. Core **Rambler Natural Voice Typing**, **AI Writing Assistant**, proofreading, and tone rewrite work across all Android devices.
+> **Google Pixel Device Support**: Advanced features (**Writing Tools V2** and **On-Device Private AICore / Astrea inference**) are available **only on Google Pixel devices**. Core **Rambler Natural Voice Typing**, **AI Writing Assistant**, proofreading, and tone rewrite work across all Android devices.
 
 ---
 
@@ -347,8 +365,10 @@ java -jar tools/patcher.jar patch \
 
 Special thanks and sincere appreciation to:
 - **JasonWu** — The pioneering author of the original Gboard patch project whose foundational reverse-engineering research and Smali patch framework made this mod possible.
+- **Animesh Ahilya** ([@animeshahilya](https://github.com/animeshahilya)) — For contributing a comprehensive TalkBack accessibility overhaul across settings: merged row semantics (`AccessibleRow`), TalkBack focus restoration across screen rebuilds, heading navigation, spoken warnings, and restart announcements ([#65](https://github.com/Akshayykadam/PixelBoard/pull/65), [#66](https://github.com/Akshayykadam/PixelBoard/pull/66), [#67](https://github.com/Akshayykadam/PixelBoard/pull/67)).
+- **AbdulAziz Hatem** ([@AbdulAziz-Hatem](https://github.com/AbdulAziz-Hatem)) — For contributing complete Arabic (`ar`) localization for all Advanced Settings, AI Writing Tools, and Rambler dictation preferences ([#53](https://github.com/Akshayykadam/PixelBoard/pull/53)).
 - **Mohamed Technology** ([@mohamedtechnology](https://github.com/mohamedtechnology)) — For reporting the TalkBack / screen reader dead zone in the features menu and providing the root cause analysis on window focus and `TYPE_WINDOW_STATE_CHANGED` ([#48](https://github.com/Akshayykadam/PixelBoard/issues/48)).
-- **Andrew Matten** ([@andrewmatten](https://github.com/andrewmatten)) — For pinpointing the Gboard 18.4.1 native dictation split readiness gate in `slc.a()` and contributing the verified bytecode patch for fused APKs on Pixel 8 Pro ([#50](https://github.com/Akshayykadam/PixelBoard/issues/50)).
+- **Andrew Matten** ([@andrewmatten](https://github.com/andrewmatten)) — For pinpointing the Gboard native dictation split readiness gate in `slc.a()` and contributing the verified bytecode patch for fused APKs on Pixel 8 Pro ([#50](https://github.com/Akshayykadam/PixelBoard/issues/50)).
 - **Benestin** ([@Benestinlinson](https://github.com/Benestinlinson)) — For extensive multi-hour testing across releases, diagnosing spacebar auto-correction behavior ([#52](https://github.com/Akshayykadam/PixelBoard/issues/52)), and reporting screenshot chip synchronization and toolbar access point flow ([#44](https://github.com/Akshayykadam/PixelBoard/issues/44), [#47](https://github.com/Akshayykadam/PixelBoard/issues/47)).
 - **Paolo Del Casale** ([@PaoloDelCasale](https://github.com/PaoloDelCasale)) — For deep BatteryStats investigations and candidate fixes resolving background `GoogleAsrService` persistence ([#3](https://github.com/Akshayykadam/PixelBoard/issues/3)) and the offline language pack download loop ([#5](https://github.com/Akshayykadam/PixelBoard/issues/5)).
 - **Alin Cornel** ([@alincornel](https://github.com/alincornel)) — For identifying the root cause and implementing the fix for inline autofill suggestions from password managers (Bitwarden, 1Password, etc.) in the renamed package ([#24](https://github.com/Akshayykadam/PixelBoard/pull/24)).

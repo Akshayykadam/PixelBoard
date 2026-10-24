@@ -27,7 +27,7 @@ class GboardAdvancedVoicePatchContractTest {
         val compatiblePackages = row.getAsJsonObject("compatiblePackages")
         assertEquals(setOf(GBOARD_PACKAGE), compatiblePackages.keySet())
         assertEquals(
-            listOf(GBOARD_VERSION, GBOARD_VERSION_1831, GBOARD_VERSION_1831_RELEASE, GBOARD_VERSION_1841_RELEASE),
+            listOf(GBOARD_VERSION, GBOARD_VERSION_1831, GBOARD_VERSION_1831_RELEASE, GBOARD_VERSION_1841_RELEASE, GBOARD_VERSION_1853_RELEASE),
             compatiblePackages.getAsJsonArray(GBOARD_PACKAGE).map { it.asString },
         )
     }
@@ -79,5 +79,6 @@ class GboardAdvancedVoicePatchContractTest {
         const val GBOARD_VERSION_1831 = "18.3.1.977415014-beta-arm64-v8a"
         const val GBOARD_VERSION_1831_RELEASE = "18.3.1.977415014-release-arm64-v8a"
         const val GBOARD_VERSION_1841_RELEASE = "18.4.1.985164140-release-arm64-v8a"
+        const val GBOARD_VERSION_1853_RELEASE = "18.5.3.993608717-release-arm64-v8a"
     }
 }
