@@ -77,6 +77,9 @@ private fun applyPatchesSettingsPatch() = with(context) {
     } catch (_: Throwable) {
     }
 
+    val settingsStringValues = document("res/values/strings.xml").use { stringsDocument ->
+        readGboardSettingsStringValues(stringsDocument)
+    }
     document("AndroidManifest.xml").use { manifestDocument ->
         document(GBOARD_SETTINGS_XML_PATHS[0]).use { settingsDocument ->
             document(GBOARD_SETTINGS_XML_PATHS[1]).use { legacySettingsDocument ->
@@ -84,6 +87,7 @@ private fun applyPatchesSettingsPatch() = with(context) {
                     manifestDocument = manifestDocument,
                     settingsDocuments = listOf(settingsDocument, legacySettingsDocument),
                     iconOverride = "@drawable/ic_gemini_sparkle",
+                    stringValues = settingsStringValues,
                 )
             }
         }
@@ -98,6 +102,7 @@ internal fun applyGboardPatchesSettings(
     manifestDocument: Document,
     settingsDocuments: List<Document>,
     iconOverride: String? = null,
+    stringValues: Map<String, String> = emptyMap(),
 ) {
     require(settingsDocuments.size == GBOARD_SETTINGS_XML_PATHS.size) {
         "Expected both Gboard settings documents"
@@ -169,35 +174,14 @@ internal fun applyGboardPatchesSettings(
         }
         val iconValue = iconOverride ?: rateUsPreference?.androidAttribute("icon")
 
-        // Remove "Rate Gboard" and "Help & feedback" from settings
-        var foundAbout = false
+        // Resource IDs move between Gboard versions. Resolve their current values
+        // instead of treating an older Help/Rate resource ID as a stable identity.
         candidateEntries.forEach { entry ->
             val tag = entry.tagName
-            val key = entry.androidAttribute("key") ?: ""
-            val title = entry.androidAttribute("title") ?: ""
-            val fragment = entry.androidAttribute("fragment") ?: ""
-            if (fragment.contains("AboutSettingsFragment")) {
-                foundAbout = true
-            }
+            val key = resolveGboardSettingsKey(entry.androidAttribute("key"), stringValues)
             val isRateGboard = tag == RATE_US_PREFERENCE_TAG ||
-                tag.endsWith("RateUsPreference") ||
-                key.contains("0x7f140b59") ||
-                key.contains("0x7f140a77") ||
-                key.contains("rate", ignoreCase = true) ||
-                title.contains("0x7f140d4e") ||
-                title.contains("0x7f140d4f") ||
-                title.contains("0x7f140c34") ||
-                title.contains("Rate Gboard", ignoreCase = true)
-            val isHelpFeedback = entry.tagName == HEADER_PREFERENCE_TAG && (
-                key.contains("0x7f140b50") ||
-                key.contains("0x7f140a6e") ||
-                key.contains("feedback", ignoreCase = true) ||
-                title.contains("0x7f140cd3") ||
-                title.contains("0x7f140bd7") ||
-                title.contains("Help & feedback", ignoreCase = true) ||
-                title.contains("Help and feedback", ignoreCase = true) ||
-                (foundAbout && fragment.isBlank() && key != PATCHES_SETTINGS_ENTRY_KEY && key != UPDATES_SETTINGS_ENTRY_KEY)
-            )
+                key == "settings_header_rate_us"
+            val isHelpFeedback = key == "settings_header_help_and_feedback"
             if (isRateGboard || isHelpFeedback) {
                 entry.parentNode?.removeChild(entry)
             }
@@ -302,6 +286,25 @@ internal fun applyGboardPatchesSettings(
             }
         }
     }
+}
+
+internal fun readGboardSettingsStringValues(stringsDocument: Document): Map<String, String> =
+    stringsDocument.documentElement.childElements("string").associate { string ->
+        string.getAttribute("name") to string.textContent.trim()
+    }
+
+private fun resolveGboardSettingsKey(
+    value: String?,
+    stringValues: Map<String, String>,
+): String? {
+    var resolved = value ?: return null
+    val visited = mutableSetOf<String>()
+    while (resolved.startsWith("@string/")) {
+        val resourceName = resolved.removePrefix("@string/")
+        if (!visited.add(resourceName)) return null
+        resolved = stringValues[resourceName] ?: return null
+    }
+    return resolved
 }
 
 internal fun applyPixelboardBranding(

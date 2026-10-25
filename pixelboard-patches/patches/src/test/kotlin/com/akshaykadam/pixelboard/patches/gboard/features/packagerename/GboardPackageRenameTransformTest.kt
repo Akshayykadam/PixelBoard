@@ -9,6 +9,7 @@ import com.akshaykadam.pixelboard.patches.gboard.shared.PIXELBOARD_SPELL_CHECKER
 import com.akshaykadam.pixelboard.patches.gboard.shared.PIXELBOARD_SPELL_CHECKER_SETTINGS_LABEL
 import com.akshaykadam.pixelboard.patches.gboard.shared.applyGboardPatchesSettings
 import com.akshaykadam.pixelboard.patches.gboard.shared.applyPixelboardBranding
+import com.akshaykadam.pixelboard.patches.gboard.shared.readGboardSettingsStringValues
 import java.io.ByteArrayInputStream
 import java.io.StringWriter
 import java.nio.charset.StandardCharsets
@@ -515,6 +516,93 @@ class GboardPackageRenameTransformTest {
 
         settings.forEach { document ->
             assertEquals(PIXELBOARD_SETTINGS_TITLE, androidAttribute(document.documentElement, "title"))
+        }
+    }
+
+    @Test
+    fun `settings cleanup preserves dictionary and physical keyboard with reused 1853 ids`() {
+        val manifest = loadManifest()
+        val settings = loadSettingsDocuments()
+        val headerTag = "com.google.android.libraries.inputmethod.settings.widget.HeaderPreference"
+        val dictionaryFragment =
+            "com.google.android.apps.inputmethod.latin.preference.dictionary.LatinDictionarySettingsFragment"
+        val physicalKeyboardFragment =
+            "com.google.android.apps.inputmethod.latin.preference.PhysicalKeyboardSettingsFragment"
+        val stringValues = readGboardSettingsStringValues(parse(
+            """<resources>
+                <string name="string_0x7f140a6e">settings_header_dictionary</string>
+                <string name="string_0x7f140a77">settings_header_physical_keyboard</string>
+                <string name="string_0x7f140a72">settings_header_help_and_feedback</string>
+            </resources>""",
+            namespaceAware = true,
+        ))
+        settings.forEach { document ->
+            elements(document, headerTag).forEach { entry ->
+                val resourceId = when (androidAttribute(entry, "fragment")) {
+                    dictionaryFragment -> "0x7f140a6e"
+                    physicalKeyboardFragment -> "0x7f140a77"
+                    else -> null
+                }
+                if (resourceId != null) {
+                    entry.setAttributeNS(ANDROID_NS, "android:key", "@string/string_$resourceId")
+                    // Header routing can use the stable key without a fragment attribute.
+                    entry.removeAttributeNS(ANDROID_NS, "fragment")
+                } else if (androidAttribute(entry, "key") == "@string/APKTOOL_RENAMED_0x7f140b50") {
+                    entry.setAttributeNS(ANDROID_NS, "android:key", "@string/string_0x7f140a72")
+                }
+            }
+        }
+
+        applyGboardPatchesSettings(manifest, settings, stringValues = stringValues)
+
+        settings.forEach { document ->
+            val headers = elements(document, headerTag)
+            assertEquals(1, headers.count { androidAttribute(it, "key") == "@string/string_0x7f140a6e" })
+            assertEquals(1, headers.count { androidAttribute(it, "key") == "@string/string_0x7f140a77" })
+            assertTrue(elements(document, "com.google.android.libraries.inputmethod.rateus.RateUsPreference").isEmpty())
+            assertFalse(headers.any {
+                androidAttribute(it, "key") == "@string/string_0x7f140a72"
+            })
+        }
+    }
+
+    @Test
+    fun `settings cleanup removes exact promotional keys and preserves unknown headers`() {
+        val settings = loadSettingsDocuments()
+        val headerTag = "com.google.android.libraries.inputmethod.settings.widget.HeaderPreference"
+        val keys = listOf(
+            "settings_header_rate_us",
+            "@string/feedback_alias",
+            "corporate_settings",
+            "feedback_preferences",
+            "@string/unresolved",
+            "@string/cycle_a",
+        )
+        settings.forEach { document ->
+            val category = elements(document, "androidx.preference.PreferenceCategory").lastOrNull()
+                ?: document.documentElement
+            // These entries follow About and deliberately have no fragment attribute.
+            keys.forEach { key ->
+                val entry = document.createElement(headerTag)
+                entry.setAttributeNS(ANDROID_NS, "android:key", key)
+                entry.setAttributeNS(ANDROID_NS, "android:title", "@string/string_0x7f140bd7")
+                category.appendChild(entry)
+            }
+        }
+        val stringValues = mapOf(
+            "feedback_alias" to "@string/feedback_key",
+            "feedback_key" to "settings_header_help_and_feedback",
+            "cycle_a" to "@string/cycle_b",
+            "cycle_b" to "@string/cycle_a",
+        )
+
+        applyGboardPatchesSettings(loadManifest(), settings, stringValues = stringValues)
+
+        settings.forEach { document ->
+            val remainingKeys = elements(document, headerTag).map { androidAttribute(it, "key") }
+            assertFalse(remainingKeys.contains(keys[0]))
+            assertFalse(remainingKeys.contains(keys[1]))
+            keys.drop(2).forEach { key -> assertTrue("Missing non-promotional header $key", remainingKeys.contains(key)) }
         }
     }
 
