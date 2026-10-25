@@ -88,10 +88,19 @@ public final class GboardRamblerDictationRuntime {
                 int intent = intentField.getInt(action);
 
                 // Intent 0 = DEFAULT_INTENT_DICTATION.
-                // Intent 3 = INTENT_REWRITE, 4 = INTENT_COMPOSE, 5 = INTENT_RAMBLE.
-                // When intent is non-zero, Gboard received an AI instruction result.
-                // We overwrite the AI generated text with the user's verbatim transcript.
-                if (intent != 0) {
+                // Intent 1 = INTENT_EDIT (e.g. "delete that", "clear").
+                // Intent 2 = INTENT_EDIT_HISTORY (e.g. "undo", "redo").
+                // Intent 3 = INTENT_REWRITE (Contextual commands e.g. "Fix grammar", "Translate to...").
+                // Intent 4 = INTENT_COMPOSE (AI answers to prompts / questions).
+                // Intent 5 = INTENT_RAMBLE.
+                //
+                // We only restore verbatim transcript for INTENT_COMPOSE (4) where the backend
+                // generated an AI prompt/question answer rather than transcribing speech.
+                // Contextual voice commands (INTENT_REWRITE = 3, INTENT_EDIT = 1, INTENT_EDIT_HISTORY = 2)
+                // must NOT be overwritten, allowing Gboard to properly execute commands like
+                // "Translate to Bengali", "Fix grammar", "Clear that", or "Undo" on previously
+                // dictated text (#90).
+                if (intent == 4) {
                     Field textSpanField = findField(span.getClass(), "c");
                     if (textSpanField != null) {
                         textSpanField.setAccessible(true);

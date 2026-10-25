@@ -45,6 +45,8 @@ public final class GboardRambler1803StockPolicy {
             "agentic_dictation_enable_seamless_fallback";
     public static final String AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG =
             "agentic_dictation_enable_proactive_parallel_asr";
+    public static final String AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG =
+            "agentic_dictation_deactivation_delay_ms";
     public static final String AD_ACTIVATION_TYPE_FLAG = "ad_activation_type";
 
     private static final Set<String> AGENTIC_FEATURE_FLAGS = Collections.unmodifiableSet(
@@ -53,12 +55,8 @@ public final class GboardRambler1803StockPolicy {
                     CONFIG_AGENTIC_DICTATION_FLAG,
                     ENABLE_JETSON_IN_TOOLBAR_FLAG,
                     FILTER_RAMBLER_CONTRIBUTED_INPUT_VIEW_SESSION_FLAG,
-                    ENABLE_RAMBLER_TOOLBAR_AT_CURSOR_POSITION_FLAG,
                     ENABLE_RAMBLER_AL_TOOLBAR_FLAG,
                     ENABLE_RAMBLER_AL_TOOLBAR_OVERFLOW_MENU_FLAG,
-                    ENABLE_HIDE_RAMBLER_AL_IDLING_STATE_FLAG,
-                    ENABLE_RAMBLER_AL_SHOW_HIDE_NEW_ANIMATION_FLAG,
-                    ENABLE_RAMBLER_AL_TELEPORTING_ANIMATION_FLAG,
                     RAMBLER_MOTION_WITH_GRADIENT_COLOR_FLAG,
                     AGENTIC_DICTATION_SPOT_LIGHT2_FLAG,
                     AGENTIC_DICTATION_NEW_GI_MOTION_FLAG,
@@ -78,6 +76,13 @@ public final class GboardRambler1803StockPolicy {
         if (AD_ACTIVATION_TYPE_FLAG.equals(flagName)) {
             return originalResult instanceof Long ? Long.valueOf(2L) : originalResult;
         }
+        if (AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName)) {
+            return originalResult instanceof Long
+                            && GboardRambler1803OfficialSelectionRuntime
+                                    .shouldEnableAgenticDictation()
+                    ? Long.valueOf(0L)
+                    : originalResult;
+        }
         if (AGENTIC_FEATURE_FLAGS.contains(flagName)) {
             return originalResult instanceof Boolean
                             && GboardRambler1803OfficialSelectionRuntime
@@ -91,7 +96,8 @@ public final class GboardRambler1803StockPolicy {
     public static boolean isTargetFlagName(String flagName) {
         return SHOW_RAMBLER_DICT_SETTINGS_FLAG.equals(flagName)
                 || AGENTIC_FEATURE_FLAGS.contains(flagName)
-                || AD_ACTIVATION_TYPE_FLAG.equals(flagName);
+                || AD_ACTIVATION_TYPE_FLAG.equals(flagName)
+                || AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName);
     }
 }
 

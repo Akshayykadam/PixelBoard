@@ -17,7 +17,7 @@ import com.akshaykadam.pixelboard.extension.settings.GboardPatchesSettingsContra
 
 public final class GboardAiWritingToolsSettingsFeatureTest {
     @Test
-    public void buildScreenShowsExactlyMasterAllKeyboardsAndBackendRows() {
+    public void buildScreenShowsExactlyMasterAndAllKeyboardsRows() {
         InMemorySharedPreferences preferences = new InMemorySharedPreferences();
         GboardAiWritingToolsSettings.ensureDefaults(preferences);
         CapturingHost host = new CapturingHost(preferences);
@@ -33,13 +33,11 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
                 findToggleRow(screen.getRows(), "Enable AI Writing Tools");
         GboardPatchesSettingsContract.ToggleRow allKeyboardsRow =
                 findToggleRow(screen.getRows(), "Support All Keyboards");
-        GboardPatchesSettingsContract.SelectorRow backendRow =
-                findSelectorRow(screen.getRows(), "AI Processing Backend");
 
         Assert.assertNotNull(enabledRow);
         Assert.assertNotNull(allKeyboardsRow);
-        Assert.assertNotNull(backendRow);
-        Assert.assertEquals(3, screen.getRows().size());
+        Assert.assertNull(findSelectorRow(screen.getRows(), "AI Processing Backend"));
+        Assert.assertEquals(2, screen.getRows().size());
         Assert.assertEquals(
                 "Show AI writing tools in the suggestion strip for instant proofreading, "
                         + "text rewriting, and smart suggestions.",
@@ -48,14 +46,9 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
                 "Enable AI Writing Tools across all language layouts and input fields without "
                         + "restrictions.",
                 allKeyboardsRow.getSummary());
-        Assert.assertEquals(
-                "Choose between Google Cloud processing or private on-device inference (AICore / Astrea).",
-                backendRow.getSummary());
         Assert.assertTrue(enabledRow.isChecked());
         Assert.assertTrue(allKeyboardsRow.isChecked());
         Assert.assertTrue(allKeyboardsRow.isEnabled());
-        Assert.assertTrue(backendRow.isEnabled());
-        Assert.assertEquals("GBOARD_SERVER", backendRow.getCurrentValue());
     }
 
     @Test
@@ -81,7 +74,7 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
     }
 
     @Test
-    public void masterOffDisablesAllKeyboardsAndBackendSelector() {
+    public void masterOffDisablesAllKeyboardsToggle() {
         InMemorySharedPreferences preferences = new InMemorySharedPreferences();
         GboardAiWritingToolsSettings.ensureDefaults(preferences);
         GboardAiWritingToolsSettings.writeEnabled(preferences, false);
@@ -92,34 +85,8 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
 
         Assert.assertFalse(findToggleRow(
                 screen.getRows(), "Support All Keyboards").isEnabled());
-        Assert.assertFalse(findSelectorRow(
-                screen.getRows(), "AI Processing Backend").isEnabled());
-    }
-
-    @Test
-    public void backendSelectorOffersExactValuesPersistsChoiceAndRefreshes() {
-        InMemorySharedPreferences preferences = new InMemorySharedPreferences();
-        GboardAiWritingToolsSettings.ensureDefaults(preferences);
-        CapturingHost host = new CapturingHost(preferences);
-        GboardPatchesSettingsContract.SelectorRow backendRow = findSelectorRow(
-                new GboardAiWritingToolsSettingsFeature(null).buildScreen(host).getRows(),
-                "AI Processing Backend");
-
-        backendRow.getAction().run();
-
-        Assert.assertArrayEquals(
-                new String[]{
-                        "GBOARD_SERVER",
-                        "PRIVATE_INFERENCE_AICORE",
-                        "PRIVATE_INFERENCE_ASTREA"
-                },
-                host.choiceValues);
-        Assert.assertEquals("GBOARD_SERVER", host.choiceCurrentValue);
-        host.choiceConsumer.accept("PRIVATE_INFERENCE_ASTREA");
-        Assert.assertEquals(
-                "PRIVATE_INFERENCE_ASTREA",
-                GboardAiWritingToolsSettings.readBackendType(preferences));
-        Assert.assertEquals(1, host.refreshCount);
+        Assert.assertNull(findSelectorRow(
+                screen.getRows(), "AI Processing Backend"));
     }
 
     private static GboardPatchesSettingsContract.ToggleRow findToggleRow(

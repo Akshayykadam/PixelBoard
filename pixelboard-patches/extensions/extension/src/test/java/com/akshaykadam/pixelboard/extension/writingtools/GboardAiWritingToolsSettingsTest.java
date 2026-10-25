@@ -27,8 +27,33 @@ public final class GboardAiWritingToolsSettingsTest {
                 GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER,
                 preferences.values.get(GboardAiWritingToolsSettings.PREF_KEY_BACKEND_TYPE));
         Assert.assertEquals(
+                Boolean.TRUE,
+                preferences.values.get(GboardAiWritingToolsSettings.PREF_KEY_BACKEND_RESET_MIGRATED));
+        Assert.assertEquals(
                 Boolean.FALSE,
                 preferences.values.get(GboardAiWritingToolsSettings.PREF_KEY_V2_ENABLED));
+    }
+
+    @Test
+    public void ensureDefaultsMigratesExistingBackendSelectionBackToServer() {
+        InMemorySharedPreferences preferences = new InMemorySharedPreferences();
+        preferences.edit()
+                .putString(
+                        GboardAiWritingToolsSettings.PREF_KEY_BACKEND_TYPE,
+                        GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE)
+                .apply();
+
+        GboardAiWritingToolsSettings.ensureDefaults(preferences);
+
+        Assert.assertEquals(
+                GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER,
+                GboardAiWritingToolsSettings.readBackendType(preferences));
+        Assert.assertEquals(
+                GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER,
+                preferences.values.get(GboardAiWritingToolsSettings.PREF_KEY_BACKEND_TYPE));
+        Assert.assertEquals(
+                Boolean.TRUE,
+                preferences.values.get(GboardAiWritingToolsSettings.PREF_KEY_BACKEND_RESET_MIGRATED));
     }
 
     @Test

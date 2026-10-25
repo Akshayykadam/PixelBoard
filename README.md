@@ -5,8 +5,8 @@
 **Supercharged Gboard Mod featuring Google Pixel 11 series's Rambler Voice Typing, AI Writing Assistant & Writing Tools V2 [No Root].**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.1">
-    <img src="https://img.shields.io/badge/Release-v1.3.1-8A2BE2?style=flat-square&logo=github&logoColor=white" alt="Latest Release"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.2">
+    <img src="https://img.shields.io/badge/Release-v1.3.2-8A2BE2?style=flat-square&logo=github&logoColor=white" alt="Latest Release"/>
   </a>
   <img src="https://img.shields.io/badge/Android-10%20to%2016-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android Support"/>
   <img src="https://img.shields.io/badge/Architecture-arm64--v8a-blue?style=flat-square" alt="Arch Support"/>
@@ -17,12 +17,12 @@
 
 <!-- Primary Action: Clear download choices with zero confusion -->
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.1/PixelBoard-1.3.1.apk">
-    <img src="https://img.shields.io/badge/📥_Direct_Download_(APK)-v1.3.1_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Ready-to-Install APK"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/PixelBoard-1.3.2.apk">
+    <img src="https://img.shields.io/badge/📥_Direct_Download_(APK)-v1.3.2_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Ready-to-Install APK"/>
   </a>
   &nbsp;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.1/patches-1.3.1.mpp">
-    <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.3.1_(1.6_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Morphe Patch Bundle"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/patches-1.3.2.mpp">
+    <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.3.2_(1.6_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Morphe Patch Bundle"/>
   </a>
 </p>
 
@@ -31,9 +31,9 @@
 </p>
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.1/PixelBoard-1.3.1.apk"> <b>⬇️ Direct Download APK (v1.3.1)</b></a> &nbsp;&bull;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.1/patches-1.3.1.mpp"> <b>📦 Morphe Patch Bundle</b></a> &nbsp;&bull;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.1"> <b>Release Notes</b></a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/PixelBoard-1.3.2.apk"> <b>⬇️ Direct Download APK (v1.3.2)</b></a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/patches-1.3.2.mpp"> <b>📦 Morphe Patch Bundle</b></a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.2"> <b>Release Notes</b></a> &nbsp;&bull;&nbsp;
   <a href="#installation-guide"> <b>Installation Guide</b></a> &nbsp;&bull;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/releases"> <b>All Releases</b></a>
 </p>
@@ -43,12 +43,12 @@
 ---
 
 <a id="release-assets"></a>
-## 📥 Release Assets (v1.3.1 / Gboard v18.5.3)
+## 📥 Release Assets (v1.3.2 / Gboard v18.5.3)
 
 | Package | Type | Description |
 | :--- | :--- | :--- |
-| [**PixelBoard-1.3.1.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.1/PixelBoard-1.3.1.apk) | **Signed APK** *(Recommended)* | **Ready to install.** Installs side-by-side with stock Gboard without root (`com.akshaykadam.pixelboard`). Base Gboard v18.5.3 Release. |
-| [**patches-1.3.1.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.1/patches-1.3.1.mpp) | **Morphe Patch Bundle** | Standalone patch file for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher) to patch your own base APK. |
+| [**PixelBoard-1.3.2.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/PixelBoard-1.3.2.apk) | **Signed APK** *(Recommended)* | **Ready to install.** Installs side-by-side with stock Gboard without root (`com.akshaykadam.pixelboard`). Base Gboard v18.5.3 Release. |
+| [**patches-1.3.2.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/patches-1.3.2.mpp) | **Morphe Patch Bundle** | Standalone patch file for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher) to patch your own base APK. |
 | [**Stock Gboard v18.5.3**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/) | **Base APK** | Official unmodified base APK from APKMirror *(only required if patching manually with Morphe)*. |
 
 ---
@@ -125,7 +125,7 @@ Access Google's Gemini-driven writing suite directly above your keys across any 
 
 ### 11. Multilingual UI (20+ Locales) & Bloat-Free Settings
 - **Native Localization in 20+ Languages**: Fully translated Advanced Settings across English, Spanish, French, German, Italian, Portuguese, Russian, Hindi, Japanese, Korean, Chinese, Arabic, Indonesian, Turkish, Vietnamese, Polish, Dutch, Thai, and Ukrainian (`@string/pixelboard_patches_settings_title`).
-- **Cleaned Settings Tree**: Removed unwanted promotional bloatware ("Rate Gboard" / "Help & feedback") for a clean, distraction-free Material You preferences experience.
+- **Cleaned Settings Tree & Dictionary Preservation**: Removed unwanted promotional bloatware ("Rate Gboard" / "Help & feedback") via semantic string key resolution, strictly preserving the native **Dictionary** (`LatinDictionarySettingsFragment`), **Personal dictionary**, and **Physical keyboard** preferences across all Gboard base updates ([#91](https://github.com/Akshayykadam/PixelBoard/issues/91), [#94](https://github.com/Akshayykadam/PixelBoard/pull/94)).
 
 ### 12. Writing Tools V2 Support (Experimental)
 - **Suggested Style Chips & Prompt Bar**: Pre-configured architecture for Google's modern "Suggested" style chips and the freeform "Describe your edit" prompt bar.
@@ -235,7 +235,7 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ## Installation Guide
 
 ### Option A: Direct Download on Your Phone (Easiest)
-1. Download [**PixelBoard Stable APK (v1.3.1, 79 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.1/PixelBoard-1.3.1.apk) (or view the [**v1.3.1 Release Page**](https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.1)).
+1. Download [**PixelBoard Stable APK (v1.3.2, 79 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/PixelBoard-1.3.2.apk) (or view the [**v1.3.2 Release Page**](https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.2)).
 2. Tap the downloaded `.apk` in your notification drawer or Downloads folder.
 3. If prompted, toggle **"Allow from this source"** and tap **Install**.
 4. Enable PixelBoard in **Settings > System > Languages & input > On-screen keyboard**.
@@ -243,16 +243,16 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ### Option B: Sideload via ADB (For Developers)
 Connect your Android phone via USB with USB Debugging enabled:
 ```bash
-adb install -r PixelBoard-1.3.1.apk
+adb install -r PixelBoard-1.3.2.apk
 adb shell am force-stop com.akshaykadam.pixelboard
 ```
-*(If building from source locally, use `adb install -r output/PixelBoard-1.3.1.apk`)*
+*(If building from source locally, use `adb install -r output/PixelBoard-1.3.2.apk`)*
 
 ### Option C: Patch via Morphe Manager (On-Device Patcher)
 You can patch your stock Gboard APK directly on your phone using **Morphe Manager**:
 1. Install **Morphe Manager** on your Android device.
 2. Get the two required files:
-   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.3.1.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.1/patches-1.3.1.mpp))
+   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.3.2.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/patches-1.3.2.mpp))
    - **Stock Base APK**: Download the official base bundle from [**APKMirror (Gboard v18.5.3 Release)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/).
 3. In Morphe Manager, select **Storage**, choose the stock Gboard APK, and load `PixelBoard.mpp` as the patch source.
 4. Tap **Patch** and then **Install**!
@@ -366,6 +366,7 @@ java -jar tools/patcher.jar patch \
 
 Special thanks and sincere appreciation to:
 - **JasonWu** — The pioneering author of the original Gboard patch project whose foundational reverse-engineering research and Smali patch framework made this mod possible.
+- **Akash Mahedy** ([@akashmahedy](https://github.com/akashmahedy)) — For diagnosing the settings ID collision on Gboard 18.5+ and contributing the string resource resolution patch preserving the native Personal Dictionary and Physical Keyboard preferences ([#91](https://github.com/Akshayykadam/PixelBoard/issues/91), [#94](https://github.com/Akshayykadam/PixelBoard/pull/94)).
 - **Animesh Ahilya** ([@animeshahilya](https://github.com/animeshahilya)) — For contributing a comprehensive TalkBack accessibility overhaul across settings: merged row semantics (`AccessibleRow`), TalkBack focus restoration across screen rebuilds, heading navigation, spoken warnings, and restart announcements ([#65](https://github.com/Akshayykadam/PixelBoard/pull/65), [#66](https://github.com/Akshayykadam/PixelBoard/pull/66), [#67](https://github.com/Akshayykadam/PixelBoard/pull/67)).
 - **AbdulAziz Hatem** ([@AbdulAziz-Hatem](https://github.com/AbdulAziz-Hatem)) — For contributing complete Arabic (`ar`) localization for all Advanced Settings, AI Writing Tools, and Rambler dictation preferences ([#53](https://github.com/Akshayykadam/PixelBoard/pull/53)).
 - **Mohamed Technology** ([@mohamedtechnology](https://github.com/mohamedtechnology)) — For reporting the TalkBack / screen reader dead zone in the features menu and providing the root cause analysis on window focus and `TYPE_WINDOW_STATE_CHANGED` ([#48](https://github.com/Akshayykadam/PixelBoard/issues/48)).

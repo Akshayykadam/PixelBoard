@@ -34,8 +34,6 @@ public final class GboardAiWritingToolsRuntimeTest {
         GboardAiWritingToolsOfficialPreferences.Snapshot writingToolsOff = official(true, false);
         String[] editingFlags = new String[]{
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS,
-                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE,
-                GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_ON_SELECTED_TEXT,
                 GboardAiWritingToolsRuntime
                         .FLAG_WRITING_HELPER_ENABLE_TEXT_STYLIZATION_INTERNAL
         };
@@ -47,6 +45,18 @@ public final class GboardAiWritingToolsRuntimeTest {
                             settings,
                             writingToolsOff));
         }
+        Assert.assertSame(Boolean.FALSE,
+                GboardAiWritingToolsRuntime.computeOverrideValue(
+                        GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE,
+                        Boolean.FALSE,
+                        settings,
+                        writingToolsOff));
+        Assert.assertSame(Boolean.FALSE,
+                GboardAiWritingToolsRuntime.computeOverrideValue(
+                        GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_ON_SELECTED_TEXT,
+                        Boolean.FALSE,
+                        settings,
+                        writingToolsOff));
         Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.computeOverrideValue(
                 GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER,
                 Boolean.FALSE,
@@ -431,6 +441,23 @@ public final class GboardAiWritingToolsRuntimeTest {
         Assert.assertEquals(Boolean.valueOf(hybrid), decision.hybridEnabled);
         Assert.assertEquals(Boolean.valueOf(onDeviceProofread),
                 decision.onDeviceProofreadEnabled);
+    }
+
+    @Test
+    public void textSelectionCooperativeAndHelperFlagsAreDisabledToPreserveMultiWordRecapitalization() {
+        GboardAiWritingToolsSettings.Snapshot settings = serverSettings(false);
+        GboardAiWritingToolsOfficialPreferences.Snapshot preferences = official(true, true);
+
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE,
+                Boolean.FALSE,
+                settings,
+                preferences));
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_ON_SELECTED_TEXT,
+                Boolean.FALSE,
+                settings,
+                preferences));
     }
 
     private static GboardAiWritingToolsSettings.Snapshot serverSettings(

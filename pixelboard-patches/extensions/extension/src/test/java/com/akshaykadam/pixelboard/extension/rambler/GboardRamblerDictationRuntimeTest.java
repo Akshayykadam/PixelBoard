@@ -61,6 +61,64 @@ public final class GboardRamblerDictationRuntimeTest {
     }
 
     @Test
+    public void preservesContextualRewriteVoiceCommand() {
+        FakeAction action = new FakeAction();
+        action.c = 3; // INTENT_REWRITE (e.g. "Translate to Bengali", "Fix grammar")
+        action.d = "Translate to Bengali";
+
+        FakeSpan span = new FakeSpan();
+        span.c = "আজ আমি দেরি করব";
+        span.j = action;
+
+        FakeProto proto = new FakeProto();
+        proto.b = Collections.singletonList(span);
+
+        GboardRamblerDictationRuntime.filterVoiceText(proto);
+
+        // Committed text and rewrite intent must be preserved so Gboard executes the command
+        Assert.assertEquals("আজ আমি দেরি করব", span.c);
+        Assert.assertEquals(3, action.c);
+    }
+
+    @Test
+    public void preservesVoiceEditCommands() {
+        FakeAction action = new FakeAction();
+        action.c = 1; // INTENT_EDIT (e.g. "delete that")
+        action.d = "delete that";
+
+        FakeSpan span = new FakeSpan();
+        span.c = "";
+        span.j = action;
+
+        FakeProto proto = new FakeProto();
+        proto.b = Collections.singletonList(span);
+
+        GboardRamblerDictationRuntime.filterVoiceText(proto);
+
+        Assert.assertEquals("", span.c);
+        Assert.assertEquals(1, action.c);
+    }
+
+    @Test
+    public void preservesVoiceUndoCommands() {
+        FakeAction action = new FakeAction();
+        action.c = 2; // INTENT_EDIT_HISTORY (e.g. "undo")
+        action.d = "undo";
+
+        FakeSpan span = new FakeSpan();
+        span.c = "";
+        span.j = action;
+
+        FakeProto proto = new FakeProto();
+        proto.b = Collections.singletonList(span);
+
+        GboardRamblerDictationRuntime.filterVoiceText(proto);
+
+        Assert.assertEquals("", span.c);
+        Assert.assertEquals(2, action.c);
+    }
+
+    @Test
     public void handlesNullOrMalformedGracefully() {
         GboardRamblerDictationRuntime.filterVoiceText(null);
         GboardRamblerDictationRuntime.filterVoiceText("not_a_proto");

@@ -3,7 +3,7 @@
 <div align="center">
 
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
-[![Version](https://img.shields.io/badge/Patch%20Version-1.3.1-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
+[![Version](https://img.shields.io/badge/Patch%20Version-1.3.2-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
 [![Target](https://img.shields.io/badge/Gboard-v18.5.3_Release-orange?style=flat-square&logo=google)](https://github.com/Akshayykadam/PixelBoard)
 [![Author](https://img.shields.io/badge/Author-Akshay%20Kadam-9cf?style=flat-square&logo=github)](https://github.com/Akshayykadam)
 
@@ -16,8 +16,8 @@
 **You don't need to build from source unless you want to customize patches:**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.1/PixelBoard-1.3.1.apk">
-    <img src="https://img.shields.io/badge/📥_Download_Stable_APK-v1.3.1_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Stable APK"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/PixelBoard-1.3.2.apk">
+    <img src="https://img.shields.io/badge/📥_Download_Stable_APK-v1.3.2_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Stable APK"/>
   </a>
   &nbsp;&nbsp;
   <a href="https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/">
@@ -29,7 +29,7 @@
   </a>
 </p>
 
-[**⬇️ Direct Download Stable APK (v1.3.1)**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.1/PixelBoard-1.3.1.apk) • [**🌐 Stock Base APK (APKMirror)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/) • [**📦 Patch Bundle (.mpp)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) • [**📦 GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
+[**⬇️ Direct Download Stable APK (v1.3.2)**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/PixelBoard-1.3.2.apk) • [**🌐 Stock Base APK (APKMirror)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/) • [**📦 Patch Bundle (.mpp)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) • [**📦 GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
 
 ---
 
@@ -50,7 +50,7 @@ This repository contains the patch definitions and extension bytecode for **Pixe
 - **Extended Clipboard History Retention (New Feature)**: Break free from the stock 24-hour limit! Save copied items for 1 hour, 24 hours, 7 days, 30 days, or permanently (Never), integrated into Gboard preferences and PixelBoard Settings with crash-free value migration.
 - **Verbatim Voice Dictation**: Fixed speech dictation in Rambler mode committing spoken prompts verbatim without triggering AI answer responses.
 - **Clipboard History Sync**: Foreground clipboard sync fix for Samsung One UI & Vivo devices (#17).
-- **Multilingual UI & Bloatware Removal**: Fully translated Advanced Settings across 20+ locales with promotional clutter removed.
+- **Multilingual UI & Bloatware Removal**: Fully translated Advanced Settings across 20+ locales with promotional clutter removed and native Personal Dictionary & Physical Keyboard preferences preserved (#91, #94).
 - **Complete Arabic (ar) Localization**: Full Arabic translation for Advanced Settings and AI features (#53).
 - **Standalone Coexistence & Signature Bypass**: Safe side-by-side installation with stock Gboard and bypassed signature checks.
 - **TalkBack & Screen Reader Accessibility**: Settings rows read as single controls with correct role and state, focus preserved across screen rebuilds, heading navigation, spoken warnings, and restart announcements (#65, #66, #67).
@@ -73,7 +73,7 @@ Build the Android patch bundle (`.mpp`):
 
 The compiled patch bundle will be located at:
 ```text
-patches/build/libs/patches-1.3.1.mpp
+patches/build/libs/patches-1.3.2.mpp
 ```
 
 Run tests to verify all patch contracts and bytecode transformations:
@@ -94,6 +94,7 @@ Run tests to verify all patch contracts and bytecode transformations:
 ## Credits & Upstream Acknowledgements
 
 - **Original Gboard Patches**: Developed by Jason Wu ([@jasonwu1994](https://github.com/jasonwu1994)).
+- **Personal Dictionary & Settings Key Resolution**: Diagnosed and resolved by Akash Mahedy ([@akashmahedy](https://github.com/akashmahedy)) to preserve native Personal Dictionary and Physical Keyboard settings across shifting Gboard base resource IDs ([#91](https://github.com/Akshayykadam/PixelBoard/issues/91), [#94](https://github.com/Akshayykadam/PixelBoard/pull/94)).
 - **Rambler ASR Lifecycle Optimization**: Discovered and benchmarked by Paolo Del Casale ([@PaoloDelCasale](https://github.com/PaoloDelCasale)).
 - **TalkBack & Screen Reader Accessibility**: Settings row semantics, focus restoration, headings, and spoken feedback contributed by Animesh Ahilya ([@animeshahilya](https://github.com/animeshahilya)) ([#65](https://github.com/Akshayykadam/PixelBoard/pull/65), [#66](https://github.com/Akshayykadam/PixelBoard/pull/66), [#67](https://github.com/Akshayykadam/PixelBoard/pull/67)).
 - **Arabic Localization**: Complete Arabic (`ar`) translations for all settings and AI features contributed by AbdulAziz Hatem ([@AbdulAziz-Hatem](https://github.com/AbdulAziz-Hatem)) ([#53](https://github.com/Akshayykadam/PixelBoard/pull/53)).

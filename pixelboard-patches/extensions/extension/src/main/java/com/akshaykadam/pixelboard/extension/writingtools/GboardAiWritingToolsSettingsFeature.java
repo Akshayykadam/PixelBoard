@@ -23,7 +23,6 @@ import com.akshaykadam.pixelboard.extension.settings.GboardSettingsText;
 public final class GboardAiWritingToolsSettingsFeature
         implements GboardPatchesSettingsContract.Feature {
     private static final String TAG = "GboardPatches";
-    private static final String VALUE_UNUSED = "__unused__";
     private final String headerBadge;
     private final String entryTitle;
     private final String entrySummary;
@@ -34,10 +33,6 @@ public final class GboardAiWritingToolsSettingsFeature
     private final String enabledSummary;
     private final String allKeyboardsTitle;
     private final String allKeyboardsSummary;
-    private final String backendTypeTitle;
-    private final String backendTypeSummary;
-    private final String backendTypeDialogTitle;
-    private final String[] backendTypeValues;
     private final String sectionBehavior;
 
     public GboardAiWritingToolsSettingsFeature(Context context) {
@@ -60,17 +55,6 @@ public final class GboardAiWritingToolsSettingsFeature
                 R.string.gboard_patches_ai_writing_tools_all_keyboards_title);
         allKeyboardsSummary = GboardSettingsText.get(context,
                 R.string.gboard_patches_ai_writing_tools_all_keyboards_summary);
-        backendTypeTitle = GboardSettingsText.get(context,
-                R.string.gboard_patches_ai_writing_tools_backend_type_title);
-        backendTypeSummary = GboardSettingsText.get(context,
-                R.string.gboard_patches_ai_writing_tools_backend_type_summary);
-        backendTypeDialogTitle = GboardSettingsText.get(context,
-                R.string.gboard_patches_ai_writing_tools_backend_type_dialog_title);
-        backendTypeValues = new String[]{
-                GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER,
-                GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE,
-                GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA
-        };
         sectionBehavior = GboardSettingsText.get(context,
                 R.string.gboard_patches_ai_writing_tools_section_behavior);
     }
@@ -107,7 +91,6 @@ public final class GboardAiWritingToolsSettingsFeature
             boolean enabled = GboardAiWritingToolsSettings.readEnabled(preferences);
             boolean allKeyboardsEnabled =
                     GboardAiWritingToolsSettings.readAllKeyboardsEnabled(preferences);
-            String backendType = GboardAiWritingToolsSettings.readBackendType(preferences);
 
             List<GboardPatchesSettingsContract.Row> behaviorRows =
                     new ArrayList<GboardPatchesSettingsContract.Row>();
@@ -125,12 +108,6 @@ public final class GboardAiWritingToolsSettingsFeature
                     value -> GboardAiWritingToolsSettings.writeAllKeyboardsEnabled(
                             preferences,
                             value)));
-            behaviorRows.add(new GboardPatchesSettingsContract.SelectorRow(
-                    backendTypeTitle,
-                    backendTypeSummary,
-                    backendType,
-                    enabled,
-                    () -> showBackendTypeDialog(host, preferences, backendType)));
 
             return new GboardPatchesSettingsContract.Screen(
                     entryTitle,
@@ -163,21 +140,5 @@ public final class GboardAiWritingToolsSettingsFeature
                 headerSummary,
                 statusBlocks,
                 Collections.emptyList());
-    }
-
-    private void showBackendTypeDialog(GboardPatchesSettingsContract.FeatureHost host,
-            SharedPreferences preferences, String currentBackendType) {
-        GboardPatchesSettingsContract.showChoiceDialog(host,
-                backendTypeDialogTitle,
-                backendTypeValues,
-                backendTypeValues,
-                currentBackendType,
-                VALUE_UNUSED,
-                () -> {
-                },
-                value -> {
-                    GboardAiWritingToolsSettings.writeBackendType(preferences, value);
-                    GboardPatchesSettingsContract.refresh(host);
-                });
     }
 }

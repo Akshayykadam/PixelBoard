@@ -1728,7 +1728,7 @@ public final class GboardPatchesSettingsActivity extends Activity
             }
         } catch (Throwable ignored) {
         }
-        return "1.3.1";
+        return "1.3.2";
     }
 
     private View buildToolbar() {
@@ -3065,6 +3065,7 @@ public final class GboardPatchesSettingsActivity extends Activity
         SharedPreferences patchesPrefs = GboardPatchesSettings.preferences(context);
 
         if (writingPrefs != null) {
+            GboardAiWritingToolsSettings.ensureDefaults(writingPrefs);
             if (!writingPrefs.getBoolean("pref_defaults_migrated_v4", false)) {
                 writingPrefs.edit()
                         .putBoolean(GboardAiWritingToolsSettings.PREF_KEY_ENABLED, true)
@@ -3163,61 +3164,6 @@ public final class GboardPatchesSettingsActivity extends Activity
         sections.add(new GboardPatchesSettingsContract.Section(
                 GboardSettingsText.get(context, R.string.gboard_patches_section_features),
                 rows));
-
-        if (com.akshaykadam.pixelboard.extension.writingtools.GboardAiWritingToolsDeviceSupport.isSupportedDevice()) {
-            String backendType = writingPrefs != null
-                    ? GboardAiWritingToolsSettings.readBackendType(writingPrefs)
-                    : GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER;
-
-            List<GboardPatchesSettingsContract.Row> backendRows =
-                    new ArrayList<GboardPatchesSettingsContract.Row>();
-
-            backendRows.add(new GboardPatchesSettingsContract.RadioRow(
-                    "Google Cloud (Server)",
-                    "Cloud-based processing for text generation, rewriting, and smart suggestions.",
-                    aiWritingToolsEnabled,
-                    GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER.equals(backendType),
-                    () -> {
-                        if (writingPrefs != null) {
-                            GboardAiWritingToolsSettings.writeBackendType(writingPrefs,
-                                    GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER);
-                            renderCurrentScreenSafely();
-                        }
-                    },
-                    createBackendIcon(GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER)));
-
-            backendRows.add(new GboardPatchesSettingsContract.RadioRow(
-                    "Private Inference (AICore)",
-                    "Private on-device inference using Gemini Nano via Android AICore system service.",
-                    aiWritingToolsEnabled,
-                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE.equals(backendType),
-                    () -> {
-                        if (writingPrefs != null) {
-                            GboardAiWritingToolsSettings.writeBackendType(writingPrefs,
-                                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE);
-                            renderCurrentScreenSafely();
-                        }
-                    },
-                    createBackendIcon(GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE)));
-
-            backendRows.add(new GboardPatchesSettingsContract.RadioRow(
-                    "Private Inference (Astrea)",
-                    "Private on-device inference via Astrea isolated execution environment.",
-                    aiWritingToolsEnabled,
-                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA.equals(backendType),
-                    () -> {
-                        if (writingPrefs != null) {
-                            GboardAiWritingToolsSettings.writeBackendType(writingPrefs,
-                                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA);
-                            renderCurrentScreenSafely();
-                        }
-                    },
-                    createBackendIcon(GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA)));
-
-            sections.add(new GboardPatchesSettingsContract.Section(
-                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_backend_type_title),
-                    backendRows));
-        }
 
         return new GboardPatchesSettingsContract.Screen(
                 GboardSettingsText.get(context, R.string.gboard_patches_activity_title),
@@ -3626,98 +3572,6 @@ public final class GboardPatchesSettingsActivity extends Activity
         return row;
     }
 
-    private Drawable createBackendIcon(String backendType) {
-        return new Drawable() {
-            private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-            @Override
-            public void draw(Canvas canvas) {
-                Rect bounds = getBounds();
-                int width = bounds.width() > 0 ? bounds.width() : dp(24);
-                int height = bounds.height() > 0 ? bounds.height() : dp(24);
-
-                canvas.save();
-                canvas.translate(bounds.left, bounds.top);
-                float scale = Math.min(width, height) / 24f;
-                canvas.scale(scale, scale);
-
-                paint.setColor(palette.textPrimary);
-                paint.setStyle(Paint.Style.FILL);
-
-                if (GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER.equals(backendType)) {
-                    RectF baseRect = new RectF(4.5f, 13f, 19.5f, 18.5f);
-                    canvas.drawRoundRect(baseRect, 2.75f, 2.75f, paint);
-                    canvas.drawCircle(8.5f, 13.5f, 4f, paint);
-                    canvas.drawCircle(13.5f, 10.5f, 5.5f, paint);
-                    canvas.drawCircle(17.5f, 14.5f, 3.5f, paint);
-                } else if (GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE.equals(backendType)) {
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setStrokeWidth(1.8f);
-                    RectF chip = new RectF(6.5f, 6.5f, 17.5f, 17.5f);
-                    canvas.drawRoundRect(chip, 2.5f, 2.5f, paint);
-                    paint.setStyle(Paint.Style.FILL);
-                    RectF core = new RectF(9.5f, 9.5f, 14.5f, 14.5f);
-                    canvas.drawRoundRect(core, 1.5f, 1.5f, paint);
-                    paint.setStrokeWidth(1.6f);
-                    canvas.drawLine(10f, 3f, 10f, 6.5f, paint);
-                    canvas.drawLine(14f, 3f, 14f, 6.5f, paint);
-                    canvas.drawLine(10f, 17.5f, 10f, 21f, paint);
-                    canvas.drawLine(14f, 17.5f, 14f, 21f, paint);
-                    canvas.drawLine(3f, 10f, 6.5f, 10f, paint);
-                    canvas.drawLine(3f, 14f, 6.5f, 14f, paint);
-                    canvas.drawLine(17.5f, 10f, 21f, 10f, paint);
-                    canvas.drawLine(17.5f, 14f, 21f, 14f, paint);
-                } else {
-                    Path shieldPath = new Path();
-                    shieldPath.moveTo(12f, 3.5f);
-                    shieldPath.lineTo(19f, 6.2f);
-                    shieldPath.quadTo(19.2f, 13.5f, 12f, 20.5f);
-                    shieldPath.quadTo(4.8f, 13.5f, 5f, 6.2f);
-                    shieldPath.close();
-                    canvas.drawPath(shieldPath, paint);
-
-                    paint.setColor(palette.surfaceAlt);
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setStrokeWidth(1.8f);
-                    paint.setStrokeCap(Paint.Cap.ROUND);
-                    paint.setStrokeJoin(Paint.Join.ROUND);
-                    Path check = new Path();
-                    check.moveTo(9f, 11.5f);
-                    check.lineTo(11f, 13.8f);
-                    check.lineTo(15.5f, 9.2f);
-                    canvas.drawPath(check, paint);
-                }
-
-                canvas.restore();
-            }
-
-            @Override
-            public void setAlpha(int alpha) {
-                paint.setAlpha(alpha);
-            }
-
-            @Override
-            public void setColorFilter(ColorFilter colorFilter) {
-                paint.setColorFilter(colorFilter);
-            }
-
-            @Override
-            public int getOpacity() {
-                return PixelFormat.TRANSLUCENT;
-            }
-
-            @Override
-            public int getIntrinsicWidth() {
-                return dp(24);
-            }
-
-            @Override
-            public int getIntrinsicHeight() {
-                return dp(24);
-            }
-        };
-    }
-
     private View createDetailRow(GboardPatchesSettingsContract.DetailRow rowModel) {
         LinearLayout row = buildDetailRowContainer();
         TextView titleView = buildRowTitle(rowModel.getTitle());
@@ -3922,8 +3776,8 @@ public final class GboardPatchesSettingsActivity extends Activity
         card.setOrientation(LinearLayout.VERTICAL);
         card.setBackground(buildCardDrawable(
                 palette.surfaceAlt,
-                blendAlpha(palette.accent, 0.28f),
-                dp(26)));
+                0,
+                dp(24)));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             card.setClipToOutline(true);
         }
@@ -3932,24 +3786,24 @@ public final class GboardPatchesSettingsActivity extends Activity
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         cardParams.leftMargin = dp(16);
         cardParams.rightMargin = dp(16);
-        cardParams.topMargin = dp(6);
-        cardParams.bottomMargin = dp(14);
+        cardParams.topMargin = dp(4);
+        cardParams.bottomMargin = dp(12);
         card.setLayoutParams(cardParams);
-        card.setPadding(dp(20), dp(22), dp(20), dp(20));
+        card.setPadding(dp(20), dp(20), dp(20), dp(20));
 
         // --- 1. HEADER (Clean text, no emoji, no tag pills) ---
         TextView categoryLabel = new TextView(this);
         categoryLabel.setText("WHAT'S NEW");
         categoryLabel.setTextColor(palette.accent);
-        categoryLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11.5f);
+        categoryLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
         categoryLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
         card.addView(categoryLabel);
 
-        // Main Title (e.g. "PixelBoard v1.3.1")
+        // Main Title (e.g. "PixelBoard v1.3.2")
         TextView titleView = new TextView(this);
         String displayTitle = section.getTitle();
         if (displayTitle == null || displayTitle.isEmpty()) {
-            displayTitle = "PixelBoard v1.3.1";
+            displayTitle = "PixelBoard v1.3.2";
         }
         titleView.setText(displayTitle);
         titleView.setTextColor(palette.textPrimary);
@@ -3969,8 +3823,8 @@ public final class GboardPatchesSettingsActivity extends Activity
         TextView subtitleView = new TextView(this);
         subtitleView.setText(subtitleText);
         subtitleView.setTextColor(palette.textSecondary);
-        subtitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13.5f);
-        subtitleView.setLineSpacing(0, 1.2f);
+        subtitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
+        subtitleView.setLineSpacing(dp(2), 1.15f);
         LinearLayout.LayoutParams subParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -3979,10 +3833,10 @@ public final class GboardPatchesSettingsActivity extends Activity
 
         // Subtle Divider Line below the header
         View divider = new View(this);
-        divider.setBackgroundColor(blendAlpha(palette.textSecondary, 0.18f));
+        divider.setBackgroundColor(palette.windowBackground);
         LinearLayout.LayoutParams divParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                dp(1));
+                dp(1.5f));
         divParams.topMargin = dp(16);
         divParams.bottomMargin = dp(16);
         card.addView(divider, divParams);
@@ -3999,9 +3853,9 @@ public final class GboardPatchesSettingsActivity extends Activity
                 actionButton.setGravity(Gravity.CENTER);
                 actionButton.setBackground(buildInteractiveButtonDrawable(
                         blendAlpha(palette.accent, 0.12f),
-                        blendAlpha(palette.accent, 0.35f),
-                        dp(22)));
-                actionButton.setPadding(dp(18), dp(11), dp(18), dp(11));
+                        0,
+                        dp(20)));
+                actionButton.setPadding(dp(18), dp(12), dp(18), dp(12));
                 actionButton.setClickable(true);
                 actionButton.setFocusable(true);
                 actionButton.setOnClickListener(v -> {
@@ -4013,7 +3867,7 @@ public final class GboardPatchesSettingsActivity extends Activity
                 TextView label = new TextView(this);
                 label.setText(commandRow.getTitle());
                 label.setTextColor(palette.accent);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13.5f);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
                 label.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
                 actionButton.addView(label);
 
@@ -4046,7 +3900,7 @@ public final class GboardPatchesSettingsActivity extends Activity
             TextView itemTitleView = new TextView(this);
             itemTitleView.setText(cleanTitle);
             itemTitleView.setTextColor(palette.textPrimary);
-            itemTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f);
+            itemTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
             itemTitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
             itemBlock.addView(itemTitleView);
 
@@ -4056,8 +3910,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 TextView descView = new TextView(this);
                 descView.setText(summary);
                 descView.setTextColor(palette.textSecondary);
-                descView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13.5f);
-                descView.setLineSpacing(0, 1.25f);
+                descView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
+                descView.setLineSpacing(dp(2), 1.15f);
                 LinearLayout.LayoutParams descParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);

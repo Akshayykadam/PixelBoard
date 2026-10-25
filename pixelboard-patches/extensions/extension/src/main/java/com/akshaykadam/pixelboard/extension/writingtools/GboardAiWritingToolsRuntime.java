@@ -529,7 +529,9 @@ public final class GboardAiWritingToolsRuntime {
                     || FLAG_SIGNBOARD_MOVE_AP_PROMPT.equals(flagName)
                     || FLAG_USE_4C_IN_SIGNBOARD.equals(flagName)
                     || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI.equals(flagName)
-                    || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW.equals(flagName))
+                    || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW.equals(flagName)
+                    || FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE.equals(flagName)
+                    || FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName))
                     && originalResult instanceof Boolean) {
                 return Boolean.FALSE;
             }
@@ -694,10 +696,13 @@ public final class GboardAiWritingToolsRuntime {
             return originalResult;
         }
 
+        if (FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE.equals(flagName)
+                || FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName)) {
+            return Boolean.FALSE;
+        }
+
         if (FLAG_CONFIG_PROOFREAD.equals(flagName)
                 || FLAG_WRITING_TOOLS.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE.equals(flagName)
-                || FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName)
                 || FLAG_WRITING_HELPER_ENABLE_TEXT_STYLIZATION_INTERNAL.equals(flagName)
                 || FLAG_WRITING_HELPER.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_FOR_MINORS.equals(flagName)
