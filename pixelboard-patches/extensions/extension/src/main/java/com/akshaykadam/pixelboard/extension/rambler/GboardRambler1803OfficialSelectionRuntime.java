@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 
 import java.lang.reflect.Method;
 
+import com.akshaykadam.pixelboard.extension.bengalivoice.GboardBengaliVoiceRuntime;
+
 /**
  * Keeps Agentic capability exposure aligned with Gboard's official selector.
  *
@@ -24,11 +26,18 @@ public final class GboardRambler1803OfficialSelectionRuntime {
     }
 
     public static boolean shouldEnableAgenticDictation() {
+        return shouldEnableAgenticDictation(GboardBengaliVoiceRuntime.activeRouteOverride());
+    }
+
+    public static boolean shouldEnableAgenticDictation(int languageRoute) {
         if (isDefaultSelectionSuppressed()) {
             return false;
         }
         if (isVoiceSettingsScopeActive()) {
             return true;
+        }
+        if (languageRoute != GboardBengaliVoiceRuntime.INHERIT) {
+            return languageRoute == GboardBengaliVoiceRuntime.RAMBLER;
         }
         Boolean selected = officialRamblerSelected;
         if (selected == null) {
@@ -59,6 +68,10 @@ public final class GboardRambler1803OfficialSelectionRuntime {
 
     public static void exitDefaultSelectionSuppression() {
         decrement(DEFAULT_SELECTION_SUPPRESSION_DEPTH);
+    }
+
+    public static boolean isLanguageOverrideAllowed() {
+        return !isDefaultSelectionSuppressed() && !isVoiceSettingsScopeActive();
     }
 
     private static boolean isVoiceSettingsScopeActive() {

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<settings-text locales="en es fr de it pt ru hi ja ko zh ar in tr vi pl nl th uk">
+<settings-text locales="en es fr de it pt ru hi ja ko zh ar in tr vi pl nl th uk bn">
     <string name="gboard_patches_activity_title">
         <translation locale="en">Advanced settings</translation>
         <translation locale="es">Ajustes avanzados</translation>
@@ -1058,5 +1058,37 @@
     <string name="gboard_patches_update_section_info">
         <translation locale="en">Build Information</translation>
         <translation locale="ar">معلومات البناء</translation>
+    </string>
+    <string name="gboard_bengali_voice_title">
+        <translation locale="en">Voice typing</translation>
+        <translation locale="bn">ভয়েস টাইপিং</translation>
+    </string>
+    <string name="gboard_bengali_voice_standard">
+        <translation locale="en">Standard</translation>
+        <translation locale="bn">Standard</translation>
+    </string>
+    <string name="gboard_bengali_voice_rambler">
+        <translation locale="en">Rambler</translation>
+        <translation locale="bn">Rambler</translation>
+    </string>
+    <string name="gboard_bengali_voice_summary">
+        <translation locale="en">%1$s. Standard uses Bengali script; Rambler may return Roman text.</translation>
+        <translation locale="bn">%1$s। Standard বাংলা হরফে লেখে; Rambler রোমান হরফে লিখতে পারে।</translation>
+    </string>
+    <string name="gboard_bengali_voice_dialog_title">
+        <translation locale="en">Bengali voice typing</translation>
+        <translation locale="bn">বাংলা ভয়েস টাইপিং</translation>
+    </string>
+    <string name="gboard_bengali_voice_standard_choice">
+        <translation locale="en">Standard — Bengali script</translation>
+        <translation locale="bn">Standard — বাংলা হরফ</translation>
+    </string>
+    <string name="gboard_bengali_voice_rambler_choice">
+        <translation locale="en">Rambler — AI cleanup; may use Roman text</translation>
+        <translation locale="bn">Rambler — AI দিয়ে সাজানো লেখা; রোমান হরফ আসতে পারে</translation>
+    </string>
+    <string name="gboard_bengali_voice_save_failed">
+        <translation locale="en">Could not save the voice typing preference.</translation>
+        <translation locale="bn">ভয়েস টাইপিংয়ের পছন্দ সংরক্ষণ করা যায়নি।</translation>
     </string>
 </settings-text>
