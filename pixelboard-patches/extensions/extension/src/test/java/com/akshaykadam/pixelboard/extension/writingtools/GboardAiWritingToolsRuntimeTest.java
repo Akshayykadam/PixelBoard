@@ -147,6 +147,21 @@ public final class GboardAiWritingToolsRuntimeTest {
     }
 
     @Test
+    public void renamedServerPackageUsesV2ModelWhileV2IsOn() {
+        GboardAiWritingToolsSettings.Snapshot v2On = new GboardAiWritingToolsSettings.Snapshot(
+                true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, true);
+
+        Assert.assertEquals("config/wtv2",
+                GboardAiWritingToolsRuntime.computeOverrideValue(
+                        GboardAiWritingToolsRuntime
+                                .FLAG_WRITING_HELPER_TEXT_STYLIZATION_MODEL_VERSION,
+                        "composer_stylization_base",
+                        v2On,
+                        official(true, true),
+                        "com.akshaykadam.pixelboard"));
+    }
+
+    @Test
     public void officialServerPackagePreservesItsRemoteModelConfigs() {
         String stockModel = "official-remote-model";
         Assert.assertSame(stockModel, GboardAiWritingToolsRuntime.computeOverrideValue(
@@ -313,73 +328,69 @@ public final class GboardAiWritingToolsRuntimeTest {
     }
 
     @Test
-    public void writingToolsV2EnabledOnSupportedDeviceWhenToggleActive() {
-        GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(true);
-        try {
-            GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
-                    true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, true);
+    public void writingToolsV2EnabledOnAnyDeviceWhenToggleActive() {
+        GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
+                true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, true);
 
-            String[] v2Flags = new String[]{
-                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
-                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR,
-                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
-                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2,
-                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS,
-                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT,
-                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_ZERO_STATE,
-                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ALLOW_EMPTY_USER_INSTRUCTION,
-                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS,
-                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE,
-                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS
-            };
+        String[] v2Flags = new String[]{
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_ZERO_STATE,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ALLOW_EMPTY_USER_INSTRUCTION,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE,
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS
+        };
 
-            for (String flag : v2Flags) {
-                Assert.assertSame(flag, Boolean.TRUE,
-                        GboardAiWritingToolsRuntime.computeOverrideValue(
-                                flag, Boolean.FALSE, settings, official(true, true)));
-            }
-        } finally {
-            GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(null);
+        for (String flag : v2Flags) {
+            Assert.assertSame(flag, Boolean.TRUE,
+                    GboardAiWritingToolsRuntime.computeOverrideValue(
+                            flag, Boolean.FALSE, settings, official(true, true)));
         }
     }
 
     @Test
-    public void writingToolsV2DisabledOnUnsupportedDeviceEvenWhenToggleActive() {
-        GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(false);
-        try {
-            GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
-                    true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, true);
+    public void writingToolsV2DisabledWhenToggleInactive() {
+        GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
+                true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, false);
 
-            Assert.assertSame(Boolean.FALSE,
-                    GboardAiWritingToolsRuntime.computeOverrideValue(
-                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
-                            Boolean.TRUE, settings, official(true, true)));
-            Assert.assertSame(Boolean.FALSE,
-                    GboardAiWritingToolsRuntime.computeOverrideValue(
-                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
-                            Boolean.TRUE, settings, official(true, true)));
-        } finally {
-            GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(null);
-        }
+        Assert.assertSame(Boolean.FALSE,
+                GboardAiWritingToolsRuntime.computeOverrideValue(
+                        GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
+                        Boolean.TRUE, settings, official(true, true)));
+        Assert.assertSame(Boolean.FALSE,
+                GboardAiWritingToolsRuntime.computeOverrideValue(
+                        GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
+                        Boolean.TRUE, settings, official(true, true)));
     }
 
     @Test
-    public void writingToolsV2DisabledOnSupportedDeviceWhenToggleInactive() {
-        GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(true);
-        try {
-            GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
-                    true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, false);
+    public void writingToolsV2SuggestionsOpenToAllLanguagesOnlyWithV2AndAllKeyboards() {
+        String[] languageFlags = new String[]{
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_SMART_REPLY_P13N_LANGUAGE_TAGS,
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_SMART_REPLY_ZERO_STATE_LANGUAGE_TAGS
+        };
+        GboardAiWritingToolsSettings.Snapshot v2AllKeyboards =
+                new GboardAiWritingToolsSettings.Snapshot(
+                        true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, true);
+        GboardAiWritingToolsSettings.Snapshot v2Off =
+                new GboardAiWritingToolsSettings.Snapshot(
+                        true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, false);
+        GboardAiWritingToolsSettings.Snapshot v2StockKeyboards =
+                new GboardAiWritingToolsSettings.Snapshot(
+                        true, false, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, true);
 
-            Assert.assertSame(Boolean.FALSE,
-                    GboardAiWritingToolsRuntime.computeOverrideValue(
-                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
-                            Boolean.TRUE, settings, official(true, true)));
-            Assert.assertSame(Boolean.FALSE,
-                    GboardAiWritingToolsRuntime.computeOverrideValue(
-                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
-                            Boolean.TRUE, settings, official(true, true)));
-        } finally {
-            GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(null);
+        for (String flag : languageFlags) {
+            Assert.assertEquals(flag, "*", GboardAiWritingToolsRuntime.computeOverrideValue(
+                    flag, "-", v2AllKeyboards, official(true, true)));
+            Assert.assertEquals(flag, "-", GboardAiWritingToolsRuntime.computeOverrideValue(
+                    flag, "-", v2Off, official(true, true)));
+            Assert.assertEquals(flag, "-", GboardAiWritingToolsRuntime.computeOverrideValue(
+                    flag, "-", v2StockKeyboards, official(true, true)));
         }
     }
 

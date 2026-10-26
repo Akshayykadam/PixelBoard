@@ -127,16 +127,13 @@ Access Google's Gemini-driven writing suite directly above your keys across any 
 - **Native Localization in 20+ Languages**: Fully translated Advanced Settings across English, Spanish, French, German, Italian, Portuguese, Russian, Hindi, Japanese, Korean, Chinese, Arabic, Indonesian, Turkish, Vietnamese, Polish, Dutch, Thai, and Ukrainian (`@string/pixelboard_patches_settings_title`).
 - **Cleaned Settings Tree & Dictionary Preservation**: Removed unwanted promotional bloatware ("Rate Gboard" / "Help & feedback") via semantic string key resolution, strictly preserving the native **Dictionary** (`LatinDictionarySettingsFragment`), **Personal dictionary**, and **Physical keyboard** preferences across all Gboard base updates ([#91](https://github.com/Akshayykadam/PixelBoard/issues/91), [#94](https://github.com/Akshayykadam/PixelBoard/pull/94)).
 
-### 12. Writing Tools V2 Support (Experimental)
-- **Suggested Style Chips & Prompt Bar**: Pre-configured architecture for Google's modern "Suggested" style chips and the freeform "Describe your edit" prompt bar.
-- **Intelligent Hardware Gating**: Integrated with hardware/model eligibility checks to prevent unexpected errors or crashes on unsupported devices.
+### 12. Writing Tools V2 Support (Beta)
+- **Suggested Style Chips & Prompt Bar**: Google's modern "Suggested" style chips and the freeform "Describe your edit" prompt bar.
+- **Every Device**: Runs on Google's server backend (`GBOARD_SERVER`), so it works on any phone, not only Pixels. Turn on **Writing Tools V2** under **★ Advanced settings** (off by default).
+- **Every Language**: With **Support all keyboards** on, V2 suggestions are offered in every keyboard language.
 
-### 13. Device-Gated AI Inference Backend Selector (New in v18.4)
-On supported devices (such as Google Pixel 8 Pro / 9 series), choose your preferred inference pipeline directly under Advanced Settings:
-- `GBOARD_SERVER` (Google Cloud Server Inference)
-- `PRIVATE_INFERENCE_AICORE` (On-Device Private Android AICore)
-- `PRIVATE_INFERENCE_ASTREA` (On-Device Astrea Framework)
-- Dynamically hidden on unsupported hardware to maintain a clutter-free, native experience.
+### 13. AI Processing on Google's Servers
+- AI Writing Tools always use `GBOARD_SERVER` (Google Cloud inference). On-device AICore / Astrea is not offered: system AICore only serves apps signed by Google, so it cannot work for the renamed PixelBoard package.
 
 ### 14. Automatic Live Activation — Zero Restarts Required
 - **Instant Hot-Reload**: Toggling Rambler Voice Typing, switching AI Writing Tools preferences, or changing inference backend options applies automatically in real time without restarting Gboard, force-closing the app, or rebooting your phone.
@@ -168,7 +165,7 @@ On supported devices (such as Google Pixel 8 Pro / 9 series), choose your prefer
 - **Full Arabic Translations**: Complete Arabic language localization covering all Advanced Settings, AI Writing Tools, and Rambler dictation preferences.
 
 > [!NOTE]
-> **Google Pixel Device Requirement**: New advanced features (such as **Writing Tools V2** and the **On-Device AI Inference Backend Selector**) are available **only on Google Pixel devices** (e.g., Pixel 8 Pro / Pixel 9 series) due to system AICore and hardware model requirements. On non-Pixel Android devices, these specific options are automatically hidden or gated to ensure complete stability, while core features like **Gemini Rambler Natural Voice Typing**, **AI Proofread**, and **Tone Rewriting** work across all supported devices.
+> **Works on every device**: Rambler Voice Typing, AI Writing Tools and Writing Tools V2 work on all supported Android devices, not only Pixels. Rambler is also kept on for every language Google's speech servers support, even if Google tries to switch it off for a language.
 
 ---
 
@@ -200,7 +197,8 @@ Google's **AI Writing Tools** allow you to proofread, rephrase, and adjust the t
 ### 1. Where to Configure
 - **In Advanced Settings**:
    - Open **★ Advanced settings** from the bottom of PixelBoard Settings.
-   - Make sure **Enable AI Writing Tools** and **Support All Keyboards** are toggled **ON** (both ON by default).
+   - Make sure **Enable AI Writing Tools** and **Support all keyboards** are toggled **ON** (both ON by default).
+   - Optionally turn on **Writing Tools V2** for suggested styles and the "Describe your edit" bar.
 - **In Corrections & Suggestions**:
    - In PixelBoard Settings, go to **Corrections & suggestions > Writing tools**.
    - Ensure **Show writing tools icon in suggestion strip while typing** is enabled.
@@ -221,10 +219,10 @@ Google's **AI Writing Tools** allow you to proofread, rephrase, and adjust the t
 PixelBoard features a clean, minimal preference screen modeled directly after the native Material You Gboard UI:
 
 - **Enable AI Writing Tools**: Force-shows the Writing tools icon in the suggestion strip across all apps and text views.
-- **Support All Keyboards**: Extends AI writing assistance beyond English to all keyboard layouts.
-- **Inference Backend Type**: On supported hardware, select between `GBOARD_SERVER`, `PRIVATE_INFERENCE_AICORE`, and `PRIVATE_INFERENCE_ASTREA`.
+- **Support all keyboards**: Extends AI writing assistance beyond English to all keyboard layouts.
+- **Writing Tools V2** (Beta): Suggested style chips and the "Describe your edit" prompt bar, on any device.
 - **Enable Advanced Voice Typing**: Unlocks the *Rambler* dictation engine in Voice typing settings.
-- **Rounded Keys**: Enable Google's Material 3 Expressive Belka pill-shaped keycaps.
+- **Rounded keys**: Enable Google's Material 3 Expressive Belka pill-shaped keycaps.
 - **Multilingual Support**: Fully localized in 20+ languages matching your device's system locale.
 - **Toolbar Restart Button (`↻`)**: Optional one-tap process reload utility in the toolbar if you ever want to force a refresh, though all settings and toggles apply automatically in real time without restarts.
 - **Cleaned Preferences**: Promotional bloatware ("Rate Gboard" and "Help & feedback") has been completely removed.
@@ -350,7 +348,7 @@ java -jar tools/patcher.jar patch \
 | **Root Required** | **No** (Standalone side-by-side coexistence) |
 
 > [!NOTE]
-> **Google Pixel Device Support**: Advanced features (**Writing Tools V2** and **On-Device Private AICore / Astrea inference**) are available **only on Google Pixel devices**. Core **Rambler Natural Voice Typing**, **AI Writing Assistant**, proofreading, and tone rewrite work across all Android devices.
+> **Device Support**: **Rambler Natural Voice Typing**, **AI Writing Assistant**, proofreading, tone rewrite and **Writing Tools V2** work across all Android devices.
 
 ---
 

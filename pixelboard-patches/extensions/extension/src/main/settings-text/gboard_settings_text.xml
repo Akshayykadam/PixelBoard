@@ -281,7 +281,7 @@
         <translation locale="uk">Автор</translation>
     </string>
     <string name="gboard_patches_about_patch_version_title">
-        <translation locale="en">Patch Version</translation>
+        <translation locale="en">Patch version</translation>
         <translation locale="es">Versión del parche</translation>
         <translation locale="fr">Version du patch</translation>
         <translation locale="de">Patch-Version</translation>
@@ -442,8 +442,8 @@
         <translation locale="ar">الذكاء الاصطناعي والصوت</translation>
     </string>
     <string name="gboard_patches_group_ai_voice_summary">
-        <translation locale="en">AI writing tools, advanced voice typing, and Bluetooth microphone.</translation>
-        <translation locale="ar">أدوات الكتابة بالذكاء الاصطناعي، والكتابة الصوتية المتقدمة، وميكروفون البلوتوث.</translation>
+        <translation locale="en">AI writing tools and advanced voice typing.</translation>
+        <translation locale="ar">أدوات الكتابة بالذكاء الاصطناعي والكتابة الصوتية المتقدمة.</translation>
     </string>
     <string name="gboard_patches_group_keyboard_header_summary">
         <translation locale="en"/>
@@ -478,8 +478,8 @@
         <translation locale="ar">أدوات الكتابة بالذكاء الاصطناعي</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_summary">
-        <translation locale="en">Controls Gboard AI Writing Tools availability, keyboard support, and backend routing.</translation>
-        <translation locale="ar">التحكم في توفر أدوات الكتابة بالذكاء الاصطناعي في Gboard، ودعم لوحات المفاتيح، وتوجيه المعالجة الخلفية.</translation>
+        <translation locale="en">Controls Gboard AI Writing Tools availability, keyboard support, and Writing Tools V2.</translation>
+        <translation locale="ar">التحكم في توفر أدوات الكتابة بالذكاء الاصطناعي في Gboard، ودعم لوحات المفاتيح، وأدوات الكتابة (الإصدار 2).</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_header_summary">
         <translation locale="en"/>
@@ -536,7 +536,7 @@
         <translation locale="uk">Показувати інструменти письма зі ШІ в рядку підказок для швидкого редагування, переписування тексту та розумних пропозицій.</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_all_keyboards_title">
-        <translation locale="en">Support All Keyboards</translation>
+        <translation locale="en">Support all keyboards</translation>
         <translation locale="es">Admitir todos los teclados</translation>
         <translation locale="fr">Prendre en charge tous les claviers</translation>
         <translation locale="de">Alle Tastaturen unterstützen</translation>
@@ -808,7 +808,7 @@
         <translation locale="ar">من غير الواضح حالياً ما إذا كان يلزم تنزيل آخر. تأكد من أنك استخدمت حزمة مجمّعة أو مجزأة (APKM) وطبّقت الترقيع عبر PixelBoard Patcher؛ فحزم APK المستقلة لن تعمل.\nانقر لعرض صفحة التنزيل على APKMirror</translation>
     </string>
     <string name="gboard_patches_rounded_keys_enabled_title">
-        <translation locale="en">Rounded Keys</translation>
+        <translation locale="en">Rounded keys</translation>
         <translation locale="es">Teclas redondeadas</translation>
         <translation locale="fr">Touches arrondies</translation>
         <translation locale="de">Abgerundete Tasten</translation>
@@ -964,12 +964,12 @@
         <translation locale="ar">تحديثات مباشرة وسجلات التغيير وتنزيل APK من GitHub</translation>
     </string>
     <string name="gboard_patches_update_status_checking_title">
-        <translation locale="en">Checking for updates...</translation>
-        <translation locale="ar">جارٍ التحقق من وجود تحديثات...</translation>
+        <translation locale="en">Checking for updates…</translation>
+        <translation locale="ar">جارٍ التحقق من وجود تحديثات…</translation>
     </string>
     <string name="gboard_patches_update_status_checking_summary">
-        <translation locale="en">Connecting to GitHub Releases repository...</translation>
-        <translation locale="ar">جارٍ الاتصال بمستودع إصدارات GitHub...</translation>
+        <translation locale="en">Connecting to GitHub Releases…</translation>
+        <translation locale="ar">جارٍ الاتصال بإصدارات GitHub…</translation>
     </string>
     <string name="gboard_patches_update_status_available_title">
         <translation locale="en">Update available</translation>
@@ -980,8 +980,8 @@
         <translation locale="ar">يتوفر إصدار جديد من PixelBoard للتنزيل.</translation>
     </string>
     <string name="gboard_patches_update_status_downloading_title">
-        <translation locale="en">Downloading update...</translation>
-        <translation locale="ar">جارٍ تنزيل التحديث...</translation>
+        <translation locale="en">Downloading update…</translation>
+        <translation locale="ar">جارٍ تنزيل التحديث…</translation>
     </string>
     <string name="gboard_patches_update_status_downloading_summary">
         <translation locale="en">Downloading APK via Download Manager. Check notification bar for progress.</translation>
@@ -992,8 +992,8 @@
         <translation locale="ar">اكتمل التنزيل</translation>
     </string>
     <string name="gboard_patches_update_status_downloaded_summary">
-        <translation locale="en">Update APK has been downloaded. Tap Install below.</translation>
-        <translation locale="ar">تم تنزيل ملف APK للتحديث. اضغط على تثبيت أدناه.</translation>
+        <translation locale="en">The update is downloaded. Tap to install it.</translation>
+        <translation locale="ar">تم تنزيل التحديث. اضغط لتثبيته.</translation>
     </string>
     <string name="gboard_patches_update_status_uptodate_title">
         <translation locale="en">You\'re up to date</translation>
@@ -1012,8 +1012,8 @@
         <translation locale="ar">تعذر الاتصال بـ GitHub. يرجى التحقق من اتصال الإنترنت الخاص بك.</translation>
     </string>
     <string name="gboard_patches_update_status_idle_summary">
-        <translation locale="en">Tap \'Check for updates\' to query the latest releases from GitHub.</translation>
-        <translation locale="ar">اضغط على \'التحقق من وجود تحديثات\' للاستعلام عن أحدث الإصدارات من GitHub.</translation>
+        <translation locale="en">Check for newer versions and changelogs</translation>
+        <translation locale="ar">التحقق من وجود إصدارات أحدث وسجلات التغيير</translation>
     </string>
     <string name="gboard_patches_update_action_download">
         <translation locale="en">Download &amp; Install APK</translation>
@@ -1056,7 +1056,111 @@
         <translation locale="ar">التفضيلات</translation>
     </string>
     <string name="gboard_patches_update_section_info">
-        <translation locale="en">Build Information</translation>
+        <translation locale="en">Build information</translation>
         <translation locale="ar">معلومات البناء</translation>
+    </string>
+    <string name="gboard_patches_update_available_version">
+        <translation locale="en">Update available: v%1$s</translation>
+        <translation locale="ar">يتوفر تحديث: v%1$s</translation>
+    </string>
+    <string name="gboard_patches_update_available_version_size">
+        <translation locale="en">Update available: v%1$s (%2$s)</translation>
+        <translation locale="ar">يتوفر تحديث: v%1$s (%2$s)</translation>
+    </string>
+    <string name="gboard_patches_update_entry_up_to_date">
+        <translation locale="en">v%1$s • Up to date</translation>
+        <translation locale="ar">v%1$s • محدّث</translation>
+    </string>
+    <string name="gboard_patches_update_available_detail">
+        <translation locale="en">PixelBoard v%1$s is ready to download (%2$s).\nPublished: %3$s</translation>
+        <translation locale="ar">PixelBoard v%1$s جاهز للتنزيل (%2$s).\nتاريخ النشر: %3$s</translation>
+    </string>
+    <string name="gboard_patches_update_error_browser_hint">
+        <translation locale="en">%1$s\nYou can still download releases in your browser.</translation>
+        <translation locale="ar">%1$s\nلا يزال بإمكانك تنزيل الإصدارات من متصفحك.</translation>
+    </string>
+    <string name="gboard_patches_update_action_download_summary">
+        <translation locale="en">Download %1$s (%2$s) from GitHub</translation>
+        <translation locale="ar">تنزيل %1$s (%2$s) من GitHub</translation>
+    </string>
+    <string name="gboard_patches_update_action_install">
+        <translation locale="en">Install update</translation>
+        <translation locale="ar">تثبيت التحديث</translation>
+    </string>
+    <string name="gboard_patches_update_uptodate_checked">
+        <translation locale="en">You\'re up to date • Checked %1$s</translation>
+        <translation locale="ar">أنت على آخر تحديث • آخر تحقق %1$s</translation>
+    </string>
+    <string name="gboard_patches_update_last_checked">
+        <translation locale="en">Last checked %1$s</translation>
+        <translation locale="ar">آخر تحقق %1$s</translation>
+    </string>
+    <string name="gboard_patches_update_changelog_fallback">
+        <translation locale="en">See the GitHub release notes for details.</translation>
+        <translation locale="ar">راجع ملاحظات الإصدار على GitHub لمعرفة التفاصيل.</translation>
+    </string>
+    <string name="gboard_patches_update_changelog_view_full">
+        <translation locale="en">View full changelog on GitHub</translation>
+        <translation locale="ar">عرض سجل التغييرات الكامل على GitHub</translation>
+    </string>
+    <string name="gboard_patches_update_changelog_upcoming">
+        <translation locale="en">Highlights and improvements in the upcoming update</translation>
+        <translation locale="ar">أبرز التحسينات في التحديث القادم</translation>
+    </string>
+    <string name="gboard_patches_update_changelog_current">
+        <translation locale="en">Highlights and key improvements in this release</translation>
+        <translation locale="ar">أبرز التحسينات الرئيسية في هذا الإصدار</translation>
+    </string>
+    <string name="gboard_patches_update_info_installed_version">
+        <translation locale="en">Installed version</translation>
+        <translation locale="ar">الإصدار المثبت</translation>
+    </string>
+    <string name="gboard_patches_update_info_base_gboard">
+        <translation locale="en">Base Gboard</translation>
+        <translation locale="ar">إصدار Gboard الأساسي</translation>
+    </string>
+    <string name="gboard_patches_update_info_package_name">
+        <translation locale="en">Package name</translation>
+        <translation locale="ar">اسم الحزمة</translation>
+    </string>
+    <string name="gboard_patches_update_download_description">
+        <translation locale="en">Downloading PixelBoard update…</translation>
+        <translation locale="ar">جارٍ تنزيل تحديث PixelBoard…</translation>
+    </string>
+    <string name="gboard_patches_update_download_started">
+        <translation locale="en">Downloading PixelBoard v%1$s…</translation>
+        <translation locale="ar">جارٍ تنزيل PixelBoard v%1$s…</translation>
+    </string>
+    <string name="gboard_patches_update_download_start_failed">
+        <translation locale="en">Could not start the download. Opening the release page instead.</translation>
+        <translation locale="ar">تعذّر بدء التنزيل. سيتم فتح صفحة الإصدار بدلاً من ذلك.</translation>
+    </string>
+    <string name="gboard_patches_update_download_failed">
+        <translation locale="en">Download failed</translation>
+        <translation locale="ar">فشل التنزيل</translation>
+    </string>
+    <string name="gboard_patches_update_network_error">
+        <translation locale="en">Network error</translation>
+        <translation locale="ar">خطأ في الشبكة</translation>
+    </string>
+    <string name="gboard_patches_update_install_permission_title">
+        <translation locale="en">Allow installing updates</translation>
+        <translation locale="ar">السماح بتثبيت التحديثات</translation>
+    </string>
+    <string name="gboard_patches_update_install_permission_message">
+        <translation locale="en">To install downloaded updates, PixelBoard needs permission to install unknown apps. Allow it on the next screen.</translation>
+        <translation locale="ar">لتثبيت التحديثات التي تم تنزيلها، يحتاج PixelBoard إلى إذن تثبيت التطبيقات غير المعروفة. اسمح بذلك في الشاشة التالية.</translation>
+    </string>
+    <string name="gboard_patches_update_install_permission_action">
+        <translation locale="en">Open settings</translation>
+        <translation locale="ar">فتح الإعدادات</translation>
+    </string>
+    <string name="gboard_patches_update_installer_failed">
+        <translation locale="en">Could not open the installer.</translation>
+        <translation locale="ar">تعذّر فتح أداة التثبيت.</translation>
+    </string>
+    <string name="gboard_patches_update_whats_new_label">
+        <translation locale="en">What\'s new</translation>
+        <translation locale="ar">ما الجديد</translation>
     </string>
 </settings-text>

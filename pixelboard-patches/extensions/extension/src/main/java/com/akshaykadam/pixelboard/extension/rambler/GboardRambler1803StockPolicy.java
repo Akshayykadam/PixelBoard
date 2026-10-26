@@ -48,6 +48,9 @@ public final class GboardRambler1803StockPolicy {
     public static final String AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG =
             "agentic_dictation_deactivation_delay_ms";
     public static final String AD_ACTIVATION_TYPE_FLAG = "ad_activation_type";
+    // Any tag listed here turns the Rambler extension off for that language.
+    public static final String AGENTIC_DICTATION_EXCLUDED_LANGUAGE_TAGS_FLAG =
+            "agentic_dictation_excluded_language_tags";
 
     private static final Set<String> AGENTIC_FEATURE_FLAGS = Collections.unmodifiableSet(
             new HashSet<String>(Arrays.asList(
@@ -83,6 +86,13 @@ public final class GboardRambler1803StockPolicy {
                     ? Long.valueOf(0L)
                     : originalResult;
         }
+        if (AGENTIC_DICTATION_EXCLUDED_LANGUAGE_TAGS_FLAG.equals(flagName)) {
+            return originalResult instanceof String
+                            && GboardRambler1803OfficialSelectionRuntime
+                                    .shouldEnableAgenticDictation()
+                    ? ""
+                    : originalResult;
+        }
         if (AGENTIC_FEATURE_FLAGS.contains(flagName)) {
             return originalResult instanceof Boolean
                             && GboardRambler1803OfficialSelectionRuntime
@@ -97,7 +107,8 @@ public final class GboardRambler1803StockPolicy {
         return SHOW_RAMBLER_DICT_SETTINGS_FLAG.equals(flagName)
                 || AGENTIC_FEATURE_FLAGS.contains(flagName)
                 || AD_ACTIVATION_TYPE_FLAG.equals(flagName)
-                || AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName);
+                || AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName)
+                || AGENTIC_DICTATION_EXCLUDED_LANGUAGE_TAGS_FLAG.equals(flagName);
     }
 }
 

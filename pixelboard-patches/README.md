@@ -43,8 +43,7 @@ This repository contains the patch definitions and extension bytecode for **Pixe
 - **Modern Spell Checker Suggestion Chips & Grammar Checking**: Enforces Android 12+ inline spellcheck suggestion chips and add-to-dictionary UI on all devices (`GboardSpellCheckerChipsPatch`).
 - **Scan Text / Camera OCR & Floating Screenshot Banner**: Direct optical character recognition camera tool and floating screenshot suggestion chips with permissions.
 - **Emoji Palette V2 & Super Insert Hub**: Dedicated recent/frequent tabs, rich multi-view super insert, and in-line Smart Compose ghost autocompletion.
-- **Writing Tools V2 Gating**: "Suggested" chips, "Describe your edit" prompt bar, hardware/model eligibility device-gating, and dedicated Material You toggles.
-- **Device-Gated Backend Selector**: Selectable inference engine (`GBOARD_SERVER`, `PRIVATE_INFERENCE_AICORE`, `PRIVATE_INFERENCE_ASTREA`) on supported Pixel devices.
+- **Writing Tools V2**: "Suggested" chips and the "Describe your edit" prompt bar on every device, behind its own BETA toggle.
 - **Material 3 Expressive Rounded Keys**: Belka rounded keyboard styling toggle with runtime Phenotype flag enforcement (#14).
 - **Restored Emoji Size Slider & Vibrant Candidate Emojis**: Restores missing emoji scale slider setting and ensures 100% opacity for candidate emojis (#26).
 - **Extended Clipboard History Retention (New Feature)**: Break free from the stock 24-hour limit! Save copied items for 1 hour, 24 hours, 7 days, 30 days, or permanently (Never), integrated into Gboard preferences and PixelBoard Settings with crash-free value migration.
@@ -60,7 +59,7 @@ This repository contains the patch definitions and extension bytecode for **Pixe
 - **Target App**: Google Keyboard (Gboard) `v18.5.3` (Release), `v18.4.1` (Release), & `v18.3.1` (Release / Beta)
 
 > [!NOTE]
-> **Google Pixel Device Requirement**: New v18.4/v18.5 features (**Writing Tools V2** and **On-Device AICore / Astrea inference**) are available **only on Google Pixel devices**. Core Rambler Voice Typing, spell checker chips, OCR, and AI writing tools work across all Android devices.
+> **Device Support**: Rambler Voice Typing, Writing Tools V2, spell checker chips, OCR, and AI writing tools work across all Android devices.
 
 ---
 

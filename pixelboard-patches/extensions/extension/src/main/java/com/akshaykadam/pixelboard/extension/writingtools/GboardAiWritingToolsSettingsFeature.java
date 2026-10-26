@@ -33,6 +33,9 @@ public final class GboardAiWritingToolsSettingsFeature
     private final String enabledSummary;
     private final String allKeyboardsTitle;
     private final String allKeyboardsSummary;
+    private final String v2Title;
+    private final String v2Summary;
+    private final String v2Badge;
     private final String sectionBehavior;
 
     public GboardAiWritingToolsSettingsFeature(Context context) {
@@ -55,6 +58,10 @@ public final class GboardAiWritingToolsSettingsFeature
                 R.string.gboard_patches_ai_writing_tools_all_keyboards_title);
         allKeyboardsSummary = GboardSettingsText.get(context,
                 R.string.gboard_patches_ai_writing_tools_all_keyboards_summary);
+        v2Title = GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_title);
+        v2Summary = GboardSettingsText.get(context,
+                R.string.gboard_patches_ai_writing_tools_v2_summary);
+        v2Badge = GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_badge);
         sectionBehavior = GboardSettingsText.get(context,
                 R.string.gboard_patches_ai_writing_tools_section_behavior);
     }
@@ -91,6 +98,7 @@ public final class GboardAiWritingToolsSettingsFeature
             boolean enabled = GboardAiWritingToolsSettings.readEnabled(preferences);
             boolean allKeyboardsEnabled =
                     GboardAiWritingToolsSettings.readAllKeyboardsEnabled(preferences);
+            boolean v2Enabled = GboardAiWritingToolsSettings.readV2Enabled(preferences);
 
             List<GboardPatchesSettingsContract.Row> behaviorRows =
                     new ArrayList<GboardPatchesSettingsContract.Row>();
@@ -108,6 +116,13 @@ public final class GboardAiWritingToolsSettingsFeature
                     value -> GboardAiWritingToolsSettings.writeAllKeyboardsEnabled(
                             preferences,
                             value)));
+            behaviorRows.add(new GboardPatchesSettingsContract.ToggleRow(
+                    v2Title,
+                    v2Summary,
+                    v2Badge,
+                    enabled,
+                    v2Enabled,
+                    value -> GboardAiWritingToolsSettings.writeV2Enabled(preferences, value)));
 
             return new GboardPatchesSettingsContract.Screen(
                     entryTitle,

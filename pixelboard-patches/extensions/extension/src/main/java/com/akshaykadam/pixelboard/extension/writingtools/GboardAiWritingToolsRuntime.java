@@ -32,6 +32,11 @@ public final class GboardAiWritingToolsRuntime {
             "writing_helper_supported_language_tags";
     static final String FLAG_LLM_PC_SUPPORTED_LANGUAGE_TAGS =
             "llm_pc_supported_language_tags";
+    // Stock default is "-" (no language) for both V2 suggestion lists.
+    static final String FLAG_WRITING_TOOLS_V2_SMART_REPLY_P13N_LANGUAGE_TAGS =
+            "writing_tools_v2_smart_reply_enabled_p13n_language_tags";
+    static final String FLAG_WRITING_TOOLS_V2_SMART_REPLY_ZERO_STATE_LANGUAGE_TAGS =
+            "writing_tools_v2_enabled_smart_reply_zero_state_suggestion_language_tags";
     static final String FLAG_WRITING_HELPER_MODEL_VERSION =
             "writing_helper_model_version";
     static final String FLAG_WRITING_HELPER_TEXT_STYLIZATION_MODEL_VERSION =
@@ -347,6 +352,9 @@ public final class GboardAiWritingToolsRuntime {
             "202408051448_prod_sd_config";
     static final String TEXT_STYLIZATION_MODEL_CONFIG =
             "202504090000_writing_tools_config";
+    // V2 sends both the tone chips and "Describe your edit" through the stylization model;
+    // the server answers free-form instructions only for this model (INTERNAL otherwise).
+    static final String WRITING_TOOLS_V2_MODEL_CONFIG = "config/wtv2";
 
     private static final String TAG = "GboardPatches";
     private static final String LOG_PREFIX = "[gboard-writing-tools-18.0.3] ";
@@ -642,7 +650,9 @@ public final class GboardAiWritingToolsRuntime {
                 return PROOFREAD_MODEL_CONFIG;
             }
             if (FLAG_WRITING_HELPER_TEXT_STYLIZATION_MODEL_VERSION.equals(flagName)) {
-                return TEXT_STYLIZATION_MODEL_CONFIG;
+                return settings.v2Enabled
+                        ? WRITING_TOOLS_V2_MODEL_CONFIG
+                        : TEXT_STYLIZATION_MODEL_CONFIG;
             }
         }
 
@@ -673,6 +683,13 @@ public final class GboardAiWritingToolsRuntime {
                     ? ALL_LANGUAGES_ALLOWLIST_VALUE
                     : originalResult;
         }
+        if (FLAG_WRITING_TOOLS_V2_SMART_REPLY_P13N_LANGUAGE_TAGS.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_SMART_REPLY_ZERO_STATE_LANGUAGE_TAGS.equals(flagName)) {
+            return settings.v2Enabled && settings.allKeyboardsEnabled
+                            && originalResult instanceof String
+                    ? ALL_LANGUAGES_ALLOWLIST_VALUE
+                    : originalResult;
+        }
         if (!(originalResult instanceof Boolean)) {
             return originalResult;
         }
@@ -688,12 +705,7 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS.equals(flagName)) {
-            if (originalResult instanceof Boolean) {
-                return (settings.v2Enabled && GboardAiWritingToolsDeviceSupport.isSupportedDevice())
-                        ? Boolean.TRUE
-                        : Boolean.FALSE;
-            }
-            return originalResult;
+            return Boolean.valueOf(settings.v2Enabled);
         }
 
         if (FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE.equals(flagName)

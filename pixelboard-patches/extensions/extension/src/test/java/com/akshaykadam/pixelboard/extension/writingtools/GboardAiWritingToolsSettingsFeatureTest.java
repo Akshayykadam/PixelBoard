@@ -17,7 +17,7 @@ import com.akshaykadam.pixelboard.extension.settings.GboardPatchesSettingsContra
 
 public final class GboardAiWritingToolsSettingsFeatureTest {
     @Test
-    public void buildScreenShowsExactlyMasterAndAllKeyboardsRows() {
+    public void buildScreenShowsMasterAllKeyboardsAndV2Rows() {
         InMemorySharedPreferences preferences = new InMemorySharedPreferences();
         GboardAiWritingToolsSettings.ensureDefaults(preferences);
         CapturingHost host = new CapturingHost(preferences);
@@ -32,12 +32,17 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
         GboardPatchesSettingsContract.ToggleRow enabledRow =
                 findToggleRow(screen.getRows(), "Enable AI Writing Tools");
         GboardPatchesSettingsContract.ToggleRow allKeyboardsRow =
-                findToggleRow(screen.getRows(), "Support All Keyboards");
+                findToggleRow(screen.getRows(), "Support all keyboards");
 
         Assert.assertNotNull(enabledRow);
         Assert.assertNotNull(allKeyboardsRow);
         Assert.assertNull(findSelectorRow(screen.getRows(), "AI Processing Backend"));
-        Assert.assertEquals(2, screen.getRows().size());
+        GboardPatchesSettingsContract.ToggleRow v2Row =
+                findToggleRow(screen.getRows(), "Writing Tools V2");
+        Assert.assertNotNull(v2Row);
+        Assert.assertFalse(v2Row.isChecked());
+        Assert.assertTrue(v2Row.isEnabled());
+        Assert.assertEquals(3, screen.getRows().size());
         Assert.assertEquals(
                 "Show AI writing tools in the suggestion strip for instant proofreading, "
                         + "text rewriting, and smart suggestions.",
@@ -66,7 +71,7 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
         GboardPatchesSettingsContract.Screen updatedScreen =
                 new GboardAiWritingToolsSettingsFeature(null).buildScreen(host);
         GboardPatchesSettingsContract.ToggleRow allKeyboardsRow =
-                findToggleRow(updatedScreen.getRows(), "Support All Keyboards");
+                findToggleRow(updatedScreen.getRows(), "Support all keyboards");
 
         Assert.assertTrue(allKeyboardsRow.isEnabled());
         allKeyboardsRow.getToggleAction().accept(true);
@@ -84,7 +89,7 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
                 new GboardAiWritingToolsSettingsFeature(null).buildScreen(host);
 
         Assert.assertFalse(findToggleRow(
-                screen.getRows(), "Support All Keyboards").isEnabled());
+                screen.getRows(), "Support all keyboards").isEnabled());
         Assert.assertNull(findSelectorRow(
                 screen.getRows(), "AI Processing Backend"));
     }
