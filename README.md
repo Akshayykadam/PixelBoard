@@ -154,11 +154,11 @@ Google's **AI Writing Tools** allow you to proofread, rephrase, and adjust the t
 PixelBoard features a clean, minimal preference screen modeled directly after the native Material You Gboard UI:
 
 - **Enable AI Writing Tools**: Force-shows the Writing tools icon in the suggestion strip across all apps and text views.
-- **Support All Keyboards**: Extends AI writing assistance beyond English to all keyboard layouts.
+- **Support all keyboards**: Extends AI writing assistance beyond English to all keyboard layouts.
 - **Inference Backend Type**: On supported hardware, select between `GBOARD_SERVER`, `PRIVATE_INFERENCE_AICORE`, and `PRIVATE_INFERENCE_ASTREA`.
 - **Enable Advanced Voice Typing**: Unlocks the *Rambler* dictation engine in Voice typing settings.
 - **In-App Updates**: Built-in OTA updater to check for new releases, view changelogs, and download & install updates directly from GitHub.
-- **Rounded Keys**: Enable Google's Material 3 Expressive Belka pill-shaped keycaps.
+- **Rounded keys**: Enable Google's Material 3 Expressive Belka pill-shaped keycaps.
 - **Multilingual Support**: Fully localized in 20+ languages matching your device's system locale.
 - **Toolbar Restart Button (`↻`)**: Optional one-tap process reload utility in the toolbar if you ever want to force a refresh, though all settings and toggles apply automatically in real time without restarts.
 - **Cleaned Preferences**: Promotional bloatware ("Rate Gboard" and "Help & feedback") has been completely removed.

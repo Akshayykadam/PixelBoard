@@ -26,6 +26,9 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.akshaykadam.pixelboard.extension.R;
+import com.akshaykadam.pixelboard.extension.settings.GboardSettingsText;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -284,7 +287,9 @@ public final class PixelBoardUpdateManager {
             } catch (Throwable throwable) {
                 Log.w(TAG, "Update check failed", throwable);
                 currentStatus = Status.ERROR;
-                lastErrorMessage = throwable.getMessage() != null ? throwable.getMessage() : "Network error";
+                lastErrorMessage = throwable.getMessage() != null
+                        ? throwable.getMessage()
+                        : GboardSettingsText.get(context, R.string.gboard_patches_update_network_error);
                 postToMain(() -> {
                     if (callback != null) {
                         callback.onUpdateResult(Status.ERROR, currentReleaseInfo, lastErrorMessage);
@@ -341,7 +346,8 @@ public final class PixelBoardUpdateManager {
             Uri downloadUri = Uri.parse(releaseInfo.getApkDownloadUrl());
             DownloadManager.Request request = new DownloadManager.Request(downloadUri);
             request.setTitle("PixelBoard " + releaseInfo.getVersion());
-            request.setDescription("Downloading PixelBoard update...");
+            request.setDescription(GboardSettingsText.get(activity,
+                    R.string.gboard_patches_update_download_description));
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, releaseInfo.getApkFileName());
             request.setMimeType("application/vnd.android.package-archive");
@@ -354,7 +360,9 @@ public final class PixelBoardUpdateManager {
             }
 
             currentStatus = Status.DOWNLOADING;
-            Toast.makeText(activity, "Downloading PixelBoard v" + releaseInfo.getVersion() + "...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, GboardSettingsText.format(activity,
+                    R.string.gboard_patches_update_download_started, releaseInfo.getVersion()),
+                    Toast.LENGTH_SHORT).show();
             if (onStateChanged != null) {
                 onStateChanged.run();
             }
@@ -363,7 +371,8 @@ public final class PixelBoardUpdateManager {
 
         } catch (Throwable throwable) {
             Log.w(TAG, "Failed to enqueue APK download", throwable);
-            Toast.makeText(activity, "Failed to start download: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, GboardSettingsText.get(activity,
+                    R.string.gboard_patches_update_download_start_failed), Toast.LENGTH_LONG).show();
             openReleasePage(activity, releaseInfo.getApkDownloadUrl());
         }
     }
@@ -412,7 +421,8 @@ public final class PixelBoardUpdateManager {
                             }
                         } else if (status == DownloadManager.STATUS_FAILED) {
                             currentStatus = Status.ERROR;
-                            lastErrorMessage = "Download failed";
+                            lastErrorMessage = GboardSettingsText.get(context,
+                                    R.string.gboard_patches_update_download_failed);
                             if (onStateChanged != null) {
                                 postToMain(onStateChanged);
                             }
@@ -454,16 +464,21 @@ public final class PixelBoardUpdateManager {
             if (!context.getPackageManager().canRequestPackageInstalls()) {
                 if (context instanceof Activity activity && !activity.isFinishing()) {
                     new AlertDialog.Builder(activity)
-                            .setTitle("Install Permission Required")
-                            .setMessage("To install downloaded updates directly, PixelBoard needs permission to install unknown apps. Please allow it in the next screen.")
-                            .setPositiveButton("Settings", (dialog, which) -> {
+                            .setTitle(GboardSettingsText.get(activity,
+                                    R.string.gboard_patches_update_install_permission_title))
+                            .setMessage(GboardSettingsText.get(activity,
+                                    R.string.gboard_patches_update_install_permission_message))
+                            .setPositiveButton(GboardSettingsText.get(activity,
+                                    R.string.gboard_patches_update_install_permission_action),
+                                    (dialog, which) -> {
                                 Intent settingsIntent = new Intent(
                                         Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
                                         Uri.parse("package:" + context.getPackageName()));
                                 settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(settingsIntent);
                             })
-                            .setNegativeButton("Cancel", null)
+                            .setNegativeButton(GboardSettingsText.get(activity,
+                                    R.string.gboard_patches_dialog_cancel), null)
                             .show();
                     return;
                 }
@@ -477,7 +492,8 @@ public final class PixelBoardUpdateManager {
             context.startActivity(installIntent);
         } catch (Throwable throwable) {
             Log.w(TAG, "Failed to trigger APK install intent", throwable);
-            Toast.makeText(context, "Could not open installer: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, GboardSettingsText.get(context,
+                    R.string.gboard_patches_update_installer_failed), Toast.LENGTH_LONG).show();
         }
     }
 
