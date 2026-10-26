@@ -147,6 +147,21 @@ public final class GboardAiWritingToolsRuntimeTest {
     }
 
     @Test
+    public void renamedServerPackageUsesV2ModelWhileV2IsOn() {
+        GboardAiWritingToolsSettings.Snapshot v2On = new GboardAiWritingToolsSettings.Snapshot(
+                true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, true);
+
+        Assert.assertEquals("config/wtv2",
+                GboardAiWritingToolsRuntime.computeOverrideValue(
+                        GboardAiWritingToolsRuntime
+                                .FLAG_WRITING_HELPER_TEXT_STYLIZATION_MODEL_VERSION,
+                        "composer_stylization_base",
+                        v2On,
+                        official(true, true),
+                        "com.akshaykadam.pixelboard"));
+    }
+
+    @Test
     public void officialServerPackagePreservesItsRemoteModelConfigs() {
         String stockModel = "official-remote-model";
         Assert.assertSame(stockModel, GboardAiWritingToolsRuntime.computeOverrideValue(

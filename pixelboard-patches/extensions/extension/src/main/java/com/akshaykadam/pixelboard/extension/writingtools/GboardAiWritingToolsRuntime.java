@@ -352,6 +352,9 @@ public final class GboardAiWritingToolsRuntime {
             "202408051448_prod_sd_config";
     static final String TEXT_STYLIZATION_MODEL_CONFIG =
             "202504090000_writing_tools_config";
+    // V2 sends both the tone chips and "Describe your edit" through the stylization model;
+    // the server answers free-form instructions only for this model (INTERNAL otherwise).
+    static final String WRITING_TOOLS_V2_MODEL_CONFIG = "config/wtv2";
 
     private static final String TAG = "GboardPatches";
     private static final String LOG_PREFIX = "[gboard-writing-tools-18.0.3] ";
@@ -647,7 +650,9 @@ public final class GboardAiWritingToolsRuntime {
                 return PROOFREAD_MODEL_CONFIG;
             }
             if (FLAG_WRITING_HELPER_TEXT_STYLIZATION_MODEL_VERSION.equals(flagName)) {
-                return TEXT_STYLIZATION_MODEL_CONFIG;
+                return settings.v2Enabled
+                        ? WRITING_TOOLS_V2_MODEL_CONFIG
+                        : TEXT_STYLIZATION_MODEL_CONFIG;
             }
         }
 
