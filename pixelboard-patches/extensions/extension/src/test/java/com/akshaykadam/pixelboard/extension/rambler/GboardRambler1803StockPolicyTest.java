@@ -139,4 +139,25 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.isTargetFlagName(
                         GboardRambler1803StockPolicy.ENABLE_HIDE_RAMBLER_AL_IDLING_STATE_FLAG));
     }
+
+    @Test
+    public void excludedLanguageTagsClearedOnlyWhileRamblerSelected() {
+        String flag = GboardRambler1803StockPolicy.AGENTIC_DICTATION_EXCLUDED_LANGUAGE_TAGS_FLAG;
+        Assert.assertTrue(GboardRambler1803StockPolicy.isTargetFlagName(flag));
+
+        GboardRambler1803OfficialSelectionRuntime.updateOfficialSelection(true);
+        Assert.assertEquals("",
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(flag, "bn,hi-IN"));
+        Integer wrongType = Integer.valueOf(1);
+        Assert.assertSame(wrongType,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(flag, wrongType));
+
+        GboardRambler1803OfficialSelectionRuntime.enterDefaultSelectionSuppression();
+        try {
+            Assert.assertEquals("bn,hi-IN",
+                    GboardRambler1803StockPolicy.maybeForceStockRouteValue(flag, "bn,hi-IN"));
+        } finally {
+            GboardRambler1803OfficialSelectionRuntime.exitDefaultSelectionSuppression();
+        }
+    }
 }

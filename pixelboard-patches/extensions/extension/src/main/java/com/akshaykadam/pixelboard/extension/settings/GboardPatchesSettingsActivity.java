@@ -3090,6 +3090,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 || GboardAiWritingToolsSettings.readEnabled(writingPrefs);
         boolean allKeyboardsEnabled = writingPrefs == null
                 || GboardAiWritingToolsSettings.readAllKeyboardsEnabled(writingPrefs);
+        boolean v2Enabled = writingPrefs != null
+                && GboardAiWritingToolsSettings.readV2Enabled(writingPrefs);
         boolean advancedVoiceEnabled = voicePrefs == null
                 || GboardAdvancedVoiceSettings.readEnabled(voicePrefs);
         boolean roundedKeysEnabled = patchesPrefs == null
@@ -3120,6 +3122,18 @@ public final class GboardPatchesSettingsActivity extends Activity
                 value -> {
                     if (writingPrefs != null) {
                         GboardAiWritingToolsSettings.writeAllKeyboardsEnabled(writingPrefs, value);
+                    }
+                }));
+
+        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+                GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_title),
+                GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_summary),
+                GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_badge),
+                aiWritingToolsEnabled,
+                v2Enabled,
+                value -> {
+                    if (writingPrefs != null) {
+                        GboardAiWritingToolsSettings.writeV2Enabled(writingPrefs, value);
                     }
                 }));
 
