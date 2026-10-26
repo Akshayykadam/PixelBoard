@@ -3807,7 +3807,8 @@ public final class GboardPatchesSettingsActivity extends Activity
 
         // --- 1. HEADER (Clean text, no emoji, no tag pills) ---
         TextView categoryLabel = new TextView(this);
-        categoryLabel.setText("WHAT'S NEW");
+        categoryLabel.setText(text(R.string.gboard_patches_update_whats_new_label));
+        categoryLabel.setAllCaps(true);
         categoryLabel.setTextColor(palette.accent);
         categoryLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
         categoryLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
@@ -3817,9 +3818,12 @@ public final class GboardPatchesSettingsActivity extends Activity
         TextView titleView = new TextView(this);
         String displayTitle = section.getTitle();
         if (displayTitle == null || displayTitle.isEmpty()) {
-            displayTitle = "PixelBoard v1.3.2";
+            displayTitle = "PixelBoard v" + resolvePatchVersion();
         }
         titleView.setText(displayTitle);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            titleView.setAccessibilityHeading(true);
+        }
         titleView.setTextColor(palette.textPrimary);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
         titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
@@ -3832,7 +3836,7 @@ public final class GboardPatchesSettingsActivity extends Activity
         // Subtitle / Summary (e.g. "Highlights and improvements in this release")
         String subtitleText = section.getDescription();
         if (subtitleText == null || subtitleText.isEmpty()) {
-            subtitleText = "Highlights and key improvements in this release";
+            subtitleText = text(R.string.gboard_patches_update_changelog_current);
         }
         TextView subtitleView = new TextView(this);
         subtitleView.setText(subtitleText);
@@ -3862,7 +3866,12 @@ public final class GboardPatchesSettingsActivity extends Activity
 
             if (item instanceof GboardPatchesSettingsContract.CommandRow commandRow) {
                 // Action Button at bottom of card
-                LinearLayout actionButton = new LinearLayout(this);
+                LinearLayout actionButton = new LinearLayout(this) {
+                    @Override
+                    public CharSequence getAccessibilityClassName() {
+                        return Button.class.getName();
+                    }
+                };
                 actionButton.setOrientation(LinearLayout.HORIZONTAL);
                 actionButton.setGravity(Gravity.CENTER);
                 actionButton.setBackground(buildInteractiveButtonDrawable(
@@ -3901,6 +3910,10 @@ public final class GboardPatchesSettingsActivity extends Activity
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             itemParams.bottomMargin = isLast ? 0 : dp(16);
             itemBlock.setLayoutParams(itemParams);
+            // One TalkBack stop per highlight: its title and description read together.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                itemBlock.setScreenReaderFocusable(true);
+            }
 
             // Item Title
             String rawTitle = item.getTitle() != null ? item.getTitle().toString() : "";

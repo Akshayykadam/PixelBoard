@@ -37,7 +37,7 @@ public final class GboardSettingsTextTest {
                         "en"));
         Assert.assertEquals(
                 "Controls Gboard AI Writing Tools availability, keyboard support, "
-                        + "and backend routing.",
+                        + "and Writing Tools V2.",
                 GboardSettingsText.resolveStableTextForTesting(
                         R.string.gboard_patches_ai_writing_tools_summary,
                         "en"));

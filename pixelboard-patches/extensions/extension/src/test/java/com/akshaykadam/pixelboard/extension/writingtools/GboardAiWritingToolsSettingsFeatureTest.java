@@ -32,7 +32,7 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
         GboardPatchesSettingsContract.ToggleRow enabledRow =
                 findToggleRow(screen.getRows(), "Enable AI Writing Tools");
         GboardPatchesSettingsContract.ToggleRow allKeyboardsRow =
-                findToggleRow(screen.getRows(), "Support All Keyboards");
+                findToggleRow(screen.getRows(), "Support all keyboards");
 
         Assert.assertNotNull(enabledRow);
         Assert.assertNotNull(allKeyboardsRow);
@@ -71,7 +71,7 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
         GboardPatchesSettingsContract.Screen updatedScreen =
                 new GboardAiWritingToolsSettingsFeature(null).buildScreen(host);
         GboardPatchesSettingsContract.ToggleRow allKeyboardsRow =
-                findToggleRow(updatedScreen.getRows(), "Support All Keyboards");
+                findToggleRow(updatedScreen.getRows(), "Support all keyboards");
 
         Assert.assertTrue(allKeyboardsRow.isEnabled());
         allKeyboardsRow.getToggleAction().accept(true);
@@ -89,7 +89,7 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
                 new GboardAiWritingToolsSettingsFeature(null).buildScreen(host);
 
         Assert.assertFalse(findToggleRow(
-                screen.getRows(), "Support All Keyboards").isEnabled());
+                screen.getRows(), "Support all keyboards").isEnabled());
         Assert.assertNull(findSelectorRow(
                 screen.getRows(), "AI Processing Backend"));
     }

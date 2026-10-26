@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.text.format.DateUtils;
 
 import com.akshaykadam.pixelboard.extension.BuildConfig;
 import com.akshaykadam.pixelboard.extension.R;
@@ -33,8 +34,10 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
     private final String headerBadge;
     private final String headerTitle;
     private final String headerSummary;
+    private final Context textContext;
 
     public PixelBoardUpdateFeature(Context context) {
+        textContext = context;
         entryTitle = GboardSettingsText.get(context, R.string.gboard_patches_update_title);
         entrySummary = GboardSettingsText.get(context, R.string.gboard_patches_update_summary);
         headerBadge = GboardSettingsText.get(context, R.string.gboard_patches_header_badge);
@@ -49,16 +52,22 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
 
     @Override
     public String getEntrySummary() {
-        Context context = null;
         PixelBoardUpdateManager updateManager = PixelBoardUpdateManager.getInstance();
         ReleaseInfo releaseInfo = updateManager.getCurrentReleaseInfo();
         PixelBoardUpdateManager.Status status = updateManager.getCurrentStatus();
 
         if (status == PixelBoardUpdateManager.Status.UPDATE_AVAILABLE && releaseInfo != null) {
             String size = releaseInfo.getFormattedFileSize();
-            return "Update available: v" + releaseInfo.getVersion() + (size.isEmpty() ? "" : (" (" + size + ")"));
+            return size.isEmpty()
+                    ? GboardSettingsText.format(textContext,
+                            R.string.gboard_patches_update_available_version,
+                            releaseInfo.getVersion())
+                    : GboardSettingsText.format(textContext,
+                            R.string.gboard_patches_update_available_version_size,
+                            releaseInfo.getVersion(), size);
         } else if (status == PixelBoardUpdateManager.Status.UP_TO_DATE && releaseInfo != null) {
-            return "v" + releaseInfo.getVersion() + " • Up to date";
+            return GboardSettingsText.format(textContext,
+                    R.string.gboard_patches_update_entry_up_to_date, releaseInfo.getVersion());
         }
         return entrySummary;
     }
@@ -110,12 +119,16 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
         switch (status) {
             case UPDATE_AVAILABLE:
                 String updateTitle = releaseInfo != null
-                        ? "Update Available: v" + releaseInfo.getVersion()
+                        ? GboardSettingsText.format(context,
+                                R.string.gboard_patches_update_available_version,
+                                releaseInfo.getVersion())
                         : GboardSettingsText.get(context, R.string.gboard_patches_update_status_available_title);
                 String updateSummary = releaseInfo != null
-                        ? "PixelBoard v" + releaseInfo.getVersion() + " is ready for download ("
-                                + releaseInfo.getFormattedFileSize() + ").\nPublished: "
-                                + releaseInfo.getFormattedDate()
+                        ? GboardSettingsText.format(context,
+                                R.string.gboard_patches_update_available_detail,
+                                releaseInfo.getVersion(),
+                                releaseInfo.getFormattedFileSize(),
+                                releaseInfo.getFormattedDate())
                         : GboardSettingsText.get(context, R.string.gboard_patches_update_status_available_summary);
                 statusBlocks.add(new GboardPatchesSettingsContract.StatusBlock(
                         updateTitle,
@@ -125,7 +138,9 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
             case ERROR:
                 String errorSummary = updateManager.getLastErrorMessage().isEmpty()
                         ? GboardSettingsText.get(context, R.string.gboard_patches_update_status_error_summary)
-                        : (updateManager.getLastErrorMessage() + "\nYou can still download releases directly via browser.");
+                        : GboardSettingsText.format(context,
+                                R.string.gboard_patches_update_error_browser_hint,
+                                updateManager.getLastErrorMessage());
                 statusBlocks.add(new GboardPatchesSettingsContract.StatusBlock(
                         GboardSettingsText.get(context, R.string.gboard_patches_update_status_error_title),
                         errorSummary,
@@ -146,8 +161,12 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
         final ReleaseInfo targetRelease = releaseInfo;
         if (status == PixelBoardUpdateManager.Status.UPDATE_AVAILABLE && targetRelease != null) {
             String downloadSummary = targetRelease.hasApkAsset()
-                    ? ("Download " + targetRelease.getApkFileName() + " (" + targetRelease.getFormattedFileSize() + ") directly from Git")
-                    : "Open release page on GitHub";
+                    ? GboardSettingsText.format(context,
+                            R.string.gboard_patches_update_action_download_summary,
+                            targetRelease.getApkFileName(),
+                            targetRelease.getFormattedFileSize())
+                    : GboardSettingsText.get(context,
+                            R.string.gboard_patches_update_action_view_github_summary);
 
             actionRows.add(new GboardPatchesSettingsContract.PrimaryCommandRow(
                     GboardSettingsText.get(context, R.string.gboard_patches_update_action_download),
@@ -170,8 +189,8 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
                     () -> PixelBoardUpdateManager.openReleasePage(context, targetRelease.getHtmlUrl())));
         } else if (status == PixelBoardUpdateManager.Status.DOWNLOADING) {
             actionRows.add(new GboardPatchesSettingsContract.PrimaryCommandRow(
-                    "Downloading Update…",
-                    "Download is in progress. Check notification panel for status.",
+                    GboardSettingsText.get(context, R.string.gboard_patches_update_status_downloading_title),
+                    GboardSettingsText.get(context, R.string.gboard_patches_update_status_downloading_summary),
                     false,
                     null,
                     true));
@@ -184,8 +203,8 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
                     () -> PixelBoardUpdateManager.openReleasePage(context, githubUrl)));
         } else if (status == PixelBoardUpdateManager.Status.DOWNLOAD_COMPLETED) {
             actionRows.add(new GboardPatchesSettingsContract.PrimaryCommandRow(
-                    "Install Update",
-                    "Update package is downloaded. Tap to begin installation.",
+                    GboardSettingsText.get(context, R.string.gboard_patches_update_action_install),
+                    GboardSettingsText.get(context, R.string.gboard_patches_update_status_downloaded_summary),
                     true,
                     () -> {
                         Uri apkUri = updateManager.getLastDownloadedApkUri();
@@ -210,14 +229,19 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
             long lastCheck = PixelBoardUpdateManager.getLastCheckTime(context);
             String checkSummary;
             if (status == PixelBoardUpdateManager.Status.CHECKING) {
-                checkSummary = "Connecting to GitHub Releases repository…";
+                checkSummary = GboardSettingsText.get(context,
+                        R.string.gboard_patches_update_status_checking_summary);
             } else if (status == PixelBoardUpdateManager.Status.UP_TO_DATE) {
-                String relative = lastCheck > 0L ? formatRelativeTime(lastCheck) : "just now";
-                checkSummary = "You're up to date • Checked " + relative;
+                checkSummary = GboardSettingsText.format(context,
+                        R.string.gboard_patches_update_uptodate_checked,
+                        formatRelativeTime(lastCheck > 0L ? lastCheck : System.currentTimeMillis()));
             } else if (lastCheck > 0L) {
-                checkSummary = "Last checked: " + formatRelativeTime(lastCheck);
+                checkSummary = GboardSettingsText.format(context,
+                        R.string.gboard_patches_update_last_checked,
+                        formatRelativeTime(lastCheck));
             } else {
-                checkSummary = "Check for newer versions and changelogs";
+                checkSummary = GboardSettingsText.get(context,
+                        R.string.gboard_patches_update_status_idle_summary);
             }
 
             actionRows.add(new GboardPatchesSettingsContract.PrimaryCommandRow(
@@ -279,22 +303,24 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
         } else if (!changelogRelease.getTitle().isEmpty()) {
             changelogRows.add(new GboardPatchesSettingsContract.DetailRow(
                     changelogRelease.getTitle(),
-                    changelogRelease.getChangelog().isEmpty() ? "See GitHub release notes for details." : changelogRelease.getChangelog(),
+                    changelogRelease.getChangelog().isEmpty()
+                            ? GboardSettingsText.get(context, R.string.gboard_patches_update_changelog_fallback)
+                            : changelogRelease.getChangelog(),
                     true));
         }
 
         final ReleaseInfo finalRel = changelogRelease;
         changelogRows.add(new GboardPatchesSettingsContract.CommandRow(
-                "View full changelog on GitHub",
-                "Open GitHub release page",
+                GboardSettingsText.get(context, R.string.gboard_patches_update_changelog_view_full),
+                GboardSettingsText.get(context, R.string.gboard_patches_update_action_view_github_summary),
                 true,
                 () -> PixelBoardUpdateManager.openReleasePage(context, finalRel.getHtmlUrl())));
 
         if (!changelogRows.isEmpty()) {
             String sectionTitle = "PixelBoard v" + changelogRelease.getVersion();
             String sectionDesc = (status == PixelBoardUpdateManager.Status.UPDATE_AVAILABLE)
-                    ? "Highlights and improvements in the upcoming update"
-                    : "Highlights and key improvements in this release";
+                    ? GboardSettingsText.get(context, R.string.gboard_patches_update_changelog_upcoming)
+                    : GboardSettingsText.get(context, R.string.gboard_patches_update_changelog_current);
             sections.add(new GboardPatchesSettingsContract.Section(
                     sectionTitle,
                     sectionDesc,
@@ -321,19 +347,22 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
         // 5. Build Information Section
         List<GboardPatchesSettingsContract.Row> infoRows = new ArrayList<>();
         infoRows.add(new GboardPatchesSettingsContract.DetailRow(
-                "Installed Version",
+                GboardSettingsText.get(context, R.string.gboard_patches_update_info_installed_version),
                 "v" + installedVersion,
                 true));
+        String baseGboardVersion = resolveBaseGboardVersion(context);
+        if (baseGboardVersion != null) {
+            infoRows.add(new GboardPatchesSettingsContract.DetailRow(
+                    GboardSettingsText.get(context, R.string.gboard_patches_update_info_base_gboard),
+                    baseGboardVersion,
+                    true));
+        }
         infoRows.add(new GboardPatchesSettingsContract.DetailRow(
-                "Base Gboard",
-                "v18.5.3 (Release)",
-                true));
-        infoRows.add(new GboardPatchesSettingsContract.DetailRow(
-                "Package Name",
+                GboardSettingsText.get(context, R.string.gboard_patches_update_info_package_name),
                 context != null ? context.getPackageName() : "com.akshaykadam.pixelboard",
                 true));
         infoRows.add(new GboardPatchesSettingsContract.DetailRow(
-                "Author",
+                GboardSettingsText.get(context, R.string.gboard_patches_about_author_title),
                 "Akshay Kadam (@Akshayykadam)",
                 true));
 
@@ -373,22 +402,26 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
         return "1.3.2";
     }
 
-    public static String formatRelativeTime(long timestamp) {
-        if (timestamp <= 0L) {
-            return "Never";
+    /** Localized "5 minutes ago" style text; anything under a minute reads as one minute ago. */
+    static String formatRelativeTime(long timestamp) {
+        long now = System.currentTimeMillis();
+        return DateUtils.getRelativeTimeSpanString(
+                Math.min(timestamp, now - DateUtils.MINUTE_IN_MILLIS),
+                now,
+                DateUtils.MINUTE_IN_MILLIS).toString();
+    }
+
+    /** The Gboard release this build was patched from, read from the installed package. */
+    private static String resolveBaseGboardVersion(Context context) {
+        if (context == null) {
+            return null;
         }
-        long diff = System.currentTimeMillis() - timestamp;
-        if (diff < 60000L) {
-            return "Just now";
-        } else if (diff < 3600000L) {
-            long minutes = diff / 60000L;
-            return minutes + (minutes == 1 ? " minute ago" : " minutes ago");
-        } else if (diff < 86400000L) {
-            long hours = diff / 3600000L;
-            return hours + (hours == 1 ? " hour ago" : " hours ago");
-        } else {
-            long days = diff / 86400000L;
-            return days + (days == 1 ? " day ago" : " days ago");
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo != null ? packageInfo.versionName : null;
+        } catch (PackageManager.NameNotFoundException ignored) {
+            return null;
         }
     }
 
