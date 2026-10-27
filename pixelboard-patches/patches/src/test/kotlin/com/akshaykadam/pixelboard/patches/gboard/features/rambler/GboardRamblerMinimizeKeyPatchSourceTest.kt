@@ -20,6 +20,10 @@ class GboardRamblerMinimizeKeyPatchSourceTest {
         assertTrue(source.contains("RAMBLER_MINIMIZE_KEY_RUNTIME_CLEAR_MINIMIZE_KEY"))
         assertTrue(source.contains("RAMBLER_MINIMIZE_KEY_RUNTIME_REVEAL_MINIMIZE_KEY"))
         assertTrue(source.contains("ExternalLabel(\"pixelboard_stock_minimize_key\""))
+        assertTrue(source.contains("softKeyBuilder = \"Lflb;->C(ILjava/lang/Runnable;)Lmtm;\""))
+        assertTrue(source.contains("minimizeKeyDescription = \"0x7f14167c\""))
+        assertTrue(source.contains("widgetCloseKey = GboardMethodTarget(\"Lflw;\", \"D\", emptyList(), \"Lmtr;\")"))
+        assertTrue(source.contains("showKeyboardKeyDescription = \"0x7f1401ab\""))
 
         val settings = read(
             "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/" +

@@ -23,20 +23,29 @@ import com.akshaykadam.pixelboard.patches.shared.addInstructions
 import com.akshaykadam.pixelboard.patches.shared.addInstructionsWithLabels
 import com.akshaykadam.pixelboard.patches.shared.bytecodePatch
 import com.akshaykadam.pixelboard.patches.shared.replaceInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 
 private data class RamblerMinimizeKeyTargets(
     val headerCloseKey: GboardMethodTarget,
     val headerTeardown: GboardMethodTarget,
     val headerHideSlots: GboardMethodTarget,
+    val widgetCloseKey: GboardMethodTarget,
     val softKeyFactory: String,
+    val softKeyBuilder: String,
+    val setContentDescription: String,
+    val buildSoftKey: String,
+    val minimizeKeyDescription: String,
+    val showKeyboardKeyDescription: String,
     val closeIcon: String,
     val closeKey: String,
     val addAccessPoint: String,
     val removeAccessPoint: String,
 )
 
-// Gboard 18.5.3: flz is the Rambler keyboard header, flb its shared base, mtr a soft key
-// definition, mub/mue the add/remove access point notifications.
+// Gboard 18.5.3: flz is the Rambler keyboard header, flw the floating Rambler widget, flb
+// their shared base, mtr a soft key definition built by mtm, mub/mue the add/remove access
+// point notifications.
 private val RAMBLER_MINIMIZE_KEY_1853_TARGETS = RamblerMinimizeKeyTargets(
     headerCloseKey = GboardMethodTarget("Lflz;", "D", emptyList(), "Lmtr;"),
     headerTeardown = GboardMethodTarget(
@@ -51,7 +60,15 @@ private val RAMBLER_MINIMIZE_KEY_1853_TARGETS = RamblerMinimizeKeyTargets(
         listOf("Landroid/view/ViewGroup;", "Z"),
         "V",
     ),
+    widgetCloseKey = GboardMethodTarget("Lflw;", "D", emptyList(), "Lmtr;"),
     softKeyFactory = "Lflb;->F(ILjava/lang/Runnable;)Lmtr;",
+    softKeyBuilder = "Lflb;->C(ILjava/lang/Runnable;)Lmtm;",
+    setContentDescription = "Lmtm;->h(I)V",
+    buildSoftKey = "Lmtm;->a()Lmtr;",
+    // "Minimize keyboard", the label stock voice typing gives its minimize key.
+    minimizeKeyDescription = "0x7f14167c",
+    // "Back to keyboard".
+    showKeyboardKeyDescription = "0x7f1401ab",
     closeIcon = "Lflb;->u()I",
     closeKey = "Lflb;->E(I)Lmtr;",
     addAccessPoint = "Lmub;->a(ILmtr;)V",
@@ -69,10 +86,12 @@ internal val gboardRamblerMinimizeKeyPatch = bytecodePatch(
         val closeKeyMethod = findMutableMethodOrNull(targets.headerCloseKey) ?: return@execute
         val teardownMethod = findMutableMethodOrNull(targets.headerTeardown) ?: return@execute
         val hideSlotsMethod = findMutableMethodOrNull(targets.headerHideSlots) ?: return@execute
+        val widgetCloseKeyMethod = findMutableMethodOrNull(targets.widgetCloseKey) ?: return@execute
 
         closeKeyMethod.moveMinimizeKeyToEndSlot(targets)
         teardownMethod.removeMinimizeKeyOnTeardown(targets)
         hideSlotsMethod.revealMinimizeKeyAfterHiding()
+        widgetCloseKeyMethod.labelShowKeyboardKey(targets)
     }
 }
 
@@ -94,8 +113,11 @@ private fun MutableMethod.moveMinimizeKeyToEndSlot(targets: RamblerMinimizeKeyTa
     // p0 still holds the header after the factory call, so keep the key in v0.
     replaceInstruction(factoryIndex + 1, "move-result-object v0")
     replaceInstruction(factoryIndex + 2, "return-object v0")
+    labelSoftKey(factoryIndex, targets.minimizeKeyDescription, targets)
+    // labelSoftKey() added four instructions before the return.
+    val returnIndex = factoryIndex + 6
     addInstructionsWithLabels(
-        factoryIndex + 2,
+        returnIndex,
         """
         ${RuntimeCallEmitter.invoke(call, "")}
         move-result v1
@@ -106,7 +128,52 @@ private fun MutableMethod.moveMinimizeKeyToEndSlot(targets: RamblerMinimizeKeyTa
         invoke-virtual {p0, v0}, ${targets.closeKey}
         move-result-object v0
         """.trimIndent(),
-        ExternalLabel("pixelboard_stock_minimize_key", implementation!!.instructions[factoryIndex + 2]),
+        ExternalLabel("pixelboard_stock_minimize_key", implementation!!.instructions[returnIndex]),
+    )
+}
+
+private fun MutableMethod.labelShowKeyboardKey(targets: RamblerMinimizeKeyTargets) {
+    val instructions = implementation?.instructions ?: error("No Rambler widget key implementation")
+    if (instructions.any { it.isMethodReference(targets.setContentDescription) }) {
+        return
+    }
+    // Stock: the floating widget's D() returns F(keyboard icon, back to the keyboard).
+    val factoryIndex = instructions.indexOfFirst { it.isMethodReference(targets.softKeyFactory) }
+    check(factoryIndex >= 0) { "Rambler widget keyboard key factory not found" }
+    labelSoftKey(factoryIndex, targets.showKeyboardKeyDescription, targets)
+}
+
+// F(icon, action) labels every key "Close Rambler". Build the key through F()'s own builder
+// instead and give it the label for what it does.
+private fun MutableMethod.labelSoftKey(
+    factoryIndex: Int,
+    description: String,
+    targets: RamblerMinimizeKeyTargets,
+) {
+    val instructions = implementation!!.instructions
+    val factory = instructions[factoryIndex] as? FiveRegisterInstruction
+    val result = instructions[factoryIndex + 1] as? OneRegisterInstruction
+    check(
+        factory?.registerCount == 3 &&
+            instructions[factoryIndex + 1].isOpcode("MOVE_RESULT_OBJECT") &&
+            result != null &&
+            result.registerA != factory.registerD,
+    ) { "Unexpected Rambler key factory shape" }
+    // The icon register is free once the key is built.
+    val key = "v${result!!.registerA}"
+    val label = "v${factory!!.registerD}"
+    replaceInstruction(
+        factoryIndex,
+        "invoke-virtual {v${factory.registerC}, $label, v${factory.registerE}}, ${targets.softKeyBuilder}",
+    )
+    addInstructions(
+        factoryIndex + 2,
+        """
+        const $label, $description
+        invoke-virtual {$key, $label}, ${targets.setContentDescription}
+        invoke-virtual {$key}, ${targets.buildSoftKey}
+        move-result-object $key
+        """.trimIndent(),
     )
 }
 
