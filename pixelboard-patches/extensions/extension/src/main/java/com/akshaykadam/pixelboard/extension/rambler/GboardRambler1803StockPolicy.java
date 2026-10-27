@@ -55,7 +55,6 @@ public final class GboardRambler1803StockPolicy {
                     CONFIG_AGENTIC_DICTATION_FLAG,
                     ENABLE_JETSON_IN_TOOLBAR_FLAG,
                     FILTER_RAMBLER_CONTRIBUTED_INPUT_VIEW_SESSION_FLAG,
-                    ENABLE_RAMBLER_AL_TOOLBAR_FLAG,
                     ENABLE_RAMBLER_AL_TOOLBAR_OVERFLOW_MENU_FLAG,
                     RAMBLER_MOTION_WITH_GRADIENT_COLOR_FLAG,
                     AGENTIC_DICTATION_SPOT_LIGHT2_FLAG,
@@ -83,6 +82,15 @@ public final class GboardRambler1803StockPolicy {
                     ? Long.valueOf(0L)
                     : originalResult;
         }
+        // The AL toolbar replaces Gboard's stock collapse path: with it off, the Rambler
+        // header shows the minimize key and the floating voice toolbar keeps the session.
+        if (ENABLE_RAMBLER_AL_TOOLBAR_FLAG.equals(flagName)) {
+            return originalResult instanceof Boolean
+                            && GboardRambler1803OfficialSelectionRuntime
+                                    .shouldEnableAgenticDictation()
+                    ? Boolean.FALSE
+                    : originalResult;
+        }
         if (AGENTIC_FEATURE_FLAGS.contains(flagName)) {
             return originalResult instanceof Boolean
                             && GboardRambler1803OfficialSelectionRuntime
@@ -96,6 +104,7 @@ public final class GboardRambler1803StockPolicy {
     public static boolean isTargetFlagName(String flagName) {
         return SHOW_RAMBLER_DICT_SETTINGS_FLAG.equals(flagName)
                 || AGENTIC_FEATURE_FLAGS.contains(flagName)
+                || ENABLE_RAMBLER_AL_TOOLBAR_FLAG.equals(flagName)
                 || AD_ACTIVATION_TYPE_FLAG.equals(flagName)
                 || AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName);
     }

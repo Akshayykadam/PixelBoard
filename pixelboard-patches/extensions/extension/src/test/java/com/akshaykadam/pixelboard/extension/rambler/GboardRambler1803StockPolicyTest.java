@@ -107,6 +107,29 @@ public final class GboardRambler1803StockPolicyTest {
     }
 
     @Test
+    public void alToolbarIsForcedOffOnlyWhileRamblerIsSelected() {
+        GboardRambler1803OfficialSelectionRuntime.updateOfficialSelection(true);
+        Assert.assertSame(Boolean.FALSE,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.ENABLE_RAMBLER_AL_TOOLBAR_FLAG,
+                        Boolean.TRUE));
+        Integer wrongType = Integer.valueOf(1);
+        Assert.assertSame(wrongType,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.ENABLE_RAMBLER_AL_TOOLBAR_FLAG,
+                        wrongType));
+
+        GboardRambler1803OfficialSelectionRuntime.updateOfficialSelection(false);
+        Assert.assertSame(Boolean.TRUE,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.ENABLE_RAMBLER_AL_TOOLBAR_FLAG,
+                        Boolean.TRUE));
+        Assert.assertTrue(
+                GboardRambler1803StockPolicy.isTargetFlagName(
+                        GboardRambler1803StockPolicy.ENABLE_RAMBLER_AL_TOOLBAR_FLAG));
+    }
+
+    @Test
     public void experimentalAnimationAndCursorFlagsRetainStockValues() {
         GboardRambler1803OfficialSelectionRuntime.updateOfficialSelection(true);
         Assert.assertSame(Boolean.FALSE,
