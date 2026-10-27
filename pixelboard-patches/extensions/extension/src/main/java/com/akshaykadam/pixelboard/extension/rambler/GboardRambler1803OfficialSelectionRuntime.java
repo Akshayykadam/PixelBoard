@@ -208,6 +208,10 @@ public final class GboardRambler1803OfficialSelectionRuntime {
         }
     }
 
+    static Context applicationContext() {
+        return resolveContext();
+    }
+
     private static Context resolveContext() {
         Context context = reflectedContext("android.app.ActivityThread", "currentApplication");
         if (context == null) {
