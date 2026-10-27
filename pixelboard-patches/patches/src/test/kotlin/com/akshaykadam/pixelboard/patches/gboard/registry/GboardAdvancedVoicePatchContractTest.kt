@@ -5,6 +5,7 @@ import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAd
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoice1831LanguageDownloadGuardPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoiceFeatureMarkerPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoiceFlagValuePatch
+import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardMicGesturePatch
 import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRambler1803OfficialSelectorPatch
 import com.akshaykadam.pixelboard.patches.gboard.shared.gboardPatchesSettingsPatch
 import com.akshaykadam.pixelboard.patches.gboard.shared.generated.GboardTargetAdmission
@@ -50,6 +51,7 @@ class GboardAdvancedVoicePatchContractTest {
                 gboardAdvancedVoice1803ZhTwPatch,
                 gboardAdvancedVoice1831LanguageDownloadGuardPatch,
                 gboardRambler1803OfficialSelectorPatch,
+                gboardMicGesturePatch,
             ),
             gboardAdvancedVoiceTypingPatch.dependencies.toList(),
         )
