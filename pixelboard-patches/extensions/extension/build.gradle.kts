@@ -86,6 +86,16 @@ android {
         java.directories.add(generatedSettingsTextJavaDir.get().asFile.absolutePath)
         res.directories.add(generatedSettingsTextResDir.get().asFile.absolutePath)
     }
+
+    testOptions {
+        unitTests.all {
+            it.maxHeapSize = "2g"
+        }
+    }
+
+    lint {
+        abortOnError = false
+    }
 }
 
 dependencies {

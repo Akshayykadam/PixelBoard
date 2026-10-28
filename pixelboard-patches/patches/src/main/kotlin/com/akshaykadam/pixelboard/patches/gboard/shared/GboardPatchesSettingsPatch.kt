@@ -13,6 +13,7 @@ import com.akshaykadam.pixelboard.patches.shared.Constants.COMPATIBILITY_GBOARD
 import org.w3c.dom.Attr
 import org.w3c.dom.Document
 import org.w3c.dom.Element
+import org.w3c.dom.Node
 
 import com.akshaykadam.pixelboard.patches.gboard.features.emoji.gboardCandidateEmojiVibrancyPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardSyncPatch
@@ -361,8 +362,26 @@ internal fun applyEmojiSuggestionXmlOverride() = with(context) {
             for (i in 0 until switches.length) {
                 val element = switches.item(i) as? Element ?: continue
                 val key = element.androidAttribute("key")
-                if (key == "@string/string_0x7f14093e" || key == "pref_key_enable_emoji_suggestion") {
+                if (key == "@string/string_0x7f14093e" || key == "pref_key_enable_emoji_suggestion" ||
+                    key == "@string/string_0x7f140946" || key == "enable_fast_access_bar" ||
+                    key == "@string/string_0x7f140940" || key == "enable_emojify"
+                ) {
                     element.setAndroidAttribute("defaultValue", "true")
+                    if (key == "@string/string_0x7f140946" || key == "enable_fast_access_bar" ||
+                        key == "@string/string_0x7f140940" || key == "enable_emojify"
+                    ) {
+                        val children = element.childNodes
+                        val toRemove = mutableListOf<Node>()
+                        for (j in 0 until children.length) {
+                            val child = children.item(j)
+                            if (child is Element && child.tagName == "extra") {
+                                toRemove.add(child)
+                            }
+                        }
+                        for (child in toRemove) {
+                            element.removeChild(child)
+                        }
+                    }
                 }
             }
         }

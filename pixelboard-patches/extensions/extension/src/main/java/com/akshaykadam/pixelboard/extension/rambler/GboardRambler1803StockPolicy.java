@@ -56,6 +56,7 @@ public final class GboardRambler1803StockPolicy {
                     ENABLE_JETSON_IN_TOOLBAR_FLAG,
                     FILTER_RAMBLER_CONTRIBUTED_INPUT_VIEW_SESSION_FLAG,
                     ENABLE_RAMBLER_AL_TOOLBAR_OVERFLOW_MENU_FLAG,
+                    ENABLE_HIDE_RAMBLER_AL_IDLING_STATE_FLAG,
                     RAMBLER_MOTION_WITH_GRADIENT_COLOR_FLAG,
                     AGENTIC_DICTATION_SPOT_LIGHT2_FLAG,
                     AGENTIC_DICTATION_NEW_GI_MOTION_FLAG,

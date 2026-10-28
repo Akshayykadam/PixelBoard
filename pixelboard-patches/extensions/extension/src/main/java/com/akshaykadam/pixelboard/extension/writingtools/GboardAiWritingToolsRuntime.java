@@ -4,7 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.akshaykadam.pixelboard.extension.settings.GboardEmojiSettings;
+import com.akshaykadam.pixelboard.extension.settings.GboardGoogleSansSettings;
 import com.akshaykadam.pixelboard.extension.settings.GboardRoundedKeysSettings;
+import com.akshaykadam.pixelboard.extension.settings.GboardUndoSettings;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -28,6 +30,18 @@ public final class GboardAiWritingToolsRuntime {
     static final String FLAG_WRITING_TOOLS = "writing_tools";
     static final String FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE =
             "enable_writing_tools_cooperative_mode";
+    static final String FLAG_PROOFREAD_SUPPORTED_APPS =
+            "proofread_supported_apps";
+    static final String FLAG_WRITING_TOOLS_ENABLE_STABLE_ENTRANCE =
+            "writing_tools_enable_stable_entrance";
+    static final String FLAG_ENABLE_WRITING_TOOLS_REPLACE_BUTTON =
+            "enable_writing_tools_replace_button";
+    static final String FLAG_WRITING_TOOLS_REPLACE_BUTTON =
+            "writing_tools_replace_button";
+    static final String FLAG_WRITING_TOOLS_ENABLE_STREAMING_UI =
+            "writing_tools_enable_streaming_ui";
+    static final String FLAG_WRITING_TOOLS_CONTEXT_OPT_IN =
+            "writing_tools_context_opt_in";
     static final String FLAG_WRITING_HELPER_SUPPORTED_LANGUAGE_TAGS =
             "writing_helper_supported_language_tags";
     static final String FLAG_LLM_PC_SUPPORTED_LANGUAGE_TAGS =
@@ -153,6 +167,30 @@ public final class GboardAiWritingToolsRuntime {
             "enable_ngram_emoji_shortcuts_for_prediction";
     static final String FLAG_RETAIN_EMOJI_SHORTCUT_CANDIDATES_ON_SELECTION =
             "retain_emoji_shortcut_candidates_on_selection";
+
+    // Fast-access emoji bar (Quick Emoji)
+    static final String FLAG_ENABLE_FAST_ACCESS_BAR =
+            "enable_fast_access_bar";
+    static final String FLAG_FAST_ACCESS_BAR_APP_WHITELIST =
+            "fast_access_bar_app_whitelist";
+
+    // Emojify (Magic Emoji suggestions button)
+    static final String FLAG_ENABLE_EMOJIFY =
+            "enable_emojify";
+    static final String FLAG_ENABLE_EMOJIFY_SETTINGS_OPTION =
+            "enable_emojify_settings_option";
+    static final String FLAG_ENABLE_EMOJIFY_LANGUAGE_TAGS =
+            "enable_emojify_language_tags";
+    static final String FLAG_EMOJIFY_APP_ALLOWLIST =
+            "emojify_app_allowlist";
+    static final String FLAG_ENABLE_EMOJIFY_SHORTCUT_WHEN_FOLLOWED_BY_EMOJI =
+            "enable_emojify_shortcut_when_followed_by_emoji";
+    static final String FLAG_ENABLE_EMOJIFY_WHEN_TALKBACK_ON =
+            "enable_emojify_when_talkback_on";
+    static final String FLAG_EMOJIFY_ENABLED_PATTERNS_IN_ORDER =
+            "emojify_enabled_patterns_in_order";
+    static final String FLAG_ENABLE_EMOJIFY_MODEL =
+            "enable_emojify_model";
 
     // Autocorrect and glide typing consistency
     static final String FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE =
@@ -380,6 +418,8 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_ACCESS_POINTS_MENU_REDESIGN.equals(flagName)
                 || FLAG_ENABLE_ACCESS_POINT_KEYBOARD.equals(flagName)
                 || FLAG_ENABLE_AUTOFILL_IME_INTEGRATION.equals(flagName)
+                || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI.equals(flagName)
+                || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW.equals(flagName)
                 || FLAG_ENABLE_SPELL_CHECKER_EXTENSION.equals(flagName)
                 || FLAG_WRITING_HELPER_CHIP_IN_SPELLCHECKER.equals(flagName)
                 || FLAG_ENABLE_SPELL_CHECKER_HIGHLIGHT_ON_WEB_INPUT.equals(flagName)
@@ -403,6 +443,11 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_BY_SPANS.equals(flagName)
                 || FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_FOR_PREDICTION.equals(flagName)
                 || FLAG_RETAIN_EMOJI_SHORTCUT_CANDIDATES_ON_SELECTION.equals(flagName)
+                || FLAG_ENABLE_FAST_ACCESS_BAR.equals(flagName)
+                || FLAG_ENABLE_EMOJIFY.equals(flagName)
+                || FLAG_ENABLE_EMOJIFY_SETTINGS_OPTION.equals(flagName)
+                || FLAG_ENABLE_EMOJIFY_SHORTCUT_WHEN_FOLLOWED_BY_EMOJI.equals(flagName)
+                || FLAG_ENABLE_EMOJIFY_WHEN_TALKBACK_ON.equals(flagName)
                 || FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE.equals(flagName)
                 || FLAG_ENABLE_TWO_STAGE_DECODER.equals(flagName)
                 || FLAG_ENABLE_SPACE_TRANSPOSITION_POST_CORRECTION.equals(flagName)
@@ -501,9 +546,16 @@ public final class GboardAiWritingToolsRuntime {
                     && originalResult instanceof String) {
                 return PROD_GBOARD_IMAGEN_SERVER_TARGET;
             }
-            if (FLAG_ENABLED_OCR_LANGUAGE_TAGS.equals(flagName)
+            if ((FLAG_ENABLED_OCR_LANGUAGE_TAGS.equals(flagName)
+                    || FLAG_FAST_ACCESS_BAR_APP_WHITELIST.equals(flagName)
+                    || FLAG_ENABLE_EMOJIFY_LANGUAGE_TAGS.equals(flagName)
+                    || FLAG_EMOJIFY_APP_ALLOWLIST.equals(flagName))
                     && originalResult instanceof String) {
                 return ALL_LANGUAGES_ALLOWLIST_VALUE;
+            }
+            if (FLAG_EMOJIFY_ENABLED_PATTERNS_IN_ORDER.equals(flagName)
+                    && originalResult instanceof String) {
+                return "1,2,3";
             }
             if (FLAG_SMART_COMPOSE_STATUS.equals(flagName)
                     && originalResult instanceof Long) {
@@ -515,7 +567,8 @@ public final class GboardAiWritingToolsRuntime {
             }
             if ((FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_WEB_TEXT.equals(flagName)
                     || FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION.equals(flagName)
-                    || FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_SPECIAL_TYPES.equals(flagName))
+                    || FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_SPECIAL_TYPES.equals(flagName)
+                    || FLAG_PROOFREAD_SUPPORTED_APPS.equals(flagName))
                     && originalResult instanceof String) {
                 return "";
             }
@@ -528,10 +581,7 @@ public final class GboardAiWritingToolsRuntime {
                     || FLAG_SIGNBOARD_DOWNLOAD_DIALOG.equals(flagName)
                     || FLAG_SIGNBOARD_MOVE_AP_PROMPT.equals(flagName)
                     || FLAG_USE_4C_IN_SIGNBOARD.equals(flagName)
-                    || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI.equals(flagName)
-                    || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW.equals(flagName)
-                    || FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE.equals(flagName)
-                    || FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName))
+                    || FLAG_ENABLE_EMOJIFY_MODEL.equals(flagName))
                     && originalResult instanceof Boolean) {
                 return Boolean.FALSE;
             }
@@ -567,9 +617,6 @@ public final class GboardAiWritingToolsRuntime {
                     && originalResult instanceof Boolean) {
                 return Boolean.FALSE;
             }
-            if (context == null) {
-                return originalResult;
-            }
             if (GboardRoundedKeysSettings.isRoundedKeyPhenotypeFlag(flagName)
                     && originalResult instanceof Boolean) {
                 if (GboardRoundedKeysSettings.isEnabled(context)) {
@@ -581,6 +628,38 @@ public final class GboardAiWritingToolsRuntime {
                     }
                     return Boolean.TRUE;
                 }
+            }
+            if (GboardGoogleSansSettings.isGoogleSansPhenotypeFlag(flagName)) {
+                boolean enabled = GboardGoogleSansSettings.isEnabled(context);
+                Object target = GboardGoogleSansSettings.computeOverrideValue(flagName, originalResult, enabled);
+                if (target != null && !target.equals(originalResult)) {
+                    logLimited(FLAG_LOG_COUNT,
+                            "flag=" + flagName
+                                    + ", original=" + describe(originalResult)
+                                    + ", enforced=" + describe(target));
+                }
+                return target;
+            }
+            if (GboardUndoSettings.isUndoPhenotypeFlag(flagName)) {
+                boolean enabled = GboardUndoSettings.isEnabled(context);
+                Object target = GboardUndoSettings.computeOverrideValue(flagName, originalResult, enabled);
+                if (target != null && !target.equals(originalResult)) {
+                    logLimited(FLAG_LOG_COUNT,
+                            "flag=" + flagName
+                                    + ", original=" + describe(originalResult)
+                                    + ", enforced=" + describe(target));
+                }
+                return target;
+            }
+            if (context == null) {
+                GboardAiWritingToolsSettings.Snapshot defaultSettings =
+                        GboardAiWritingToolsSettings.snapshot(null);
+                return computeOverrideValue(
+                        flagName,
+                        originalResult,
+                        defaultSettings,
+                        null,
+                        RENAMED_GBOARD_PACKAGE);
             }
             GboardAiWritingToolsSettings.Snapshot settings =
                     GboardAiWritingToolsSettings.snapshot(context);
@@ -627,9 +706,9 @@ public final class GboardAiWritingToolsRuntime {
             return originalResult;
         }
 
-        if (packageName != null
-                && (packageName.equals(RENAMED_GBOARD_PACKAGE)
-                        || packageName.startsWith(RENAMED_GBOARD_PACKAGE))
+        if ((packageName == null
+                || packageName.equals(RENAMED_GBOARD_PACKAGE)
+                || packageName.startsWith(RENAMED_GBOARD_PACKAGE))
                 && GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER.equals(
                         settings.backendType)
                 && originalResult instanceof String) {
@@ -670,8 +749,12 @@ public final class GboardAiWritingToolsRuntime {
         if (FLAG_WRITING_HELPER_SUPPORTED_LANGUAGE_TAGS.equals(flagName)
                 || FLAG_LLM_PC_SUPPORTED_LANGUAGE_TAGS.equals(flagName)) {
             return settings.allKeyboardsEnabled && originalResult instanceof String
-                    ? ALL_LANGUAGES_ALLOWLIST_VALUE
-                    : originalResult;
+                ? ALL_LANGUAGES_ALLOWLIST_VALUE
+                : originalResult;
+        }
+        if (FLAG_PROOFREAD_SUPPORTED_APPS.equals(flagName)
+                && originalResult instanceof String) {
+            return "";
         }
         if (!(originalResult instanceof Boolean)) {
             return originalResult;
@@ -696,17 +779,16 @@ public final class GboardAiWritingToolsRuntime {
             return originalResult;
         }
 
-        if (FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE.equals(flagName)
-                || FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName)) {
-            return Boolean.FALSE;
-        }
-
         if (FLAG_CONFIG_PROOFREAD.equals(flagName)
                 || FLAG_WRITING_TOOLS.equals(flagName)
                 || FLAG_WRITING_HELPER_ENABLE_TEXT_STYLIZATION_INTERNAL.equals(flagName)
                 || FLAG_WRITING_HELPER.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_FOR_MINORS.equals(flagName)
-                || FLAG_ENABLE_MODELESS_SMART_EDIT.equals(flagName)) {
+                || FLAG_ENABLE_MODELESS_SMART_EDIT.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE.equals(flagName)
+                || FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName)
+                || FLAG_WRITING_TOOLS_ENABLE_STABLE_ENTRANCE.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_REPLACE_BUTTON.equals(flagName)) {
             return Boolean.TRUE;
         }
         return originalResult;
@@ -883,10 +965,18 @@ public final class GboardAiWritingToolsRuntime {
                 if (editor == null) editor = prefs.edit();
                 editor.putBoolean("pref_key_enable_emoji_suggestion", true);
             }
-            if (!prefs.contains("spellchecker_enable_chips_ui")
-                    || prefs.getBoolean("spellchecker_enable_chips_ui", false)) {
+            if (!prefs.contains("enable_fast_access_bar")) {
                 if (editor == null) editor = prefs.edit();
-                editor.putBoolean("spellchecker_enable_chips_ui", false);
+                editor.putBoolean("enable_fast_access_bar", true);
+            }
+            if (!prefs.contains("enable_emojify")) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean("enable_emojify", true);
+            }
+            if (!prefs.contains("spellchecker_enable_chips_ui")
+                    || !prefs.getBoolean("spellchecker_enable_chips_ui", false)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean("spellchecker_enable_chips_ui", true);
             }
             if (!prefs.getBoolean("enable_mark_misspelled_words", false)) {
                 if (editor == null) editor = prefs.edit();

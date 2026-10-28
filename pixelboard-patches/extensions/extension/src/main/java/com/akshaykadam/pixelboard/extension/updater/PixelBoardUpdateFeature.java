@@ -370,7 +370,7 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
             } catch (PackageManager.NameNotFoundException ignored) {
             }
         }
-        return "1.3.2";
+        return "1.3.3";
     }
 
     public static String formatRelativeTime(long timestamp) {

@@ -5,7 +5,9 @@ import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 
 import com.akshaykadam.pixelboard.extension.settings.GboardEmojiSettings;
+import com.akshaykadam.pixelboard.extension.settings.GboardGoogleSansSettings;
 import com.akshaykadam.pixelboard.extension.settings.GboardRoundedKeysSettings;
+import com.akshaykadam.pixelboard.extension.settings.GboardUndoSettings;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -206,6 +208,62 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     }
 
     @Test
+    public void googleSansFlagsEnforceTrueWhenEnabledAndFalseWhenDisabled() throws Exception {
+        Context context = RuntimeEnvironment.getApplication();
+        staticField("applicationContext").set(null, context);
+        SharedPreferences preferences = GboardGoogleSansSettings.preferences(context);
+        GboardGoogleSansSettings.writeEnabled(preferences, false);
+
+        GoogleSansFlexFlagReceiver receiver = new GoogleSansFlexFlagReceiver();
+
+        // 1. When disabled, returns Boolean.FALSE
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.FALSE));
+
+        // 2. When enabled, Boolean.FALSE is overridden to Boolean.TRUE with diagnostics log
+        GboardGoogleSansSettings.writeEnabled(preferences, true);
+        ShadowLog.clear();
+
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.FALSE);
+        Assert.assertSame(Boolean.TRUE, enforced);
+        Assert.assertEquals(1L, warningCount(
+                "flag=google_sans_flex, original=Boolean(false), enforced=Boolean(true)"));
+    }
+
+    @Test
+    public void undoFlagsEnforceActiveWhenEnabledAndDisabledWhenOff() throws Exception {
+        Context context = RuntimeEnvironment.getApplication();
+        staticField("applicationContext").set(null, context);
+        SharedPreferences preferences = GboardUndoSettings.preferences(context);
+        GboardUndoSettings.writeEnabled(preferences, false);
+
+        UndoProactivePostCorrectionFlagReceiver postCorrReceiver =
+                new UndoProactivePostCorrectionFlagReceiver();
+        UndoPromotionBannerThresholdFlagReceiver thresholdReceiver =
+                new UndoPromotionBannerThresholdFlagReceiver();
+
+        // 1. When disabled, proactive post correction returns Boolean.FALSE
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                postCorrReceiver, Boolean.TRUE));
+
+        // 2. When enabled, proactive post correction returns Boolean.TRUE with diagnostics log
+        GboardUndoSettings.writeEnabled(preferences, true);
+        ShadowLog.clear();
+
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                postCorrReceiver, Boolean.FALSE);
+        Assert.assertSame(Boolean.TRUE, enforced);
+        Assert.assertEquals(1L, warningCount(
+                "flag=undo_proactive_post_correction, original=Boolean(false), enforced=Boolean(true)"));
+
+        // 3. Banner threshold is overridden to 1L
+        Object threshold = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                thresholdReceiver, 3L);
+        Assert.assertEquals(1L, threshold);
+    }
+
+    @Test
     public void emojiScaleFlagEnforcesTrue() throws Exception {
         Object receiver = new EmojiScaleFlagReceiver();
 
@@ -287,16 +345,20 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 new SpellCheckerExtensionFlagReceiver();
 
         ShadowLog.clear();
-        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                chipsUiReceiver, Boolean.TRUE));
-        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
                 chipsUiReceiver, Boolean.FALSE));
+        Assert.assertEquals(1L, warningCount(
+                "flag=enable_spellchecker_chips_ui, original=Boolean(false), enforced=Boolean(true)"));
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                chipsUiReceiver, Boolean.TRUE));
 
         ShadowLog.clear();
-        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                webViewReceiver, Boolean.TRUE));
-        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
                 webViewReceiver, Boolean.FALSE));
+        Assert.assertEquals(1L, warningCount(
+                "flag=enable_spellchecker_chips_ui_web_view, original=Boolean(false), enforced=Boolean(true)"));
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                webViewReceiver, Boolean.TRUE));
 
         ShadowLog.clear();
         Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
@@ -376,9 +438,9 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_ACCESS_POINT_KEYBOARD));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_AUTOFILL_IME_INTEGRATION));
-        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELLCHECKER_CHIPS_UI));
-        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELL_CHECKER_EXTENSION));
@@ -430,6 +492,18 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_FOR_PREDICTION));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_RETAIN_EMOJI_SHORTCUT_CANDIDATES_ON_SELECTION));
+
+        // Quick Emoji (fast access bar) and Magic Emoji (emojify wand button) flags
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_FAST_ACCESS_BAR));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_SETTINGS_OPTION));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_SHORTCUT_WHEN_FOLLOWED_BY_EMOJI));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_WHEN_TALKBACK_ON));
 
         // Glide typing and autocorrect decoder flags
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
@@ -628,7 +702,7 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
         Assert.assertTrue(defaultPrefs.contains("pref_key_enable_emoji_suggestion"));
         Assert.assertTrue(defaultPrefs.getBoolean("pref_key_enable_emoji_suggestion", false));
         Assert.assertTrue(defaultPrefs.contains("spellchecker_enable_chips_ui"));
-        Assert.assertFalse(defaultPrefs.getBoolean("spellchecker_enable_chips_ui", false));
+        Assert.assertTrue(defaultPrefs.getBoolean("spellchecker_enable_chips_ui", false));
         Assert.assertTrue(defaultPrefs.contains("enable_mark_misspelled_words"));
         Assert.assertTrue(defaultPrefs.getBoolean("enable_mark_misspelled_words", false));
         Assert.assertTrue(defaultPrefs.contains("pref_key_enable_grammar_checker"));
@@ -892,6 +966,21 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     private static final class FrequentEmojiRecentTabFlagReceiver {
         @SuppressWarnings("unused")
         private final String a = GboardAiWritingToolsRuntime.FLAG_ENABLE_FREQUENT_EMOJI_RECENT_TAB;
+    }
+
+    private static final class GoogleSansFlexFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardGoogleSansSettings.FLAG_GOOGLE_SANS_FLEX;
+    }
+
+    private static final class UndoProactivePostCorrectionFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardUndoSettings.FLAG_UNDO_PROACTIVE_POST_CORRECTION;
+    }
+
+    private static final class UndoPromotionBannerThresholdFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardUndoSettings.FLAG_UNDO_PROMOTION_BANNER_THRESHOLD;
     }
 
     private static final class ThrowingSharedPreferencesContext extends ContextWrapper {

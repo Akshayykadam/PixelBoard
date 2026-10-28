@@ -144,7 +144,7 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.ENABLE_RAMBLER_TOOLBAR_AT_CURSOR_POSITION_FLAG,
                         Boolean.FALSE));
-        Assert.assertSame(Boolean.FALSE,
+        Assert.assertSame(Boolean.TRUE,
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.ENABLE_HIDE_RAMBLER_AL_IDLING_STATE_FLAG,
                         Boolean.FALSE));
@@ -158,7 +158,7 @@ public final class GboardRambler1803StockPolicyTest {
         Assert.assertFalse(
                 GboardRambler1803StockPolicy.isTargetFlagName(
                         GboardRambler1803StockPolicy.ENABLE_RAMBLER_TOOLBAR_AT_CURSOR_POSITION_FLAG));
-        Assert.assertFalse(
+        Assert.assertTrue(
                 GboardRambler1803StockPolicy.isTargetFlagName(
                         GboardRambler1803StockPolicy.ENABLE_HIDE_RAMBLER_AL_IDLING_STATE_FLAG));
     }

@@ -1,5 +1,8 @@
 package com.akshaykadam.pixelboard.extension.writingtools;
 
+import com.akshaykadam.pixelboard.extension.settings.GboardGoogleSansSettings;
+import com.akshaykadam.pixelboard.extension.settings.GboardUndoSettings;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -45,13 +48,13 @@ public final class GboardAiWritingToolsRuntimeTest {
                             settings,
                             writingToolsOff));
         }
-        Assert.assertSame(Boolean.FALSE,
+        Assert.assertSame(Boolean.TRUE,
                 GboardAiWritingToolsRuntime.computeOverrideValue(
                         GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE,
                         Boolean.FALSE,
                         settings,
                         writingToolsOff));
-        Assert.assertSame(Boolean.FALSE,
+        Assert.assertSame(Boolean.TRUE,
                 GboardAiWritingToolsRuntime.computeOverrideValue(
                         GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_ON_SELECTED_TEXT,
                         Boolean.FALSE,
@@ -127,7 +130,7 @@ public final class GboardAiWritingToolsRuntimeTest {
     public void renamedServerPackageUsesModelConfigs() {
         GboardAiWritingToolsSettings.Snapshot settings = serverSettings(false);
 
-        String proofread = "202406101250_prod_sd_config";
+        String proofread = "202408051448_prod_sd_config";
         Assert.assertEquals("202408051448_prod_sd_config",
                 GboardAiWritingToolsRuntime.computeOverrideValue(
                         GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_MODEL_VERSION,
@@ -429,6 +432,93 @@ public final class GboardAiWritingToolsRuntimeTest {
         Assert.assertEquals("", specialTypesResult);
     }
 
+    @Test
+    public void quickEmojiAndMagicEmojiFlagsAreEnforcedAndConfigured() {
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_FAST_ACCESS_BAR));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_SETTINGS_OPTION));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_SHORTCUT_WHEN_FOLLOWED_BY_EMOJI));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_WHEN_TALKBACK_ON));
+
+        Object fastAccessWhitelist = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_FAST_ACCESS_BAR_APP_WHITELIST),
+                "com.whatsapp");
+        Assert.assertEquals("*", fastAccessWhitelist);
+
+        Object emojifyLanguages = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_LANGUAGE_TAGS),
+                "-");
+        Assert.assertEquals("*", emojifyLanguages);
+
+        Object emojifyApps = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_EMOJIFY_APP_ALLOWLIST),
+                "-");
+        Assert.assertEquals("*", emojifyApps);
+
+        Object emojifyPatterns = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_EMOJIFY_ENABLED_PATTERNS_IN_ORDER),
+                "1");
+        Assert.assertEquals("1,2,3", emojifyPatterns);
+
+        Object emojifyModel = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_MODEL),
+                Boolean.TRUE);
+        Assert.assertEquals(Boolean.FALSE, emojifyModel);
+    }
+
+    @Test
+    public void googleSansAndUndoFlagsAreEnforcedHeadlessByDefault() {
+        Object googleSansFlex = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(GboardGoogleSansSettings.FLAG_GOOGLE_SANS_FLEX),
+                Boolean.FALSE);
+        Assert.assertEquals(Boolean.TRUE, googleSansFlex);
+
+        Object platformGoogleSans = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(GboardGoogleSansSettings.FLAG_PLATFORM_GOOGLE_SANS_FLEX),
+                Boolean.FALSE);
+        Assert.assertEquals(Boolean.TRUE, platformGoogleSans);
+
+        Object gm3Expressive = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(GboardGoogleSansSettings.FLAG_GM3_EXPRESSIVE),
+                Boolean.FALSE);
+        Assert.assertEquals(Boolean.TRUE, gm3Expressive);
+
+        Object undoPostCorrection = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(GboardUndoSettings.FLAG_UNDO_PROACTIVE_POST_CORRECTION),
+                Boolean.FALSE);
+        Assert.assertEquals(Boolean.TRUE, undoPostCorrection);
+
+        Object undoAutoCorrection = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(GboardUndoSettings.FLAG_UNDO_PROACTIVE_AUTO_CORRECTION_COOPERATIVE),
+                Boolean.FALSE);
+        Assert.assertEquals(Boolean.TRUE, undoAutoCorrection);
+
+        Object undoChunkFusion = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(GboardUndoSettings.FLAG_UNDO_ENABLE_CHUNK_FUSION),
+                Boolean.FALSE);
+        Assert.assertEquals(Boolean.TRUE, undoChunkFusion);
+
+        Object undoThreshold = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(GboardUndoSettings.FLAG_UNDO_PROMOTION_BANNER_THRESHOLD),
+                Long.valueOf(3L));
+        Assert.assertEquals(Long.valueOf(1L), undoThreshold);
+
+        Object undoStopDeferred = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(GboardUndoSettings.FLAG_UNDO_STOP_DEFERRED_RANGE_NOTIFICATION),
+                Boolean.TRUE);
+        Assert.assertEquals(Boolean.FALSE, undoStopDeferred);
+    }
+
     private static Boolean distinctBoolean(boolean value) throws Exception {
         return Boolean.class.getDeclaredConstructor(boolean.class).newInstance(value);
     }
@@ -444,17 +534,27 @@ public final class GboardAiWritingToolsRuntimeTest {
     }
 
     @Test
-    public void textSelectionCooperativeAndHelperFlagsAreDisabledToPreserveMultiWordRecapitalization() {
+    public void textSelectionCooperativeAndHelperFlagsAreEnabledForInlineProofreadSuggestions() {
         GboardAiWritingToolsSettings.Snapshot settings = serverSettings(false);
         GboardAiWritingToolsOfficialPreferences.Snapshot preferences = official(true, true);
 
-        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.computeOverrideValue(
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.computeOverrideValue(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE,
                 Boolean.FALSE,
                 settings,
                 preferences));
-        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.computeOverrideValue(
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.computeOverrideValue(
                 GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_ON_SELECTED_TEXT,
+                Boolean.FALSE,
+                settings,
+                preferences));
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_ENABLE_STABLE_ENTRANCE,
+                Boolean.FALSE,
+                settings,
+                preferences));
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.computeOverrideValue(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_REPLACE_BUTTON,
                 Boolean.FALSE,
                 settings,
                 preferences));

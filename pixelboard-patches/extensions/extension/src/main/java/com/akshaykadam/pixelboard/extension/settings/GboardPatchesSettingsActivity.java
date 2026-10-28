@@ -1728,7 +1728,7 @@ public final class GboardPatchesSettingsActivity extends Activity
             }
         } catch (Throwable ignored) {
         }
-        return "1.3.2";
+        return "1.3.3";
     }
 
     private View buildToolbar() {
@@ -3084,6 +3084,8 @@ public final class GboardPatchesSettingsActivity extends Activity
         }
         if (patchesPrefs != null) {
             GboardRoundedKeysSettings.ensureDefaults(context, patchesPrefs);
+            GboardGoogleSansSettings.ensureDefaults(context, patchesPrefs);
+            GboardUndoSettings.ensureDefaults(context, patchesPrefs);
         }
 
         boolean aiWritingToolsEnabled = writingPrefs == null
@@ -3799,11 +3801,11 @@ public final class GboardPatchesSettingsActivity extends Activity
         categoryLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
         card.addView(categoryLabel);
 
-        // Main Title (e.g. "PixelBoard v1.3.2")
+        // Main Title (e.g. "PixelBoard v1.3.3")
         TextView titleView = new TextView(this);
         String displayTitle = section.getTitle();
         if (displayTitle == null || displayTitle.isEmpty()) {
-            displayTitle = "PixelBoard v1.3.2";
+            displayTitle = "PixelBoard v1.3.3";
         }
         titleView.setText(displayTitle);
         titleView.setTextColor(palette.textPrimary);

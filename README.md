@@ -5,8 +5,8 @@
 **Supercharged Gboard Mod featuring Google Pixel 11 series's Rambler Voice Typing, AI Writing Assistant & Writing Tools V2 [No Root].**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.2">
-    <img src="https://img.shields.io/badge/Release-v1.3.2-8A2BE2?style=flat-square&logo=github&logoColor=white" alt="Latest Release"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.3">
+    <img src="https://img.shields.io/badge/Release-v1.3.3-8A2BE2?style=flat-square&logo=github&logoColor=white" alt="Latest Release"/>
   </a>
   <img src="https://img.shields.io/badge/Android-10%20to%2016-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android Support"/>
   <img src="https://img.shields.io/badge/Architecture-arm64--v8a-blue?style=flat-square" alt="Arch Support"/>
@@ -17,12 +17,12 @@
 
 <!-- Primary Action: Clear download choices with zero confusion -->
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/PixelBoard-1.3.2.apk">
-    <img src="https://img.shields.io/badge/📥_Direct_Download_(APK)-v1.3.2_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Ready-to-Install APK"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/PixelBoard-1.3.3.apk">
+    <img src="https://img.shields.io/badge/📥_Direct_Download_(APK)-v1.3.3_(79_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Ready-to-Install APK"/>
   </a>
   &nbsp;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/patches-1.3.2.mpp">
-    <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.3.2_(1.6_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Morphe Patch Bundle"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/patches-1.3.3.mpp">
+    <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.3.3_(1.6_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Morphe Patch Bundle"/>
   </a>
 </p>
 
@@ -31,9 +31,9 @@
 </p>
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/PixelBoard-1.3.2.apk"> <b>⬇️ Direct Download APK (v1.3.2)</b></a> &nbsp;&bull;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/patches-1.3.2.mpp"> <b>📦 Morphe Patch Bundle</b></a> &nbsp;&bull;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.2"> <b>Release Notes</b></a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/PixelBoard-1.3.3.apk"> <b>⬇️ Direct Download APK (v1.3.3)</b></a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/patches-1.3.3.mpp"> <b>📦 Morphe Patch Bundle</b></a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.3"> <b>Release Notes</b></a> &nbsp;&bull;&nbsp;
   <a href="#installation-guide"> <b>Installation Guide</b></a> &nbsp;&bull;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/releases"> <b>All Releases</b></a>
 </p>
@@ -43,12 +43,12 @@
 ---
 
 <a id="release-assets"></a>
-## 📥 Release Assets (v1.3.2 / Gboard v18.5.3)
+## 📥 Release Assets (v1.3.3 / Gboard v18.5.3)
 
 | Package | Type | Description |
 | :--- | :--- | :--- |
-| [**PixelBoard-1.3.2.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/PixelBoard-1.3.2.apk) | **Signed APK** *(Recommended)* | **Ready to install.** Installs side-by-side with stock Gboard without root (`com.akshaykadam.pixelboard`). Base Gboard v18.5.3 Release. |
-| [**patches-1.3.2.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/patches-1.3.2.mpp) | **Morphe Patch Bundle** | Standalone patch file for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher) to patch your own base APK. |
+| [**PixelBoard-1.3.3.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/PixelBoard-1.3.3.apk) | **Signed APK** *(Recommended)* | **Ready to install.** Installs side-by-side with stock Gboard without root (`com.akshaykadam.pixelboard`). Base Gboard v18.5.3 Release. |
+| [**patches-1.3.3.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/patches-1.3.3.mpp) | **Morphe Patch Bundle** | Standalone patch file for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher) to patch your own base APK. |
 | [**Stock Gboard v18.5.3**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/) | **Base APK** | Official unmodified base APK from APKMirror *(only required if patching manually with Morphe)*. |
 
 ---
@@ -63,7 +63,7 @@
 
 ## Overview
 
-**PixelBoard** is a sleek, ultra-clean enhancement of Google's flagship keyboard. Tailored for pure productivity, PixelBoard strips away unnecessary bloatware and focuses strictly on powerhouse capabilities: **Gemini Rambler Natural Voice Dictation**, **AI Writing Assistant**, **Modern Spell Checker Suggestion Chips & Grammar Checking**, **Scan Text Camera OCR**, **Screenshot Floating Suggestions**, **Material 3 Expressive Rounded Keys**, **Emoji Palette V2**, **Super Insert Quick Hub**, **Restored Emoji Size Slider & Vibrant Emojis**, **Samsung & Vivo Clipboard History Sync**, and **Automatic Zero-Restart Instant Activation**.
+**PixelBoard** is a sleek, ultra-clean enhancement of Google's flagship keyboard. Tailored for pure productivity, PixelBoard strips away unnecessary bloatware and focuses strictly on powerhouse capabilities: **Gemini Rambler Natural Voice Dictation**, **AI Writing Assistant**, **Modern Spell Checker Suggestion Chips & Grammar Checking**, **Scan Text Camera OCR**, **Screenshot Floating Suggestions**, **Material 3 Expressive Rounded Keys**, **Google Sans Flex Keycap Typography**, **Proactive Undo in Suggestion Strip**, **Emoji Palette V2**, **Super Insert Quick Hub**, **Restored Emoji Size Slider & Vibrant Emojis**, **Samsung & Vivo Clipboard History Sync**, and **Automatic Zero-Restart Instant Activation**.
 
 PixelBoard is engineered with an independent coexistence package ID (`com.akshaykadam.pixelboard`), allowing you to install and use it **side-by-side with your factory Gboard** without replacing, uninstalling, or risking system keyboard stability.
 
@@ -77,21 +77,25 @@ Traditional voice-to-text transcribes every hesitation literally. PixelBoard unl
 - **Thought Completion**: Seamlessly fixes self-corrections on the fly (e.g., *"let's meet at two no, three PM"* &rarr; *"Let's meet at 3:00 PM"*).
 - **Auto-Punctuation & Capitalization**: Adds context-aware periods, commas, and proper noun capitalization without requiring voice commands.
 - **Multilingual Fluidity**: Mix and match languages seamlessly in a single sentence.
+- **Voice Toolbar Minimize Key & TalkBack Labels ([#108](https://github.com/Akshayykadam/PixelBoard/pull/108))**: Restored the voice toolbar minimize action key in Rambler dictation to smoothly minimize the expanded voice typing toolbar down to the end slot or floating widget, matching stock voice typing ergonomics, with dedicated TalkBack accessibility descriptions (*"Minimize keyboard"* and *"Back to keyboard"*).
+- **Restored Predictive Suggestions & Fixed Idling Gradient Bar ([#109](https://github.com/Akshayykadam/PixelBoard/issues/109))**: Enforces `enable_hide_rambler_al_idling_state` to properly hide the Assistant Light (AL) gradient toolbar during idle voice typing, unblocking the suggestion strip container and restoring predictive word suggestions.
 - **Gboard 18.5.3 / 18.4.1 & Standalone Support**: Seamlessly hooked into Gboard's obfuscated `VoiceSettingsFragment` selector, with automatic preference initialization (`enable_jetson = true`) ensuring Rambler works out-of-the-box on the standalone package (`com.akshaykadam.pixelboard`) without relying on Google Play Services Phenotype flag sync.
 - **Battery-Friendly Lifecycle**: Cleanly releases speech recognition bindings (`GoogleAsrService`) as soon as the keyboard is hidden, eliminating screen-off battery drain ([#3](https://github.com/Akshayykadam/PixelBoard/issues/3)).
 - **Cold Boot & Direct Boot Readiness**: Powered by Device-Protected Storage (DE), ensuring Rambler voice typing is ready immediately after device reboots without needing manual Gboard restarts ([#4](https://github.com/Akshayykadam/PixelBoard/issues/4)).
 
 ### 2. In-Line AI Writing Assistant
 Access Google's Gemini-driven writing suite directly above your keys across any app:
-- **One-Tap Proofread**: Correct spelling, grammatical quirks, and punctuation in an instant.
-- **Tone & Style Switcher**: Rephrase sentences into *Professional*, *Casual*, *Concise*, or *Emotive* tones.
+- **One-Tap Proofread & "Fix it" Button ([#109](https://github.com/Akshayykadam/PixelBoard/issues/109))**: Correct spelling, grammatical quirks, and punctuation in an instant with restored cooperative mode and inline "Fix it" action chips.
+- **Tone & Style Switcher**: Rephrase sentences into *Professional*, *Casual*, *Concise*, or *Emotive* tones backed by reliable server model configs (`202504090000_writing_tools_config`).
 - **Smart Edit**: Context-aware editing and quick rephrasing tailored to your conversation.
+- **Unrestricted App Support**: All app package restrictions removed (`proofread_supported_apps`), giving you AI writing tools across every text field and third-party application.
 - **Android 16 Quick Insert Safeguard**: Robust null-safety protection when expanding AI writing tool suggestions and quick-insert spans on Android 16.
 - **Universal Support**: Works across all keyboard languages and input modes.
 
 ### 3. Modern Spell Checker & Grammar Checking
 - **Android 12+ System Spell Checker (`GboardSpellCheckerChipsPatch`)**: Bytecode-level transformation hooking Gboard's spell checker compatibility check (`lnz.cV`), establishing full system spell checker compatibility on all Android 12+ devices.
-- **Red Squiggly Underline & Grammar Marking**: Automatically initializes `enable_mark_misspelled_words=true`, `pref_key_enable_grammar_checker=true`, and `show_suggestion_strip=true` while disabling `enable_spellchecker_chips_ui` so native red squiggly underlines on misspelled words appear reliably in text input fields.
+- **Inline Spell Checker Chips UI ([#109](https://github.com/Akshayykadam/PixelBoard/issues/109))**: Enforces `spellchecker_enable_chips_ui` and `spellchecker_enable_chips_ui_web_view` so grammar suggestions and spelling corrections display directly as clickable chips in the suggestion strip.
+- **Red Squiggly Underline & Grammar Marking**: Automatically initializes `enable_mark_misspelled_words=true`, `pref_key_enable_grammar_checker=true`, and `show_suggestion_strip=true` so native red squiggly underlines on misspelled words appear reliably in text input fields.
 - **Spell Checker Phenotype Flags**: Enforces `enable_spell_checker_extension`, `writing_helper_chip_in_spellchecker`, `enable_spell_checker_highlight_on_web_input`, and `enable_spell_checker_training_cache`.
 - **System Rebranding**: Full system spell checker service rebrand to **PixelBoard Spell Checker** across all system locales.
 
@@ -103,53 +107,63 @@ Access Google's Gemini-driven writing suite directly above your keys across any 
 - **Modern Rounded Keycaps**: Toggle Google's expressive Material 3 Belka pill-shaped keycaps on/off under Advanced Settings.
 - **Dynamic Flag Management**: Automatically forces `belka_rounded_keyboard`, `belka_ui`, `belka_background`, `more_pill_keys`, and `enable_rounded_keys` flags at runtime.
 
-### 6. Emoji Palette V2 & Dedicated Tabs
+### 6. Google Sans Flex Keycap Typography
+- **Google Sans Flex Font**: Activates Google Sans Flex variable font rendering across keycaps and labels on Android 12+ (API 31+).
+- **Material 3 Expressive Styling**: Dynamically manages `google_sans_flex`, `platform_google_sans_flex`, and `gm3_expressive` flags at runtime with a user preference toggle under Advanced Settings.
+
+### 7. Proactive Undo Button in Suggestion Strip
+- **1-Tap Proactive Undo**: Surfaces an interactive Undo suggestion chip directly in the suggestion strip after autocorrections, text replacements, or deletion operations.
+- **Cooperative Undo Engine**: Activates `undo_proactive_post_correction`, `undo_proactive_auto_correction_cooperative`, `undo_enable_chunk_fusion`, `nga_enable_undo_delete`, and threshold flags with a dedicated toggle under Advanced Settings.
+
+### 8. Emoji Palette V2 & Dedicated Tabs
 - **Refined Emoji Drawer Layout**: Unlocks `emoji_palette_v2`, `enable_frequent_emoji_recent_tab`, and `enable_emoji_frequent_recent_switch_option`.
 - **Dynamic Density & Grid**: Enhances emoji grid responsiveness and provides a dedicated tab switch between recent emojis and frequent emojis.
 
-### 7. Super Insert Quick Hub & Smart Compose Autocompletion
+### 9. Super Insert Quick Hub & Smart Compose Autocompletion
 - **Super Insert Drawer**: Material 3 unified hub (`super_insert`, `super_insert_vk`, `super_insert_enable_dynamic_multi_view`, `enable_si_shortcut_keys`), merging clipboard history, dynamic emojis, contacts, and saved phrases into a single quick-insert panel.
 - **Smart Compose Ghost Predictions**: Extends Gmail-style in-line ghost predictions across all Android apps (`enable_smart_compose`, `enable_inline_suggestions_on_all_fields`, `enable_inline_completion`, `enable_delight5_smart_compose`, `smart_compose_status = 1L`).
 
-### 8. Restored Emoji Size Slider & Vibrant Candidate Emojis ([#26](https://github.com/Akshayykadam/PixelBoard/issues/26))
+### 10. Restored Emoji Size Slider, Quick Emoji & Magic Emoji Suggestions ([#26](https://github.com/Akshayykadam/PixelBoard/issues/26), [#97](https://github.com/Akshayykadam/PixelBoard/issues/97))
 - **Restored Emoji Size Slider**: Unlocked the missing "Emoji size" slider preference and interactive preview row under **Emojis, stickers & GIFs** settings.
 - **Vibrant Suggestion Strip Emojis**: Hooked candidate text view rendering to enforce full 100% paint opacity (`alpha = 255`) for emoji glyphs, eliminating dull or washed-out emoji suggestions in the suggestion strip.
+- **Emoji Fast-Access Row (Quick Emoji)**: Unlocked the native `enable_fast_access_bar` and bypassed Google's hardcoded 12-app whitelist (`fast_access_bar_app_whitelist = *`), placing the quick-emoji strip directly above the keyboard keys across all messaging apps and text fields.
+- **Magic Emoji Suggestions Button (Emojify)**: Unlocked the native `enable_emojify` and `enable_emojify_settings_option` with global locale and app support (`enable_emojify_language_tags = *`, `emojify_app_allowlist = *`), surfacing the interactive magic wand (🪄) button in the suggestion strip to automatically stylize and pepper drafts with matching emojis.
 
-### 9. Empty Clipboard History Fix for Samsung One UI & Vivo ([#17](https://github.com/Akshayykadam/PixelBoard/issues/17))
+### 11. Empty Clipboard History Fix for Samsung One UI & Vivo ([#17](https://github.com/Akshayykadam/PixelBoard/issues/17))
 - **Foreground Clipboard Sync**: Hooks `onStartInputView` to guarantee `ClipboardManager` listener initialization and sync copied text into clipboard drawer history when typing, overcoming OEM background clipboard suppression on Samsung One UI and Vivo devices.
 
-### 10. Instant Word Learning & Accurate Autocorrect ([#33](https://github.com/Akshayykadam/PixelBoard/issues/33))
+### 12. Instant Word Learning & Accurate Autocorrect ([#33](https://github.com/Akshayykadam/PixelBoard/issues/33))
 - **Instant Word Learning & 2-Letter Prefix Suggestions**: Lowered out-of-vocabulary learning threshold from 4 to 1 (`intended_oov_min_count = 1`) and activated Delight5 language model user history n-gram frequency, continuation scoring, and timestamp tracking (`enable_pc_user_history_ngram_count`, `populate_ngram_count_with_context`, `enable_dynamic_lm_unigram_continuation_scoring`). Frequently used words are learned instantly and suggested after typing just the first two letters.
 - **Automatic Emoji Suggestions**: Enabled the Delight5 concept prediction engine and emoji shortcut candidates (`enable_concept_prediction_engine`, `enable_rule_based_concept_prediction`, `enable_emoji_suggestion_from_top_candidate`, `enable_predictions_from_emoji_shortcuts`, `config_expression`). Matching emojis are automatically suggested directly in the suggestion strip when typing relevant words.
 - **Streaming Gesture Touch Tagging & Beam Decoder**: Smooth glide typing with `update_streaming_touch_data_set_is_gesture`, two-stage beam decoder (`enable_two_stage_decoder`), and spatial rescoring (`enable_space_transposition_post_correction`, `enable_pk_spatial_model_features`, `enable_pk_auto_correction_trigger_predictor`).
 
-### 11. Multilingual UI (20+ Locales) & Bloat-Free Settings
+### 13. Multilingual UI (20+ Locales) & Bloat-Free Settings
 - **Native Localization in 20+ Languages**: Fully translated Advanced Settings across English, Spanish, French, German, Italian, Portuguese, Russian, Hindi, Japanese, Korean, Chinese, Arabic, Indonesian, Turkish, Vietnamese, Polish, Dutch, Thai, and Ukrainian (`@string/pixelboard_patches_settings_title`).
 - **Cleaned Settings Tree & Dictionary Preservation**: Removed unwanted promotional bloatware ("Rate Gboard" / "Help & feedback") via semantic string key resolution, strictly preserving the native **Dictionary** (`LatinDictionarySettingsFragment`), **Personal dictionary**, and **Physical keyboard** preferences across all Gboard base updates ([#91](https://github.com/Akshayykadam/PixelBoard/issues/91), [#94](https://github.com/Akshayykadam/PixelBoard/pull/94)).
 
-### 12. Writing Tools V2 Support (Experimental)
+### 14. Writing Tools V2 Support (Experimental)
 - **Suggested Style Chips & Prompt Bar**: Pre-configured architecture for Google's modern "Suggested" style chips and the freeform "Describe your edit" prompt bar.
 - **Intelligent Hardware Gating**: Integrated with hardware/model eligibility checks to prevent unexpected errors or crashes on unsupported devices.
 
-### 13. Device-Gated AI Inference Backend Selector (New in v18.4)
+### 15. Device-Gated AI Inference Backend Selector (New in v18.4)
 On supported devices (such as Google Pixel 8 Pro / 9 series), choose your preferred inference pipeline directly under Advanced Settings:
 - `GBOARD_SERVER` (Google Cloud Server Inference)
 - `PRIVATE_INFERENCE_AICORE` (On-Device Private Android AICore)
 - `PRIVATE_INFERENCE_ASTREA` (On-Device Astrea Framework)
 - Dynamically hidden on unsupported hardware to maintain a clutter-free, native experience.
 
-### 14. Automatic Live Activation — Zero Restarts Required
+### 16. Automatic Live Activation — Zero Restarts Required
 - **Instant Hot-Reload**: Toggling Rambler Voice Typing, switching AI Writing Tools preferences, or changing inference backend options applies automatically in real time without restarting Gboard, force-closing the app, or rebooting your phone.
 - **Zero-Friction Workflow**: Features are synchronized across the keyboard process dynamically — simply configure your desired options and start typing or dictating right away.
 - **Optional Manual Reload**: Advanced Settings retains an optional Restart (`↻`) button solely as a convenience tool, but manual restarts are no longer mandatory.
 
-### 15. Safe Coexistence & Instant Bypass
+### 17. Safe Coexistence & Instant Bypass
 - **Side-by-Side Installation**: Installs with app label `PixelBoard` alongside stock Google Keyboard.
 - **Custom Adaptive Icon**: Bundles PixelBoard's custom high-resolution Material You adaptive app icon for home launcher and settings.
 - **Signature Whitelist Bypass**: Pre-patched bytecode ensures Google Play signature checks and integrity verifications pass cleanly without root.
 - **Inline Autofill & Password Manager Suggestions**: Enables Android's `DeviceIntelligence` inline autofill chips for password managers (Bitwarden, 1Password, KeePass, etc.) in the renamed package ([#24](https://github.com/Akshayykadam/PixelBoard/pull/24)).
 
-### 16. Extended Clipboard History Retention Duration (New Feature)
+### 18. Extended Clipboard History Retention Duration (New Feature)
 - **Save Clips for Up to 30 Days or Permanently**: Break free from stock Gboard's rigid 24-hour limit! PixelBoard lets you choose exactly how long copied text and items are saved in your clipboard history with 5 customizable tiers:
   - **1 hour**
   - **24 hours** (Stock default)
@@ -159,12 +173,12 @@ On supported devices (such as Google Pixel 8 Pro / 9 series), choose your prefer
 - **Accessible Everywhere**: Configurable directly under Gboard **Settings > Clipboard** and inside **PixelBoard Settings**.
 - **Crash-Free Migration**: Automatically migrates previously saved retention preferences (e.g. stock 24h at index 6 &rarr; new index 1) and safely clamps slider values, eliminating layout crashes.
 
-### 17. Comprehensive TalkBack & Screen Reader Accessibility Overhaul ([#65](https://github.com/Akshayykadam/PixelBoard/pull/65), [#66](https://github.com/Akshayykadam/PixelBoard/pull/66), [#67](https://github.com/Akshayykadam/PixelBoard/pull/67))
+### 19. Comprehensive TalkBack & Screen Reader Accessibility Overhaul ([#65](https://github.com/Akshayykadam/PixelBoard/pull/65), [#66](https://github.com/Akshayykadam/PixelBoard/pull/66), [#67](https://github.com/Akshayykadam/PixelBoard/pull/67))
 - **Unified Row Semantics**: Introduces `AccessibleRow` merging switch, radio, and choice rows into single TalkBack controls with unified roles and states, eliminating redundant navigation stops.
 - **Focus Preservation Across Dynamic Rebuilds**: Automatically tracks and restores TalkBack focus across real-time screen rebuilds or smoothly shifts focus to the page title on new pages.
 - **Accessible Headings & Spoken Feedback**: Marks section and toolbar titles as headings (API 28+), adds keyboard preview hints, announces spoken warnings, and speaks restart confirmations.
 
-### 18. Complete Arabic (ar) Localization ([#53](https://github.com/Akshayykadam/PixelBoard/pull/53))
+### 20. Complete Arabic (ar) Localization ([#53](https://github.com/Akshayykadam/PixelBoard/pull/53))
 - **Full Arabic Translations**: Complete Arabic language localization covering all Advanced Settings, AI Writing Tools, and Rambler dictation preferences.
 
 > [!NOTE]
@@ -235,7 +249,7 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ## Installation Guide
 
 ### Option A: Direct Download on Your Phone (Easiest)
-1. Download [**PixelBoard Stable APK (v1.3.2, 79 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/PixelBoard-1.3.2.apk) (or view the [**v1.3.2 Release Page**](https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.2)).
+1. Download [**PixelBoard Stable APK (v1.3.3, 79 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/PixelBoard-1.3.3.apk) (or view the [**v1.3.3 Release Page**](https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.3)).
 2. Tap the downloaded `.apk` in your notification drawer or Downloads folder.
 3. If prompted, toggle **"Allow from this source"** and tap **Install**.
 4. Enable PixelBoard in **Settings > System > Languages & input > On-screen keyboard**.
@@ -243,16 +257,16 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ### Option B: Sideload via ADB (For Developers)
 Connect your Android phone via USB with USB Debugging enabled:
 ```bash
-adb install -r PixelBoard-1.3.2.apk
+adb install -r PixelBoard-1.3.3.apk
 adb shell am force-stop com.akshaykadam.pixelboard
 ```
-*(If building from source locally, use `adb install -r output/PixelBoard-1.3.2.apk`)*
+*(If building from source locally, use `adb install -r output/PixelBoard-1.3.3.apk`)*
 
 ### Option C: Patch via Morphe Manager (On-Device Patcher)
 You can patch your stock Gboard APK directly on your phone using **Morphe Manager**:
 1. Install **Morphe Manager** on your Android device.
 2. Get the two required files:
-   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.3.2.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.2/patches-1.3.2.mpp))
+   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.3.3.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/patches-1.3.3.mpp))
    - **Stock Base APK**: Download the official base bundle from [**APKMirror (Gboard v18.5.3 Release)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/).
 3. In Morphe Manager, select **Storage**, choose the stock Gboard APK, and load `PixelBoard.mpp` as the patch source.
 4. Tap **Patch** and then **Install**!
@@ -366,6 +380,7 @@ java -jar tools/patcher.jar patch \
 
 Special thanks and sincere appreciation to:
 - **JasonWu** — The pioneering author of the original Gboard patch project whose foundational reverse-engineering research and Smali patch framework made this mod possible.
+- **AnhDuck** ([@AnhDuck](https://github.com/AnhDuck)) — For restoring the Rambler voice toolbar minimize key and contributing TalkBack accessibility labels for voice controls ([#108](https://github.com/Akshayykadam/PixelBoard/pull/108)).
 - **Akash Mahedy** ([@akashmahedy](https://github.com/akashmahedy)) — For diagnosing the settings ID collision on Gboard 18.5+ and contributing the string resource resolution patch preserving the native Personal Dictionary and Physical Keyboard preferences ([#91](https://github.com/Akshayykadam/PixelBoard/issues/91), [#94](https://github.com/Akshayykadam/PixelBoard/pull/94)).
 - **Animesh Ahilya** ([@animeshahilya](https://github.com/animeshahilya)) — For contributing a comprehensive TalkBack accessibility overhaul across settings: merged row semantics (`AccessibleRow`), TalkBack focus restoration across screen rebuilds, heading navigation, spoken warnings, and restart announcements ([#65](https://github.com/Akshayykadam/PixelBoard/pull/65), [#66](https://github.com/Akshayykadam/PixelBoard/pull/66), [#67](https://github.com/Akshayykadam/PixelBoard/pull/67)).
 - **AbdulAziz Hatem** ([@AbdulAziz-Hatem](https://github.com/AbdulAziz-Hatem)) — For contributing complete Arabic (`ar`) localization for all Advanced Settings, AI Writing Tools, and Rambler dictation preferences ([#53](https://github.com/Akshayykadam/PixelBoard/pull/53)).
