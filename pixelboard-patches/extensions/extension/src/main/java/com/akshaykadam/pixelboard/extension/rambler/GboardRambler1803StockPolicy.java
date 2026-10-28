@@ -1,5 +1,7 @@
 package com.akshaykadam.pixelboard.extension.rambler;
 
+import com.akshaykadam.pixelboard.extension.bengalivoice.GboardBengaliVoiceRuntime;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -68,7 +70,25 @@ public final class GboardRambler1803StockPolicy {
     private GboardRambler1803StockPolicy() {
     }
 
+    /** Applies an explicit language route without altering unrelated feature/lifecycle flags. */
+    public static Object maybeForceLanguageRouteValue(
+            String flagName, Object originalResult, int languageRoute) {
+        if (AGENTIC_FEATURE_FLAGS.contains(flagName)
+                && originalResult instanceof Boolean
+                && languageRoute != GboardBengaliVoiceRuntime.INHERIT) {
+            return Boolean.valueOf(languageRoute == GboardBengaliVoiceRuntime.RAMBLER);
+        }
+        return originalResult;
+    }
+
     public static Object maybeForceStockRouteValue(String flagName, Object originalResult) {
+        int languageRoute = AGENTIC_FEATURE_FLAGS.contains(flagName)
+                ? GboardBengaliVoiceRuntime.activeRouteOverride() : GboardBengaliVoiceRuntime.INHERIT;
+        return maybeForceStockRouteValue(flagName, originalResult, languageRoute);
+    }
+
+    public static Object maybeForceStockRouteValue(
+            String flagName, Object originalResult, int languageRoute) {
         if (SHOW_RAMBLER_DICT_SETTINGS_FLAG.equals(flagName)) {
             return originalResult instanceof Boolean ? Boolean.TRUE : originalResult;
         }
@@ -92,9 +112,13 @@ public final class GboardRambler1803StockPolicy {
                     : originalResult;
         }
         if (AGENTIC_FEATURE_FLAGS.contains(flagName)) {
+            if (originalResult instanceof Boolean
+                    && languageRoute != GboardBengaliVoiceRuntime.INHERIT) {
+                return maybeForceLanguageRouteValue(flagName, originalResult, languageRoute);
+            }
             return originalResult instanceof Boolean
                             && GboardRambler1803OfficialSelectionRuntime
-                                    .shouldEnableAgenticDictation()
+                                    .shouldEnableAgenticDictation(languageRoute)
                     ? Boolean.TRUE
                     : originalResult;
         }

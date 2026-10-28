@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.akshaykadam.pixelboard.extension.rambler.GboardRambler1803StockPolicy;
+import com.akshaykadam.pixelboard.extension.bengalivoice.GboardBengaliVoiceRuntime;
 
 /**
  * PixelBoard runtime engine for Google Assistant / Gboard 18.0.3 Advanced Voice Typing.
@@ -49,14 +50,24 @@ public final class GboardAdvancedVoice1803Runtime {
     }
 
     public static Object afterFlagValue(Object receiver, Object stockResult) {
-        if (!GboardAdvancedVoice1803RuntimeSettings.isEnabled()) {
-            return stockResult;
-        }
         try {
             String flagName = readFlagName(receiver);
+            if (!GboardAdvancedVoice1803StockPolicy.isTargetFlagName(flagName)
+                    && !GboardRambler1803StockPolicy.isTargetFlagName(flagName)) {
+                return stockResult;
+            }
+            boolean advancedVoiceEnabled = GboardAdvancedVoice1803RuntimeSettings.isEnabled();
+            int languageRoute = GboardBengaliVoiceRuntime.activeRouteOverride();
+            if (!advancedVoiceEnabled && languageRoute == GboardBengaliVoiceRuntime.INHERIT) {
+                return stockResult;
+            }
+            if (!advancedVoiceEnabled && languageRoute == GboardBengaliVoiceRuntime.STANDARD) {
+                return GboardRambler1803StockPolicy.maybeForceLanguageRouteValue(
+                        flagName, stockResult, languageRoute);
+            }
             Object result = GboardAdvancedVoice1803StockPolicy.maybeForceStockFlag(
                     flagName, stockResult);
-            result = GboardRambler1803StockPolicy.maybeForceStockRouteValue(flagName, result);
+            result = GboardRambler1803StockPolicy.maybeForceStockRouteValue(flagName, result, languageRoute);
             if (Boolean.FALSE.equals(stockResult) && Boolean.TRUE.equals(result)) {
                 logInfo("forced " + flagName + " via nxw#g()");
             }
@@ -68,7 +79,7 @@ public final class GboardAdvancedVoice1803Runtime {
     }
 
     public static boolean afterNativeReadiness(boolean stockResult) {
-        if (stockResult || !GboardAdvancedVoice1803RuntimeSettings.isEnabled()) {
+        if (stockResult || !isAdvancedRuntimeEnabledForCurrentInput()) {
             return stockResult;
         }
         try {
@@ -89,7 +100,7 @@ public final class GboardAdvancedVoice1803Runtime {
     }
 
     public static void afterInitialVoiceSettings(Context context, Object controller) {
-        if (!GboardAdvancedVoice1803RuntimeSettings.isEnabled()
+        if (!isAdvancedRuntimeEnabledForCurrentInput()
                 || context == null
                 || controller == null) {
             return;
@@ -125,7 +136,7 @@ public final class GboardAdvancedVoice1803Runtime {
      * dictation JNI library that was merged into the base APK.
      */
     public static boolean after1803NativeSplitReadiness(boolean stockResult) {
-        if (stockResult || !GboardAdvancedVoice1803RuntimeSettings.isEnabled()) {
+        if (stockResult || !isAdvancedRuntimeEnabledForCurrentInput()) {
             return stockResult;
         }
         try {
@@ -152,6 +163,11 @@ public final class GboardAdvancedVoice1803Runtime {
 
     public static Object includeExactZhTwSupportedLocale(Object stockLocales) {
         return stockLocales;
+    }
+
+    private static boolean isAdvancedRuntimeEnabledForCurrentInput() {
+        return GboardAdvancedVoice1803RuntimeSettings.isEnabled()
+                || GboardBengaliVoiceRuntime.activeRouteOverride() == GboardBengaliVoiceRuntime.RAMBLER;
     }
 
     public static boolean beforeFormatterConstructed(
