@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoiceFeatureMarkerPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.calculator.gboardCalculatorFeatureMarkerPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.calculator.gboardCalculatorLifecyclePatch
 import com.akshaykadam.pixelboard.patches.gboard.features.packagerename.applyGboardApplicationDisplayName
 import com.akshaykadam.pixelboard.patches.gboard.features.packagerename.gboardPackageRenameResourcePatch
 import com.akshaykadam.pixelboard.patches.gboard.features.packagerename.isValidGboardAppDisplayName
@@ -76,6 +77,7 @@ val gboardSimpleCalculatorPatch = gboardPublicResourcePatch(
     dependsOn(
         gboardPatchesSettingsPatch,
         gboardCalculatorFeatureMarkerPatch,
+        gboardCalculatorLifecyclePatch,
     )
 }
 

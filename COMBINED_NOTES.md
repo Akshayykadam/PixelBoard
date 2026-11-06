@@ -115,6 +115,25 @@ Gboard 18.5.3 APK, with all five patches enabled (Advanced Voice Typing,
 AI Writing Tools, Add Gboard Signature Bypass, Package Rename,
 Simple Calculator).
 
+## Build verification (2026-11-06, follow-up fix)
+
+The full Gradle build (`:patches:buildAndroid`) was run end to end and
+passes, including the project's own `verifyGboardCapabilityWiring` check.
+That check caught a wiring mistake in the first version of this port: the
+calculator's single contribution was registered in
+`GboardContributionWiring`, which the project reserves for
+multi-contribution features. The fix follows the project's own convention
+for single-contribution features (same as AI Writing Tools): the lifecycle
+patch is now a direct dependency of the public "Simple Calculator" patch in
+`GboardPatchRegistry`, and the calculator entry was removed from
+`GboardContributionWiring`.
+
+With the built `patches-1.4.0.mpp`, the bundled `tools/patcher.jar` was run
+against the stock Gboard 18.5.3.993608717 (arm64-v8a) base: all five
+patches applied successfully and the resulting APK (package
+`com.akshaykadam.pixelboard`) contains the calculator runtime classes.
+On-device behavior is still to be confirmed by installing that APK.
+
 ## Use it
 
 1. Install the patched APK (installs side-by-side as PixelBoard).
