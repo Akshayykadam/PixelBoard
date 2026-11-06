@@ -1,6 +1,7 @@
 package com.akshaykadam.pixelboard.extension.calculator;
 
 import android.content.Context;
+import android.os.Build;
 import android.content.SharedPreferences;
 import android.view.View;
 
@@ -37,6 +38,25 @@ public final class GboardCalculatorLifecycleRuntime {
         }
         Context applicationContext = context.getApplicationContext();
         Context lookupContext = applicationContext != null ? applicationContext : context;
+        // The settings UI stores preferences in device-protected storage
+        // (see GboardPatchesSettings.preferences); read from the same place,
+        // otherwise the toggle value is never seen here.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            try {
+                if (!lookupContext.isDeviceProtectedStorage()) {
+                    Context deContext = lookupContext.createDeviceProtectedStorageContext();
+                    if (deContext != null) {
+                        try {
+                            deContext.moveSharedPreferencesFrom(lookupContext, PREF_FILE);
+                        } catch (Throwable ignored) {
+                            // May fail while credential storage is locked.
+                        }
+                        lookupContext = deContext;
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+        }
         SharedPreferences preferences = lookupContext.getSharedPreferences(
                 PREF_FILE, Context.MODE_PRIVATE);
         Object raw = preferences.getAll().get(PREF_KEY_ENABLED);

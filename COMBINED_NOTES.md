@@ -133,12 +133,44 @@ against the stock Gboard 18.5.3.993608717 (arm64-v8a) base: all five
 patches applied successfully and the resulting APK (package
 `com.akshaykadam.pixelboard`) contains the calculator runtime classes.
 On-device behavior is still to be confirmed by installing that APK.
+A follow-up build after the first on-device report (no calculator entry
+visible in Advanced settings) confirmed the diagnosis above: the shipped
+bytecode now shows six toggle rows on the root screen, the sixth wired to
+`GboardCalculatorSettings.readEnabled` / `writeEnabled` — the same
+preference the lifecycle runtime reads.
+
+A second on-device follow-up fixed the calculator never evaluating
+despite the toggle being on: PixelBoard's settings layer stores
+preferences in device-protected storage
+(`GboardPatchesSettings.preferences`), while the ported lifecycle
+runtime originally read the same file name from credential storage — a
+different physical file that is always empty, so the IME always saw the
+feature as off. `GboardCalculatorLifecycleRuntime.readEnabled` now
+resolves the device-protected storage context the same way. After this
+fix the calculator is confirmed working on-device (toggle on, typing
+`9+9` shows the result above the keyboard).
+
+A second on-device report (toggle ON, still no result in WhatsApp) found
+a storage mismatch: PixelBoard's settings screens save switches in Android's
+device-protected storage, but the calculator runtime — ported from upstream,
+which deliberately avoids PixelBoard's shared settings code — read the
+same-named preferences file from regular credential storage, a different
+physical file that was always empty, so the engine always saw the
+calculator as OFF. `GboardCalculatorLifecycleRuntime.readEnabled` now
+resolves the device-protected storage context exactly like
+`GboardPatchesSettings` does (`createDeviceProtectedStorageContext` +
+`moveSharedPreferencesFrom`), so the toggle the user sees and the value the
+engine reads are the same file.
 
 ## Use it
 
 1. Install the patched APK (installs side-by-side as PixelBoard).
-2. Gboard settings → **Advanced settings** (PixelBoard) →
-   **Simple Calculator** → enable **Enable Simple Calculator**.
+2. PixelBoard settings → **Advanced settings** → turn on the
+   **Enable Simple Calculator** toggle in the Features list (it sits with
+   the AI Writing Tools / Advanced Voice Typing toggles). The toggle was
+   added to that root screen by this port: the settings-activity root
+   screen renders hardcoded toggles only and never lists registry
+   features, so a registry-only settings entry would be unreachable.
 3. Reopen the keyboard, type `2+3×4` in any app — `= 14` appears above the
    keyboard. Tap it to replace the expression; long-press to copy.
 4. Rambler: Gboard settings → Voice typing → select the Rambler/advanced
