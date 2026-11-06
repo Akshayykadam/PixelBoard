@@ -11,6 +11,8 @@ public final class GboardPatchesFeatureAvailability {
             "com.akshaykadam.pixelboard.feature.ai_writing_tools";
     public static final String FEATURE_ADVANCED_VOICE_TYPING =
             "com.akshaykadam.pixelboard.feature.advanced_voice_typing";
+    public static final String FEATURE_SIMPLE_CALCULATOR =
+            "com.akshaykadam.pixelboard.feature.simple_calculator";
 
     private static final String TAG = "GboardPatches";
 

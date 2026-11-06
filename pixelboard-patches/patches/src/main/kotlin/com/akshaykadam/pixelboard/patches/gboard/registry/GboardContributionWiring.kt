@@ -5,6 +5,7 @@ import com.akshaykadam.pixelboard.patches.shared.ResourcePatchBuilder
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoice1803ZhTwPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoice1831LanguageDownloadGuardPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoiceFlagValuePatch
+import com.akshaykadam.pixelboard.patches.gboard.features.calculator.gboardCalculatorLifecyclePatch
 import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRambler1803OfficialSelectorPatch
 
 internal class GboardContributionWiringUnit(
@@ -26,6 +27,11 @@ internal object GboardContributionWiring {
                     gboardAdvancedVoice1831LanguageDownloadGuardPatch,
                     gboardRambler1803OfficialSelectorPatch,
                 )
+            },
+        ),
+        "simple_calculator" to listOf(
+            unit("simple_calculator.lifecycle") {
+                arrayOf(gboardCalculatorLifecyclePatch)
             },
         ),
     )

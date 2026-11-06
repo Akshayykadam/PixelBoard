@@ -1143,4 +1143,52 @@
         <translation locale="en">Build Information</translation>
         <translation locale="ar">معلومات البناء</translation>
     </string>
+    <string name="gboard_patches_calculator_title">
+        <translation locale="en">Simple Calculator</translation>
+        <translation locale="zh-Hant">簡易計算機</translation>
+    </string>
+    <string name="gboard_patches_calculator_summary">
+        <translation locale="en">Type an arithmetic expression in any text field. Its result appears in Gboard’s suggestion row and can replace the expression with one tap.</translation>
+        <translation locale="zh-Hant">直接在任何文字欄輸入算式，答案會出現在 Gboard 推薦列；點一下即可用答案取代算式。</translation>
+    </string>
+    <string name="gboard_patches_calculator_enable_title">
+        <translation locale="en">Enable Simple Calculator</translation>
+        <translation locale="zh-Hant">啟用簡易計算機</translation>
+    </string>
+    <string name="gboard_patches_calculator_enable_summary">
+        <translation locale="en">Shows results for complete arithmetic expressions the next time the keyboard opens.</translation>
+        <translation locale="zh-Hant">下一次開啟鍵盤時，為完整四則算式顯示答案推薦。</translation>
+    </string>
+    <string name="gboard_patches_calculator_section_feature">
+        <translation locale="en">Feature</translation>
+        <translation locale="zh-Hant">功能</translation>
+    </string>
+    <string name="gboard_patches_calculator_section_usage">
+        <translation locale="en">Usage</translation>
+        <translation locale="zh-Hant">使用方式</translation>
+    </string>
+    <string name="gboard_patches_calculator_usage_title">
+        <translation locale="en">Inline result suggestion</translation>
+        <translation locale="zh-Hant">行內答案推薦</translation>
+    </string>
+    <string name="gboard_patches_calculator_usage_summary">
+        <translation locale="en">Type a complete expression such as 2+3×4 in the current app. Tap the result above the keyboard to replace the expression with 14, or long-press the result to copy it.</translation>
+        <translation locale="zh-Hant">在目前 App 輸入完整算式，例如 2+3×4。點選鍵盤上方的 14 會以答案取代算式；長按答案則可直接複製。</translation>
+    </string>
+    <string name="gboard_patches_calculator_limits_title">
+        <translation locale="en">Supported range and limits</translation>
+        <translation locale="zh-Hant">支援範圍與限制</translation>
+    </string>
+    <string name="gboard_patches_calculator_limits_summary">
+        <translation locale="en">Expression length: Up to 128 characters; rejected before normalization.\nBinary operations: Up to 63.\nParentheses depth: Up to 16 levels.\nInternal precision: 16 significant digits, HALF_EVEN.\nDisplay precision: Up to 3 decimal places, HALF_UP.\nLarge numbers: Scientific notation from 10¹².\nOperators: + - * / − × ÷\nParentheses: Supports () and full-width （） from Traditional Chinese Gboard.</translation>
+        <translation locale="zh-Hant">算式長度：最多 128 字元，正規化前即拒絕\n二元運算：最多 63 次\n括號深度：最多 16 層\n內部精度：16 位有效數字，HALF_EVEN\n顯示精度：最多小數 3 位，HALF_UP\n大數顯示：達 10¹² 改用科學記號\n運算符號：+ - * / − × ÷\n括號：支援 () 與繁中 Gboard 實際輸出的 （）</translation>
+    </string>
+    <string name="gboard_patches_calculator_error_title">
+        <translation locale="en">Calculator setting unavailable</translation>
+        <translation locale="zh-Hant">計算機設定無法使用</translation>
+    </string>
+    <string name="gboard_patches_calculator_error_summary">
+        <translation locale="en">The calculator settings screen failed to load. Reopen Gboard settings and try again.</translation>
+        <translation locale="zh-Hant">計算機設定畫面載入失敗。請重新開啟 Gboard 設定再試一次。</translation>
+    </string>
 </settings-text>

@@ -15,6 +15,7 @@ import com.akshaykadam.pixelboard.patches.shared.stringOption
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoiceFeatureMarkerPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.calculator.gboardCalculatorFeatureMarkerPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.packagerename.applyGboardApplicationDisplayName
 import com.akshaykadam.pixelboard.patches.gboard.features.packagerename.gboardPackageRenameResourcePatch
 import com.akshaykadam.pixelboard.patches.gboard.features.packagerename.isValidGboardAppDisplayName
@@ -60,6 +61,21 @@ val gboardAdvancedVoiceTypingPatch = gboardPublicResourcePatch(
     dependsOn(
         gboardPatchesSettingsPatch,
         gboardAdvancedVoiceFeatureMarkerPatch,
+    )
+}
+
+val gboardSimpleCalculatorPatch = gboardPublicResourcePatch(
+    featureId = "simple_calculator",
+    name = "Simple Calculator",
+    description = "Show the result of arithmetic expressions typed in any text " +
+        "field in Gboard's suggestion row; tap it to replace the expression.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_GBOARD)
+
+    dependsOn(
+        gboardPatchesSettingsPatch,
+        gboardCalculatorFeatureMarkerPatch,
     )
 }
 
@@ -140,6 +156,7 @@ object GboardPublishedPatchCatalog {
     val publishedRegistrations: Set<Patch<*>> = linkedSetOf(
         gboardAdvancedVoiceTypingPatch,
         gboardAiWritingToolsPatch,
+        gboardSimpleCalculatorPatch,
         gboardSignatureBypassPatch,
         gboardPackageRenamePatch,
     ).filterTo(linkedSetOf()) { patch -> patch.name != null }
