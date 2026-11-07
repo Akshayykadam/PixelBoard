@@ -81,6 +81,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.VideoView;
 import com.akshaykadam.pixelboard.extension.advancedvoice.GboardAdvancedVoiceSettings;
+import com.akshaykadam.pixelboard.extension.calculator.GboardCalculatorSettings;
 import com.akshaykadam.pixelboard.extension.writingtools.GboardAiWritingToolsSettings;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -3094,6 +3095,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 || GboardAiWritingToolsSettings.readAllKeyboardsEnabled(writingPrefs);
         boolean advancedVoiceEnabled = voicePrefs == null
                 || GboardAdvancedVoiceSettings.readEnabled(voicePrefs);
+        boolean simpleCalculatorEnabled =
+                GboardCalculatorSettings.readEnabled(context);
         boolean roundedKeysEnabled = patchesPrefs == null
                 || GboardRoundedKeysSettings.readEnabled(patchesPrefs);
         boolean frequentEmojisEnabled = patchesPrefs != null
@@ -3134,6 +3137,15 @@ public final class GboardPatchesSettingsActivity extends Activity
                     if (voicePrefs != null) {
                         GboardAdvancedVoiceSettings.writeEnabled(voicePrefs, value);
                     }
+                }));
+
+        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+                GboardSettingsText.get(context, R.string.gboard_patches_calculator_enable_title),
+                GboardSettingsText.get(context, R.string.gboard_patches_calculator_enable_summary),
+                true,
+                simpleCalculatorEnabled,
+                value -> {
+                    GboardCalculatorSettings.writeEnabled(context, value);
                 }));
 
         rows.add(new GboardPatchesSettingsContract.ToggleRow(
