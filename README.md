@@ -190,7 +190,7 @@ On supported devices (such as Google Pixel 8 Pro / 9 series), choose your prefer
 
 - **Inline Math Results**: Type a complete arithmetic expression (e.g. `2+3×4`) in any text field and the result appears above the keyboard — tap it to replace the expression with the answer, or long-press it to copy the result.
 - **Safe Evaluator**: Purpose-built expression engine (no `eval`): up to 128 characters, 63 binary operations, 16 parenthesis levels, 16 significant digits of internal precision.
-- **Enable It**: PixelBoard Settings (in Gboard settings) > **Simple Calculator** > turn on **Enable Simple Calculator**, then reopen the keyboard.
+- **Enable It**: PixelBoard Settings > **Advanced settings** > turn on the **Enable Simple Calculator** toggle in the Features list, then reopen the keyboard.
 - **Version-Tolerant**: The lifecycle hook resolves Gboard's IME service by its framework signatures, so it keeps working across Gboard 18.0.3 – 18.5.3+ instead of being pinned to one build.
 
 ## How to Enable Rambler Voice Typing
