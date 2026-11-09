@@ -36,6 +36,17 @@ def find_sdk_tool(tool_name):
 
     return None
 
+PRESERVED_XML_PATTERNS = {
+    'AndroidManifest.xml',
+    'res/xml/settings.xml',
+    'res/xml/settings_legacy.xml',
+    'res/xml/spell_checker.xml',
+    'res/xml/setting_expression.xml',
+    'res/xml/setting_clipboard.xml',
+    'res/drawable/drawable_0x7f080516.xml',
+    'res/drawable/drawable_0x7f08054d.xml',
+}
+
 def sanitize_apk(target_apk, input_apk, keystore_path):
     if not os.path.isfile(target_apk):
         print(f"Target APK does not exist: {target_apk}")
@@ -44,33 +55,34 @@ def sanitize_apk(target_apk, input_apk, keystore_path):
         print(f"Input APK does not exist: {input_apk}")
         sys.exit(1)
 
-    print(f"🔍 Checking {target_apk} for corrupted resource entries...")
-    corrupted_entries = {}
+    print(f"🔍 Checking {target_apk} against {input_apk} for stock XML restoration...")
+    entries_to_restore = {}
     with zipfile.ZipFile(input_apk, 'r') as zin, zipfile.ZipFile(target_apk, 'r') as zout:
         in_names = set(zin.namelist())
         for name in zout.namelist():
             if name.endswith('.xml'):
-                data = zout.read(name)
-                # Check for corrupted ?attr/ or escaped \?123
-                if b'?attr/' in data or rb'\?123' in data:
-                    if name in in_names:
-                        in_data = zin.read(name)
-                        if b'?attr/' not in in_data and rb'\?123' not in in_data:
-                            corrupted_entries[name] = in_data
-                            print(f"  ⚡ Corrupted resource detected: {name} (will restore from input APK)")
+                # Always preserve intentionally modified or newly added PixelBoard XML resources
+                if name in PRESERVED_XML_PATTERNS or name not in in_names:
+                    continue
 
-    if not corrupted_entries:
-        print("✅ No corrupted XML resources found in APK.")
+                out_data = zout.read(name)
+                in_data = zin.read(name)
+                # If Morphe's ARSCLib re-encoded or altered the pristine binary XML, restore it
+                if out_data != in_data:
+                    entries_to_restore[name] = in_data
+
+    if not entries_to_restore:
+        print("✅ All stock XML resources in APK are already pristine.")
         return
 
-    print(f"🔧 Restoring {len(corrupted_entries)} clean XML resource(s) from input APK...")
+    print(f"🔧 Restoring {len(entries_to_restore)} pristine stock XML resource(s) from input APK...")
     temp_apk = target_apk + ".tmp.apk"
     aligned_apk = target_apk + ".aligned.apk"
 
     with zipfile.ZipFile(target_apk, 'r') as zout, zipfile.ZipFile(temp_apk, 'w') as znew:
         for item in zout.infolist():
-            if item.filename in corrupted_entries:
-                znew.writestr(item, corrupted_entries[item.filename])
+            if item.filename in entries_to_restore:
+                znew.writestr(item, entries_to_restore[item.filename])
             else:
                 znew.writestr(item, zout.read(item.filename))
 

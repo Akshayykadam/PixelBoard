@@ -14,15 +14,13 @@ public final class GboardKeyboardRuntime {
             return text;
         }
         String s = text.toString();
-        if ("?attr/".equals(s)) {
-            return "?";
+        String result = s;
+        if (result.contains("?attr/")) {
+            result = result.replace("?attr/", "?");
         }
-        if (s.startsWith("?attr/")) {
-            s = "?" + s.substring(6);
+        if (result.indexOf('\\') != -1 && (result.contains("\\?") || result.contains("\\\u061f"))) {
+            result = result.replaceAll("\\\\+(\\?|\\u061f)", "$1");
         }
-        if (s.indexOf('\\') != -1 && (s.contains("\\?") || s.contains("\\\u061f"))) {
-            return s.replaceAll("\\\\+(\\?|\\u061f)", "$1");
-        }
-        return s;
+        return result.equals(s) ? text : result;
     }
 }

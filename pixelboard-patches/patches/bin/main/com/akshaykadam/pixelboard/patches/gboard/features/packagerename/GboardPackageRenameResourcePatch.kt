@@ -367,8 +367,8 @@ internal fun applyGboardPackageRename(
             versionCodeAttr.value = "176004240"
         } else if (currentCode == 176027078L) {
             versionCodeAttr.value = "176027079"
-        } else if (currentCode == 176071766L) {
-            versionCodeAttr.value = "176071767"
+        } else if (currentCode in 176071766L..176071767L) {
+            versionCodeAttr.value = "176071768"
         }
     }
 

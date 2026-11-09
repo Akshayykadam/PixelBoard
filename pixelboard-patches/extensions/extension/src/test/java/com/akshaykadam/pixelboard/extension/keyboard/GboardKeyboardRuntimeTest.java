@@ -20,6 +20,8 @@ public class GboardKeyboardRuntimeTest {
     public void testSanitizeKeyLabelWithCorruptedThemeAttribute() {
         Assert.assertEquals("?", GboardKeyboardRuntime.sanitizeKeyLabel("?attr/"));
         Assert.assertEquals("?foo", GboardKeyboardRuntime.sanitizeKeyLabel("?attr/foo"));
+        Assert.assertEquals("?,¿", GboardKeyboardRuntime.sanitizeKeyLabel("?attr/,¿"));
+        Assert.assertEquals("? ", GboardKeyboardRuntime.sanitizeKeyLabel("?attr/ "));
     }
 
     @Test
@@ -31,5 +33,8 @@ public class GboardKeyboardRuntimeTest {
         Assert.assertEquals("?123", GboardKeyboardRuntime.sanitizeKeyLabel("?123"));
         Assert.assertEquals("123", GboardKeyboardRuntime.sanitizeKeyLabel("123"));
         Assert.assertEquals("Space", GboardKeyboardRuntime.sanitizeKeyLabel("Space"));
+
+        String unmodified = "Regular Text";
+        Assert.assertSame(unmodified, GboardKeyboardRuntime.sanitizeKeyLabel(unmodified));
     }
 }
