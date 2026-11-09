@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.akshaykadam.pixelboard.extension.settings.GboardEmojiSettings;
+import com.akshaykadam.pixelboard.extension.settings.GboardExpressiveLookSettings;
 import com.akshaykadam.pixelboard.extension.settings.GboardGoogleSansSettings;
 import com.akshaykadam.pixelboard.extension.settings.GboardRoundedKeysSettings;
 import com.akshaykadam.pixelboard.extension.settings.GboardUndoSettings;
@@ -634,6 +635,18 @@ public final class GboardAiWritingToolsRuntime {
             if (GboardGoogleSansSettings.isGoogleSansPhenotypeFlag(flagName)) {
                 boolean enabled = GboardGoogleSansSettings.isEnabled(context);
                 Object target = GboardGoogleSansSettings.computeOverrideValue(flagName, originalResult, enabled);
+                if (target != null && !target.equals(originalResult)) {
+                    logLimited(FLAG_LOG_COUNT,
+                            "flag=" + flagName
+                                    + ", original=" + describe(originalResult)
+                                    + ", enforced=" + describe(target));
+                }
+                return target;
+            }
+            if (GboardExpressiveLookSettings.isExpressiveLookPhenotypeFlag(flagName)) {
+                boolean enabled = GboardExpressiveLookSettings.isEnabled(context);
+                Object target = GboardExpressiveLookSettings.computeOverrideValue(
+                        flagName, originalResult, enabled);
                 if (target != null && !target.equals(originalResult)) {
                     logLimited(FLAG_LOG_COUNT,
                             "flag=" + flagName
