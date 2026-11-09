@@ -3,6 +3,7 @@ package com.akshaykadam.pixelboard.patches.gboard.features.clipboard
 import com.akshaykadam.pixelboard.patches.gboard.shared.GboardMethodTarget
 import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrNull
 import com.akshaykadam.pixelboard.patches.gboard.shared.gboardPatchesExtensionCarrierPatch
+import com.akshaykadam.pixelboard.patches.gboard.shared.invokeRegisters
 import com.akshaykadam.pixelboard.patches.gboard.shared.isMethodReference
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeAbiCatalog
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeCallEmitter
@@ -10,6 +11,7 @@ import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeCallId
 import com.akshaykadam.pixelboard.patches.shared.Constants.COMPATIBILITY_GBOARD
 import com.akshaykadam.pixelboard.patches.shared.addInstructions
 import com.akshaykadam.pixelboard.patches.shared.bytecodePatch
+import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
 import com.android.tools.smali.dexlib2.iface.reference.TypeReference
 
@@ -29,6 +31,15 @@ private val clipboardConfigTargets = listOf(
         parameterTypes = listOf(
             "Landroid/content/Context;",
             "Lquo;",
+        ),
+        returnType = "V",
+    ),
+    GboardMethodTarget(
+        classType = "Leyw;",
+        name = "b",
+        parameterTypes = listOf(
+            "Landroid/content/Context;",
+            "Lqvk;",
         ),
         returnType = "V",
     ),
@@ -62,9 +73,11 @@ internal val gboardClipboardHistorySliderPatch = bytecodePatch(
             instructions[index].isMethodReference("Landroidx/preference/Preference;->d()V")
         } ?: return@execute
 
+        val prefRegister = instructions[notifyChangedIndex].invokeRegisters("Landroidx/preference/Preference;->d()V")?.firstOrNull() ?: return@execute
+        val contextRegister = if (AccessFlags.STATIC.isSet(method.accessFlags)) "p0" else "p1"
         method.addInstructions(
             notifyChangedIndex + 1,
-            RuntimeCallEmitter.invoke(call, "p0, p1")
+            RuntimeCallEmitter.invoke(call, "v$prefRegister, $contextRegister")
         )
     }
 }

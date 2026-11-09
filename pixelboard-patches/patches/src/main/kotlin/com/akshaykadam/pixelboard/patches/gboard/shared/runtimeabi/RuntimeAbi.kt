@@ -27,6 +27,8 @@ internal enum class RuntimeCallId(internal val encodedAbi: String) {
     FEATURES_MENU_ACCESSIBILITY_ON_INFLATE("Lcom/akshaykadam/pixelboard/extension/accessibility/GboardFeaturesMenuAccessibilityRuntime;->onAccessPointsPanelInflated(Landroid/view/View;)V"),
     FEATURES_MENU_ACCESSIBILITY_ON_VISIBILITY_CHANGED("Lcom/akshaykadam/pixelboard/extension/accessibility/GboardFeaturesMenuAccessibilityRuntime;->onAccessPointsPanelVisibilityChanged(Landroid/view/View;)V"),
     CLIPBOARD_HISTORY_RUNTIME_CONFIGURE_SLIDER("Lcom/akshaykadam/pixelboard/extension/clipboard/GboardClipboardHistoryRuntime;->configureClipboardHistorySlider(Ljava/lang/Object;Landroid/content/Context;)V"),
+    CLIPBOARD_RETENTION_TEXT_RUNTIME_RESOLVE_TEXT("Lcom/akshaykadam/pixelboard/extension/clipboard/GboardClipboardRetentionTextRuntime;->resolveText(I)I"),
+    CLIPBOARD_RETENTION_TEXT_RUNTIME_APPLY_INTRO_CARD_TEXT("Lcom/akshaykadam/pixelboard/extension/clipboard/GboardClipboardRetentionTextRuntime;->applyIntroCardText(Landroid/view/View;)V"),
     RAMBLER_DICTATION_RUNTIME_FILTER_VOICE_TEXT("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerDictationRuntime;->filterVoiceText(Ljava/lang/Object;Ljava/lang/Object;)V"),
     RAMBLER_MINIMIZE_KEY_RUNTIME_PLACE_MINIMIZE_KEY("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerMinimizeKeyRuntime;->placeMinimizeKey()I"),
     RAMBLER_MINIMIZE_KEY_RUNTIME_CLEAR_MINIMIZE_KEY("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerMinimizeKeyRuntime;->clearMinimizeKey()I"),

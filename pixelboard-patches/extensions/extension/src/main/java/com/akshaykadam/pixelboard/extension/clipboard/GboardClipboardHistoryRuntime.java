@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
  * {@code setting_clipboard.xml} with discrete retention choices:</p>
  * <ol>
  *   <li>1 hour ("1")</li>
- *   <li>24 hours (Current maximum) ("24")</li>
+ *   <li>24 hours ("24")</li>
  *   <li>7 days ("168")</li>
  *   <li>30 days ("720")</li>
  *   <li>Never (Unlimited / Manual deletion only) ("876000", 100 years)</li>
@@ -32,7 +32,7 @@ public final class GboardClipboardHistoryRuntime {
 
     public static final CharSequence[] RETENTION_LABELS = new CharSequence[] {
             "1 hour",
-            "24 hours (Current maximum)",
+            "24 hours",
             "7 days",
             "30 days",
             "Never (Unlimited / Manual deletion only)"
@@ -46,7 +46,19 @@ public final class GboardClipboardHistoryRuntime {
             GboardClipboardHistorySettings.DURATION_NEVER
     };
 
+    /** Slider position of {@link GboardClipboardHistorySettings#DEFAULT_DURATION} (24 hours). */
+    static final int DEFAULT_INDEX = indexOf(GboardClipboardHistorySettings.DEFAULT_DURATION);
+
     private GboardClipboardHistoryRuntime() {
+    }
+
+    private static int indexOf(String value) {
+        for (int i = 0; i < RETENTION_VALUES.length; i++) {
+            if (RETENTION_VALUES[i].equals(value)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     /**
@@ -72,10 +84,17 @@ public final class GboardClipboardHistoryRuntime {
                 lField.set(preference, RETENTION_VALUES.clone());
             }
 
+            // "Use default" moves the slider to P, which Gboard reads from its own XML: 1 hour.
+            Field pField = findField(preference.getClass(), "P");
+            if (pField != null) {
+                pField.setAccessible(true);
+                pField.setInt(preference, DEFAULT_INDEX);
+            }
+
             int maxIndex = RETENTION_VALUES.length - 1; // 4
 
-            // Determine target index from currently persisted string or fallback to index 1 ("24" / 24 hours)
-            int targetIndex = 1;
+            // Determine target index from currently persisted string or fall back to the default (24 hours)
+            int targetIndex = DEFAULT_INDEX;
             try {
                 Method wMethod = findMethod(preference.getClass(), "w", String.class);
                 if (wMethod != null) {

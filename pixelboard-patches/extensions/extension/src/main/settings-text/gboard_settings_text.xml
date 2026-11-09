@@ -1012,8 +1012,8 @@
         <translation locale="ar">ساعة واحدة</translation>
     </string>
     <string name="gboard_patches_clipboard_history_duration_24h">
-        <translation locale="en">24 hours (Current maximum)</translation>
-        <translation locale="ar">24 ساعة (الحد الأقصى الحالي)</translation>
+        <translation locale="en">24 hours</translation>
+        <translation locale="ar">24 ساعة</translation>
     </string>
     <string name="gboard_patches_clipboard_history_duration_7d">
         <translation locale="en">7 days</translation>
