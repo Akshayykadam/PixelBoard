@@ -33,6 +33,7 @@ private const val SIGNATURE_UTILS_CLASS_1831 = "Lajpz;"
 private const val SIGNATURE_UTILS_CLASS_1831_RELEASE = "Lrvl;"
 private const val SIGNATURE_UTILS_CLASS_1841_RELEASE = "Lryi;"
 private const val SIGNATURE_UTILS_CLASS_1853_RELEASE = "Lsfr;"
+private const val SIGNATURE_UTILS_CLASS_1863_RELEASE = "Lrzu;"
 
 internal val gboardSignatureBypassBytecodePatch = bytecodePatch(
     description = "Force bypass Gboard signature whitelist checks."
@@ -47,6 +48,7 @@ internal val gboardSignatureBypassBytecodePatch = bytecodePatch(
 context(context: BytecodePatchContext)
 private fun injectSignatureBypass() = with(context) {
     val candidates = listOf(
+        SIGNATURE_UTILS_CLASS_1863_RELEASE,
         SIGNATURE_UTILS_CLASS_1853_RELEASE,
         SIGNATURE_UTILS_CLASS_1841_RELEASE,
         SIGNATURE_UTILS_CLASS_1831_RELEASE,
@@ -93,20 +95,38 @@ private fun MutableMethod.classifyGboardSignatureBypass(): VerifiedTransformatio
         "Unexpected register count in $definingClass->$name"
     }
 
+    val targetReturnRegisters = when (definingClass) {
+        SIGNATURE_UTILS_CLASS_1863_RELEASE -> TARGET_RETURN_REGISTERS_1863_RELEASE
+        else -> TARGET_RETURN_REGISTERS
+    }
+    val targetBaselineLiterals = when (definingClass) {
+        SIGNATURE_UTILS_CLASS_1863_RELEASE -> TARGET_BASELINE_LITERALS_1863_RELEASE
+        else -> TARGET_BASELINE_LITERALS
+    }
+    val targetStockOneLiteralCount = when (definingClass) {
+        SIGNATURE_UTILS_CLASS_1863_RELEASE -> TARGET_STOCK_ONE_LITERAL_COUNT_1863_RELEASE
+        else -> TARGET_STOCK_ONE_LITERAL_COUNT
+    }
+    val targetCompletedOneLiteralCount = when (definingClass) {
+        SIGNATURE_UTILS_CLASS_1863_RELEASE -> TARGET_COMPLETED_ONE_LITERAL_COUNT_1863_RELEASE
+        else -> TARGET_COMPLETED_ONE_LITERAL_COUNT
+    }
+
     val returnIndices = instructions.indices.filter { index ->
         instructions[index].isOpcode("RETURN")
     }
-    check(returnIndices.size == TARGET_RETURN_REGISTERS.size) {
-        "Expected three normal returns in $definingClass->$name"
+    check(returnIndices.size == targetReturnRegisters.size) {
+        "Expected ${targetReturnRegisters.size} normal return(s) in $definingClass->$name, found ${returnIndices.size}"
     }
     val returnRegisters = returnIndices.map { returnIndex ->
         (instructions[returnIndex] as? OneRegisterInstruction)?.registerA
             ?: error("RETURN at $returnIndex has no register")
     }
-    check(returnRegisters == TARGET_RETURN_REGISTERS) {
+    check(returnRegisters == targetReturnRegisters) {
         "Unexpected normal return registers in $definingClass->$name"
     }
     val digestMethod = when (definingClass) {
+        SIGNATURE_UTILS_CLASS_1863_RELEASE -> DIGEST_METHOD_DESCRIPTOR_1863_RELEASE
         SIGNATURE_UTILS_CLASS_1853_RELEASE -> DIGEST_METHOD_DESCRIPTOR_1853_RELEASE
         SIGNATURE_UTILS_CLASS_1841_RELEASE -> DIGEST_METHOD_DESCRIPTOR_1841_RELEASE
         SIGNATURE_UTILS_CLASS_1831_RELEASE -> DIGEST_METHOD_DESCRIPTOR_1831_RELEASE
@@ -114,6 +134,7 @@ private fun MutableMethod.classifyGboardSignatureBypass(): VerifiedTransformatio
         else -> DIGEST_METHOD_DESCRIPTOR
     }
     val targetFields = when (definingClass) {
+        SIGNATURE_UTILS_CLASS_1863_RELEASE -> TARGET_FIELD_DESCRIPTORS_1863_RELEASE
         SIGNATURE_UTILS_CLASS_1853_RELEASE -> TARGET_FIELD_DESCRIPTORS_1853_RELEASE
         SIGNATURE_UTILS_CLASS_1841_RELEASE -> TARGET_FIELD_DESCRIPTORS_1841_RELEASE
         SIGNATURE_UTILS_CLASS_1831_RELEASE -> TARGET_FIELD_DESCRIPTORS_1831_RELEASE
@@ -131,7 +152,7 @@ private fun MutableMethod.classifyGboardSignatureBypass(): VerifiedTransformatio
             "Expected exact field $descriptor in $definingClass->$name"
         }
     }
-    TARGET_BASELINE_LITERALS.forEach { expected ->
+    targetBaselineLiterals.forEach { expected ->
         check(instructions.any { instruction -> instruction.matchesLiteral(expected) }) {
             "Expected exact literal shape $expected in $definingClass->$name; " +
                 "actual=${instructions.mapNotNull { instruction -> instruction.literalShape() }}"
@@ -148,10 +169,10 @@ private fun MutableMethod.classifyGboardSignatureBypass(): VerifiedTransformatio
     }
     return when {
         completedReturns == returnIndices.size &&
-            oneLiteralCount == TARGET_COMPLETED_ONE_LITERAL_COUNT ->
+            oneLiteralCount == targetCompletedOneLiteralCount ->
             VerifiedTransformationState.PATCHED
         completedReturns == 0 &&
-            oneLiteralCount == TARGET_STOCK_ONE_LITERAL_COUNT ->
+            oneLiteralCount == targetStockOneLiteralCount ->
             VerifiedTransformationState.STOCK
         else -> VerifiedTransformationState.MALFORMED
     }
@@ -178,7 +199,8 @@ private fun MutableMethod.isExactGboardSignatureBypassTarget(): Boolean =
         definingClass == SIGNATURE_UTILS_CLASS_1831 ||
         definingClass == SIGNATURE_UTILS_CLASS_1831_RELEASE ||
         definingClass == SIGNATURE_UTILS_CLASS_1841_RELEASE ||
-        definingClass == SIGNATURE_UTILS_CLASS_1853_RELEASE) &&
+        definingClass == SIGNATURE_UTILS_CLASS_1853_RELEASE ||
+        definingClass == SIGNATURE_UTILS_CLASS_1863_RELEASE) &&
         name == SIGNATURE_CHECK_METHOD_NAME &&
         returnType == "Z" &&
         parameterTypes == SIGNATURE_CHECK_PARAMETERS &&
@@ -222,6 +244,8 @@ private const val DIGEST_METHOD_DESCRIPTOR_1841_RELEASE =
     "Lryi;->c(Landroid/content/Context;Ljava/lang/String;)[B"
 private const val DIGEST_METHOD_DESCRIPTOR_1853_RELEASE =
     "Lsfr;->c(Landroid/content/Context;Ljava/lang/String;)[B"
+private const val DIGEST_METHOD_DESCRIPTOR_1863_RELEASE =
+    "Lrzu;->c(Landroid/content/Context;Ljava/lang/String;)[B"
 private const val ARRAYS_EQUALS_DESCRIPTOR = "Ljava/util/Arrays;->equals([B[B)Z"
 private val TARGET_FIELD_DESCRIPTORS = listOf(
     "Lrpv;->e:[B",
@@ -253,15 +277,33 @@ private val TARGET_FIELD_DESCRIPTORS_1853_RELEASE = listOf(
     "Lsfr;->c:[B",
     "Lses;->b:Z",
 )
+private val TARGET_FIELD_DESCRIPTORS_1863_RELEASE = listOf(
+    "Lrzu;->e:[B",
+    "Lrzu;->c:[B",
+    "Lrzu;->d:[B",
+    "Lryv;->b:Z",
+)
 private val TARGET_BASELINE_LITERALS = listOf(
     LiteralShape(0, 3),
     LiteralShape(3, 0),
     LiteralShape(4, 1),
     LiteralShape(5, 2),
 )
+// 18.6.3: method refactored to loop-based with one return; literals (v0,3),(v3,0),(v4,1),(v5,2)
+private val TARGET_BASELINE_LITERALS_1863_RELEASE = listOf(
+    LiteralShape(0, 3),
+    LiteralShape(3, 0),
+    LiteralShape(4, 1),
+    LiteralShape(5, 2),
+)
 private val TARGET_RETURN_REGISTERS = listOf(6, 4, 3)
+// 18.6.3: single return at register 3 (loop-based method)
+private val TARGET_RETURN_REGISTERS_1863_RELEASE = listOf(3)
 private const val TARGET_REGISTER_COUNT = 8
 private const val TARGET_STOCK_ONE_LITERAL_COUNT = 1
 private const val TARGET_COMPLETED_ONE_LITERAL_COUNT = 4
+// 18.6.3: 1 const/4 #1 literal (v4,1) in stock; 2 after patching the single return
+private const val TARGET_STOCK_ONE_LITERAL_COUNT_1863_RELEASE = 1
+private const val TARGET_COMPLETED_ONE_LITERAL_COUNT_1863_RELEASE = 2
 private const val MAX_CONST_4_REGISTER = 15
 private val TARGET_ACCESS_FLAGS = AccessFlags.PUBLIC.value or AccessFlags.STATIC.value

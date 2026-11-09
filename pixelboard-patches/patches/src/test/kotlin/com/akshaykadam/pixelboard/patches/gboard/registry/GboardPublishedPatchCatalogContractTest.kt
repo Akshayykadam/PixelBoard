@@ -57,6 +57,7 @@ class GboardPublishedPatchCatalogContractTest {
                 "18.3.1.977415014-release-arm64-v8a",
                 "18.4.1.985164140-release-arm64-v8a",
                 "18.5.3.993608717-release-arm64-v8a",
+                "18.6.3.1002251336-release-arm64-v8a",
             ),
             aiWriting.getAsJsonObject("compatiblePackages")
                 .getAsJsonArray("com.google.android.inputmethod.latin")

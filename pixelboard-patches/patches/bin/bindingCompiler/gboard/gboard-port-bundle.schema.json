@@ -1,0 +1,262 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Akshayykadam/PixelBoard/schemas/gboard-port-bundle.schema.json",
+  "title": "Gboard port bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "contract_version",
+    "product_catalog",
+    "target_contract",
+    "features",
+    "validation",
+    "bundle_sha256"
+  ],
+  "properties": {
+    "format": { "const": "gboard-port-bundle.v1" },
+    "contract_version": { "const": "1.0.0" },
+    "product_catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "catalog_version", "sha256"],
+      "properties": {
+        "format": { "const": "gboard-port-product-catalog.v1" },
+        "catalog_version": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "target_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_version",
+        "profile_sha256",
+        "projection_sha256",
+        "target_version",
+        "target_app",
+        "artifact_identity",
+        "binding_exports"
+      ],
+      "properties": {
+        "profile_version": { "type": "string", "minLength": 1 },
+        "profile_sha256": { "$ref": "#/$defs/sha256" },
+        "projection_sha256": { "$ref": "#/$defs/sha256" },
+        "target_version": { "type": "string", "minLength": 1 },
+        "target_app": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "package_name", "patched_package_names"],
+          "properties": {
+            "id": { "const": "gboard" },
+            "package_name": { "type": "string", "minLength": 1 },
+            "patched_package_names": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "artifact_identity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["apk_file_type", "package_names", "signatures", "version_names"],
+          "properties": {
+            "apk_file_type": {
+              "enum": [
+                "APK",
+                "APK_REQUIRED",
+                "APKM",
+                "APKM_REQUIRED",
+                "APKS",
+                "APKS_REQUIRED",
+                "XAPK",
+                "XAPK_REQUIRED"
+              ]
+            },
+            "package_names": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "signatures": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/sha256" }
+            },
+            "version_names": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "binding_exports": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/bindingExport" }
+        }
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/feature" }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "errors"],
+      "properties": {
+        "status": { "enum": ["ready", "pending", "invalid"] },
+        "errors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/error" }
+        }
+      }
+    },
+    "bundle_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "bindingExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "family_id", "touchpoint_id", "required_shape_checks"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "family_id": { "type": "string", "minLength": 1 },
+        "touchpoint_id": { "type": "string", "minLength": 1 },
+        "required_shape_checks": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "contribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contribution_id",
+        "anchor_family_id",
+        "phase",
+        "order",
+        "required_bindings",
+        "runtime_calls"
+      ],
+      "properties": {
+        "contribution_id": { "type": "string", "minLength": 1 },
+        "anchor_family_id": { "type": "string", "minLength": 1 },
+        "phase": { "type": "string", "minLength": 1 },
+        "order": { "type": "integer", "minimum": 0 },
+        "required_bindings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "runtime_calls": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "feature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "feature_id",
+        "public_patch_name",
+        "feature_marker",
+        "depends_on_feature_ids",
+        "target_family_ids",
+        "contributions"
+      ],
+      "properties": {
+        "feature_id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "public_patch_name": { "type": "string", "minLength": 1 },
+        "feature_marker": {},
+        "capability_status": {
+          "enum": [
+            "pending-review",
+            "stock-complete",
+            "stock-partial",
+            "flag-only",
+            "anchor-required",
+            "retired",
+            "unsupported"
+          ]
+        },
+        "depends_on_feature_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "migration_scope": {
+          "type": "string",
+          "enum": ["version-sensitive", "generic"]
+        },
+        "consumer_files": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "target_family_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "contributions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/contribution" }
+        },
+        "admitted_contributions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contribution" }
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "feature_id", "subject", "message"],
+      "properties": {
+        "code": {
+          "enum": [
+            "catalog_contribution_conflict",
+            "catalog_consumer_file_invalid",
+            "catalog_consumer_files_empty",
+            "catalog_consumer_files_invalid",
+            "catalog_consumer_files_noncanonical",
+            "catalog_dependency_missing",
+            "catalog_duplicate_feature_id",
+            "catalog_duplicate_patch_name",
+            "catalog_format_unsupported",
+            "catalog_migration_scope_invalid",
+            "catalog_order_invalid",
+            "digest_mismatch",
+            "profile_capability_status_invalid",
+            "profile_binding_export_missing",
+            "profile_flag_only_contribution_missing",
+            "profile_product_inventory_drift",
+            "profile_product_inventory_duplicate",
+            "profile_product_inventory_missing",
+            "profile_product_inventory_unknown",
+            "profile_public_patch_missing",
+            "profile_public_patch_unknown",
+            "profile_target_family_missing",
+            "target_identity_mismatch"
+          ]
+        },
+        "feature_id": {},
+        "subject": {},
+        "message": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

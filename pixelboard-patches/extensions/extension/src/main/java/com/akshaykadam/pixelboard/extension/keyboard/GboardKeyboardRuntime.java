@@ -1,0 +1,28 @@
+package com.akshaykadam.pixelboard.extension.keyboard;
+
+public final class GboardKeyboardRuntime {
+    private GboardKeyboardRuntime() {}
+
+    /**
+     * Sanitizes softkey labels at runtime.
+     * Strips escaping backslashes from question marks (e.g. "\?123" -> "?123", "\\?123" -> "?123",
+     * "\123؟" -> "123؟") that arise from AAPT/ARSCLib XML attribute escaping or on-device layout caches,
+     * and recovers question mark keys corrupted into theme attribute placeholders (e.g. "?attr/" -> "?").
+     */
+    public static CharSequence sanitizeKeyLabel(CharSequence text) {
+        if (text == null || text.length() == 0) {
+            return text;
+        }
+        String s = text.toString();
+        if ("?attr/".equals(s)) {
+            return "?";
+        }
+        if (s.startsWith("?attr/")) {
+            s = "?" + s.substring(6);
+        }
+        if (s.indexOf('\\') != -1 && (s.contains("\\?") || s.contains("\\\u061f"))) {
+            return s.replaceAll("\\\\+(\\?|\\u061f)", "$1");
+        }
+        return s;
+    }
+}

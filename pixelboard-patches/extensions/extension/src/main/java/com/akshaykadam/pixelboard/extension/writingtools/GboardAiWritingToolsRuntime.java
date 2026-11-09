@@ -405,7 +405,9 @@ public final class GboardAiWritingToolsRuntime {
     private static final ThreadLocal<Integer> SETTINGS_CONTROLLER_SCOPE_DEPTH =
             new ThreadLocal<Integer>();
 
-    private static final java.util.concurrent.atomic.AtomicBoolean DEFAULT_PREFERENCES_INITIALIZED =
+    private static final java.util.concurrent.atomic.AtomicBoolean DPS_PREFERENCES_INITIALIZED =
+            new java.util.concurrent.atomic.AtomicBoolean(false);
+    private static final java.util.concurrent.atomic.AtomicBoolean CE_PREFERENCES_INITIALIZED =
             new java.util.concurrent.atomic.AtomicBoolean(false);
     private static volatile Context applicationContext;
 
@@ -941,18 +943,38 @@ public final class GboardAiWritingToolsRuntime {
     }
 
     private static void ensureDefaultPreferencesInitialized(Context context) {
-        if (context == null || !DEFAULT_PREFERENCES_INITIALIZED.compareAndSet(false, true)) {
+        if (context == null) {
             return;
         }
-        initializeDefaultPreferences(context);
-        try {
-            if (android.os.Build.VERSION.SDK_INT >= 24) {
+        if (android.os.Build.VERSION.SDK_INT >= 24 && !DPS_PREFERENCES_INITIALIZED.get()) {
+            try {
                 Context dpsContext = context.createDeviceProtectedStorageContext();
                 if (dpsContext != null) {
                     initializeDefaultPreferences(dpsContext);
+                    DPS_PREFERENCES_INITIALIZED.set(true);
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+        if (!CE_PREFERENCES_INITIALIZED.get()) {
+            boolean canAccessCe = true;
+            if (android.os.Build.VERSION.SDK_INT >= 24) {
+                try {
+                    android.os.UserManager um =
+                            (android.os.UserManager) context.getSystemService(Context.USER_SERVICE);
+                    if (um != null && !um.isUserUnlocked()) {
+                        canAccessCe = false;
+                    }
+                } catch (Throwable ignored) {
                 }
             }
-        } catch (Throwable ignored) {
+            if (canAccessCe) {
+                try {
+                    initializeDefaultPreferences(context);
+                    CE_PREFERENCES_INITIALIZED.set(true);
+                } catch (Throwable ignored) {
+                }
+            }
         }
     }
 

@@ -534,11 +534,18 @@ public final class GboardPatchesSettingsActivity extends Activity
                     label = new TextView(getContext());
                     label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
                     label.setTextColor(palette.textPrimary);
+                    label.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        label.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                    }
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                             0,
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             1f);
                     lp.leftMargin = dp(16);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        lp.setMarginStart(dp(16));
+                    }
                     label.setLayoutParams(lp);
                     row.addView(label);
                 }
@@ -771,6 +778,10 @@ public final class GboardPatchesSettingsActivity extends Activity
             messageView.setTextColor(palette.textSecondary);
             messageView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
             messageView.setLineSpacing(0f, 1.1f);
+            messageView.setGravity(Gravity.START);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                messageView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            }
             container.addView(messageView);
         }
 
@@ -1675,6 +1686,10 @@ public final class GboardPatchesSettingsActivity extends Activity
 
         contentColumn = new LinearLayout(this);
         contentColumn.setOrientation(LinearLayout.VERTICAL);
+        contentColumn.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            contentColumn.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         contentColumn.setPadding(0, 0, 0, dp(16));
         contentColumn.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -1752,9 +1767,9 @@ public final class GboardPatchesSettingsActivity extends Activity
         toolbarTitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         toolbarTitleView.setSingleLine(true);
         toolbarTitleView.setEllipsize(TextUtils.TruncateAt.END);
-        toolbarTitleView.setGravity(Gravity.CENTER);
+        toolbarTitleView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            toolbarTitleView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            toolbarTitleView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             toolbarTitleView.setAccessibilityHeading(true);
@@ -1762,11 +1777,13 @@ public final class GboardPatchesSettingsActivity extends Activity
         FrameLayout.LayoutParams titleParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                Gravity.CENTER);
+                Gravity.START | Gravity.CENTER_VERTICAL);
         titleParams.leftMargin = dp(56);
         titleParams.rightMargin = dp(56);
-        titleParams.setMarginStart(dp(56));
-        titleParams.setMarginEnd(dp(56));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            titleParams.setMarginStart(dp(56));
+            titleParams.setMarginEnd(dp(56));
+        }
         toolbarTitleView.setLayoutParams(titleParams);
 
         View restart = buildRestartButton();
@@ -2048,7 +2065,16 @@ public final class GboardPatchesSettingsActivity extends Activity
                 path.moveTo(left + (12.9f * scale), top + (7f * scale));
                 path.lineTo(left + (7.8f * scale), top + (12f * scale));
                 path.lineTo(left + (12.9f * scale), top + (17f * scale));
+                boolean isRtl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+                        && getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+                if (isRtl) {
+                    canvas.save();
+                    canvas.scale(-1f, 1f, cx, cy);
+                }
                 canvas.drawPath(path, paint);
+                if (isRtl) {
+                    canvas.restore();
+                }
             }
 
             @Override
@@ -2066,6 +2092,10 @@ public final class GboardPatchesSettingsActivity extends Activity
     private View buildHeaderCard() {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
+        card.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            card.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         card.setBackground(buildCardDrawable(palette.surfaceAlt, palette.surfaceStroke, dp(24)));
         card.setPadding(dp(20), dp(20), dp(20), dp(20));
         card.setLayoutParams(new LinearLayout.LayoutParams(
@@ -2078,13 +2108,21 @@ public final class GboardPatchesSettingsActivity extends Activity
         headerBadgeView.setTextColor(palette.accent);
         headerBadgeView.setTypeface(Typeface.DEFAULT_BOLD);
         headerBadgeView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
+        headerBadgeView.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            headerBadgeView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
 
         headerTitleView = new TextView(this);
         headerTitleView.setTextColor(palette.textPrimary);
         headerTitleView.setTypeface(Typeface.DEFAULT_BOLD);
         headerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f);
+        headerTitleView.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            headerTitleView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         titleParams.topMargin = dp(8);
         headerTitleView.setLayoutParams(titleParams);
@@ -2093,6 +2131,10 @@ public final class GboardPatchesSettingsActivity extends Activity
         headerSummaryView.setTextColor(palette.textSecondary);
         headerSummaryView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
         headerSummaryView.setLineSpacing(0f, 1.1f);
+        headerSummaryView.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            headerSummaryView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         LinearLayout.LayoutParams summaryParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -3385,7 +3427,10 @@ public final class GboardPatchesSettingsActivity extends Activity
         if (rowModel.getBadge() != null && !rowModel.getBadge().isEmpty()) {
             LinearLayout titleContainer = new LinearLayout(this);
             titleContainer.setOrientation(LinearLayout.HORIZONTAL);
-            titleContainer.setGravity(Gravity.CENTER_VERTICAL);
+            titleContainer.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                titleContainer.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            }
             titleContainer.setLayoutParams(new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -3400,6 +3445,9 @@ public final class GboardPatchesSettingsActivity extends Activity
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             badgeParams.leftMargin = dp(8);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                badgeParams.setMarginStart(dp(8));
+            }
             titleContainer.addView(badgeView, badgeParams);
 
             textColumn.addView(titleContainer);
@@ -3508,6 +3556,9 @@ public final class GboardPatchesSettingsActivity extends Activity
             iconView.setImageDrawable(rowModel.getIconDrawable());
             LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(dp(24), dp(24));
             iconParams.rightMargin = dp(16);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                iconParams.setMarginEnd(dp(16));
+            }
             iconParams.gravity = Gravity.CENTER_VERTICAL;
             row.addView(iconView, iconParams);
         }
@@ -3526,6 +3577,9 @@ public final class GboardPatchesSettingsActivity extends Activity
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         chevronParams.gravity = Gravity.CENTER_VERTICAL;
         chevronParams.rightMargin = dp(12);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            chevronParams.setMarginEnd(dp(12));
+        }
         row.addView(chevronView, chevronParams);
 
         View verticalDivider = new View(this);
@@ -3533,6 +3587,9 @@ public final class GboardPatchesSettingsActivity extends Activity
         LinearLayout.LayoutParams vDivParams = new LinearLayout.LayoutParams(dp(1), dp(28));
         vDivParams.gravity = Gravity.CENTER_VERTICAL;
         vDivParams.rightMargin = dp(16);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            vDivParams.setMarginEnd(dp(16));
+        }
         row.addView(verticalDivider, vDivParams);
 
         RadioButton radioButton = new RadioButton(this);
@@ -3599,6 +3656,9 @@ public final class GboardPatchesSettingsActivity extends Activity
             iconView.setImageDrawable(icon);
             LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(dp(24), dp(24));
             iconParams.rightMargin = dp(16);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                iconParams.setMarginEnd(dp(16));
+            }
             iconParams.gravity = Gravity.CENTER_VERTICAL;
             row.addView(iconView, iconParams);
 
@@ -3776,6 +3836,10 @@ public final class GboardPatchesSettingsActivity extends Activity
 
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
+        card.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            card.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         card.setBackground(buildCardDrawable(
                 palette.surfaceAlt,
                 0,
@@ -3788,6 +3852,10 @@ public final class GboardPatchesSettingsActivity extends Activity
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         cardParams.leftMargin = dp(16);
         cardParams.rightMargin = dp(16);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            cardParams.setMarginStart(dp(16));
+            cardParams.setMarginEnd(dp(16));
+        }
         cardParams.topMargin = dp(4);
         cardParams.bottomMargin = dp(12);
         card.setLayoutParams(cardParams);
@@ -3799,7 +3867,14 @@ public final class GboardPatchesSettingsActivity extends Activity
         categoryLabel.setTextColor(palette.accent);
         categoryLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
         categoryLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
-        card.addView(categoryLabel);
+        categoryLabel.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            categoryLabel.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
+        LinearLayout.LayoutParams catParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        card.addView(categoryLabel, catParams);
 
         // Main Title (e.g. "PixelBoard v1.3.3")
         TextView titleView = new TextView(this);
@@ -3811,6 +3886,10 @@ public final class GboardPatchesSettingsActivity extends Activity
         titleView.setTextColor(palette.textPrimary);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
         titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        titleView.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            titleView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -3827,6 +3906,10 @@ public final class GboardPatchesSettingsActivity extends Activity
         subtitleView.setTextColor(palette.textSecondary);
         subtitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
         subtitleView.setLineSpacing(dp(2), 1.15f);
+        subtitleView.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            subtitleView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         LinearLayout.LayoutParams subParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -3884,6 +3967,10 @@ public final class GboardPatchesSettingsActivity extends Activity
             // Regular Highlight Row
             LinearLayout itemBlock = new LinearLayout(this);
             itemBlock.setOrientation(LinearLayout.VERTICAL);
+            itemBlock.setGravity(Gravity.START);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                itemBlock.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            }
             LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -3904,7 +3991,14 @@ public final class GboardPatchesSettingsActivity extends Activity
             itemTitleView.setTextColor(palette.textPrimary);
             itemTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
             itemTitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
-            itemBlock.addView(itemTitleView);
+            itemTitleView.setGravity(Gravity.START);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                itemTitleView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            }
+            LinearLayout.LayoutParams itemTitleParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            itemBlock.addView(itemTitleView, itemTitleParams);
 
             // Item Summary / Description
             String summary = item.getSummary();
@@ -3914,6 +4008,10 @@ public final class GboardPatchesSettingsActivity extends Activity
                 descView.setTextColor(palette.textSecondary);
                 descView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
                 descView.setLineSpacing(dp(2), 1.15f);
+                descView.setGravity(Gravity.START);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    descView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                }
                 LinearLayout.LayoutParams descParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -3944,6 +4042,10 @@ public final class GboardPatchesSettingsActivity extends Activity
         if (items != null && !items.isEmpty()) {
             LinearLayout card = new LinearLayout(this);
             card.setOrientation(LinearLayout.VERTICAL);
+            card.setGravity(Gravity.START);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                card.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            }
             card.setBackground(buildCardDrawable(palette.surfaceAlt, 0, dp(24)));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 card.setClipToOutline(true);
@@ -3953,6 +4055,10 @@ public final class GboardPatchesSettingsActivity extends Activity
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             cardParams.leftMargin = dp(16);
             cardParams.rightMargin = dp(16);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                cardParams.setMarginStart(dp(16));
+                cardParams.setMarginEnd(dp(16));
+            }
             cardParams.topMargin = dp(4);
             cardParams.bottomMargin = dp(12);
             card.setLayoutParams(cardParams);
@@ -4224,6 +4330,10 @@ public final class GboardPatchesSettingsActivity extends Activity
     private LinearLayout buildDetailRowContainer() {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.VERTICAL);
+        row.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            row.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         row.setPadding(dp(16), dp(16), dp(16), dp(16));
         row.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -4234,6 +4344,10 @@ public final class GboardPatchesSettingsActivity extends Activity
     private LinearLayout buildSectionContainer(boolean advanced) {
         LinearLayout container = new LinearLayout(this);
         container.setOrientation(LinearLayout.VERTICAL);
+        container.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            container.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         container.setBackground(null);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -4247,13 +4361,22 @@ public final class GboardPatchesSettingsActivity extends Activity
     private LinearLayout buildRowTextColumn(boolean trailingSpacing) {
         LinearLayout textColumn = new LinearLayout(this);
         textColumn.setOrientation(LinearLayout.VERTICAL);
+        textColumn.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            textColumn.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
                 0,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 1f);
         textParams.gravity = Gravity.CENTER_VERTICAL;
         textColumn.setLayoutParams(textParams);
-        textColumn.setPadding(0, 0, trailingSpacing ? dp(16) : 0, 0);
+        int endPadding = trailingSpacing ? dp(16) : 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            textColumn.setPaddingRelative(0, 0, endPadding, 0);
+        } else {
+            textColumn.setPadding(0, 0, endPadding, 0);
+        }
         return textColumn;
     }
 
@@ -4263,6 +4386,10 @@ public final class GboardPatchesSettingsActivity extends Activity
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
         titleView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
         titleView.setLineSpacing(0f, 1.15f);
+        titleView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            titleView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         titleView.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -4275,6 +4402,10 @@ public final class GboardPatchesSettingsActivity extends Activity
         summaryView.setTextColor(palette.textSecondary);
         summaryView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
         summaryView.setLineSpacing(dp(2), 1.15f);
+        summaryView.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            summaryView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -4297,7 +4428,17 @@ public final class GboardPatchesSettingsActivity extends Activity
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
         titleView.setTypeface(Typeface.DEFAULT_BOLD);
         titleView.setAllCaps(false);
-        titleView.setPadding(dp(20), dp(16), dp(20), dp(6));
+        titleView.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            titleView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            titleView.setPaddingRelative(dp(20), dp(16), dp(20), dp(6));
+        } else {
+            titleView.setPadding(dp(20), dp(16), dp(20), dp(6));
+        }
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        titleView.setLayoutParams(params);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             titleView.setAccessibilityHeading(true);
         }
@@ -4309,11 +4450,19 @@ public final class GboardPatchesSettingsActivity extends Activity
         summaryView.setText(text);
         summaryView.setTextColor(palette.textSecondary);
         summaryView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f);
+        summaryView.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            summaryView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = dp(20);
         params.rightMargin = dp(20);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            params.setMarginStart(dp(20));
+            params.setMarginEnd(dp(20));
+        }
         params.topMargin = dp(4);
         params.bottomMargin = dp(8);
         summaryView.setLayoutParams(params);
@@ -4346,7 +4495,10 @@ public final class GboardPatchesSettingsActivity extends Activity
 
         LinearLayout supportLine = new LinearLayout(this);
         supportLine.setOrientation(LinearLayout.HORIZONTAL);
-        supportLine.setGravity(Gravity.CENTER_VERTICAL);
+        supportLine.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            supportLine.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         supportLine.setBaselineAligned(false);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -4376,7 +4528,10 @@ public final class GboardPatchesSettingsActivity extends Activity
 
         LinearLayout supportLine = new LinearLayout(this);
         supportLine.setOrientation(LinearLayout.HORIZONTAL);
-        supportLine.setGravity(Gravity.CENTER_VERTICAL);
+        supportLine.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            supportLine.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -4393,6 +4548,10 @@ public final class GboardPatchesSettingsActivity extends Activity
         labelView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f);
         labelView.setTypeface(Typeface.DEFAULT_BOLD);
         labelView.setAllCaps(true);
+        labelView.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            labelView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         return labelView;
     }
 
@@ -4404,6 +4563,10 @@ public final class GboardPatchesSettingsActivity extends Activity
         chipView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         chipView.setMaxLines(1);
         chipView.setEllipsize(TextUtils.TruncateAt.END);
+        chipView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            chipView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         chipView.setPadding(0, 0, 0, 0);
         return chipView;
     }
@@ -4423,7 +4586,12 @@ public final class GboardPatchesSettingsActivity extends Activity
 
     private TextView buildChevronView() {
         TextView chevronView = new TextView(this);
-        chevronView.setText("\u203a");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+                && getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            chevronView.setText("\u2039");
+        } else {
+            chevronView.setText("\u203a");
+        }
         chevronView.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         chevronView.setTextColor(palette.textSecondary);
         chevronView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f);
@@ -4455,6 +4623,9 @@ public final class GboardPatchesSettingsActivity extends Activity
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         params.rightMargin = rightMargin;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            params.setMarginEnd(rightMargin);
+        }
         return params;
     }
 
@@ -4463,6 +4634,9 @@ public final class GboardPatchesSettingsActivity extends Activity
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = leftMargin;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            params.setMarginStart(leftMargin);
+        }
         return params;
     }
 

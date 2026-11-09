@@ -22,6 +22,7 @@ import com.akshaykadam.pixelboard.patches.gboard.features.spellchecker.gboardSpe
 import com.akshaykadam.pixelboard.patches.gboard.features.accessibility.gboardFeaturesMenuAccessibilityPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRamblerDictationPromptFixPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRamblerMinimizeKeyPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.keyboard.gboardKeyboardSymbolKeyLabelPatch
 
 internal val gboardPatchesSettingsPatch = resourcePatch(
     description = "Add Patches entry to the bottom of Gboard settings."
@@ -37,6 +38,7 @@ internal val gboardPatchesSettingsPatch = resourcePatch(
         gboardFeaturesMenuAccessibilityPatch,
         gboardRamblerDictationPromptFixPatch,
         gboardRamblerMinimizeKeyPatch,
+        gboardKeyboardSymbolKeyLabelPatch,
     )
 
     finalize {

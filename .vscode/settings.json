@@ -11,5 +11,6 @@
   "files.exclude": {
     "**/.gradle": true,
     "**/build": true
-  }
+  },
+  "java.compile.nullAnalysis.mode": "automatic"
 }
