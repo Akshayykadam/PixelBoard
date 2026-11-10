@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.akshaykadam.pixelboard.extension.R;
+import com.akshaykadam.pixelboard.extension.rambler.GboardMicGestureSettings;
 import com.akshaykadam.pixelboard.extension.settings.GboardPatchesSettingsContract;
 import com.akshaykadam.pixelboard.extension.settings.GboardPatchesSettings;
 import com.akshaykadam.pixelboard.extension.settings.GboardPatchesFeatureAvailability;
@@ -32,6 +33,11 @@ public final class GboardAdvancedVoiceSettingsFeature
             "https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/";
     private static final String ADVANCED_VOICE_GITHUB_URL =
             "https://github.com/Akshayykadam/PixelBoard";
+    private static final String[] MIC_TAP_MODES = new String[] {
+            GboardMicGestureSettings.MODE_DEFAULT,
+            GboardMicGestureSettings.MODE_HYBRID,
+            GboardMicGestureSettings.MODE_QUICK_SWITCH
+    };
 
     private final String entryTitle;
     private final String entrySummary;
@@ -220,6 +226,12 @@ public final class GboardAdvancedVoiceSettingsFeature
                     enabled,
                     value -> saveEnabled(host, context, value)));
 
+            GboardPatchesSettingsContract.Row micTapRow = micTapRow(host, context, preferences,
+                    enabled, () -> refreshSafely(host));
+            if (micTapRow != null) {
+                behaviorRows.add(micTapRow);
+            }
+
             List<GboardPatchesSettingsContract.Row> informationRows =
                     new ArrayList<GboardPatchesSettingsContract.Row>();
             PayloadGuidance guidance = buildPayloadGuidance(payloadDetection);
@@ -319,6 +331,44 @@ public final class GboardAdvancedVoiceSettingsFeature
         refreshSafely(host);
     }
 
+    /**
+     * The Microphone tap row, or null when this Gboard version keeps its original microphone.
+     * Shared by the Advanced Voice Typing screen and the Advanced settings page.
+     */
+    public static GboardPatchesSettingsContract.Row micTapRow(
+            GboardPatchesSettingsContract.FeatureHost host,
+            Context context,
+            SharedPreferences preferences,
+            boolean enabled,
+            Runnable refresh) {
+        if (!GboardMicGestureSettings.isSupported(context)) {
+            return null;
+        }
+        String title = GboardSettingsText.get(context, R.string.gboard_patches_mic_gesture_title);
+        String[] labels = new String[] {
+                GboardSettingsText.get(context, R.string.gboard_patches_mic_gesture_default),
+                GboardSettingsText.get(context, R.string.gboard_patches_mic_gesture_hybrid),
+                GboardSettingsText.get(context, R.string.gboard_patches_mic_gesture_quick_switch)
+        };
+        String mode = GboardMicGestureSettings.readMode(preferences);
+        return new GboardPatchesSettingsContract.SelectorRow(
+                title,
+                GboardSettingsText.get(context, R.string.gboard_patches_mic_gesture_summary),
+                labels[Arrays.asList(MIC_TAP_MODES).indexOf(mode)],
+                enabled,
+                () -> GboardPatchesSettingsContract.showChoiceDialog(host,
+                        title,
+                        labels,
+                        MIC_TAP_MODES,
+                        mode,
+                        "",
+                        () -> {
+                        },
+                        value -> {
+                            GboardMicGestureSettings.writeMode(context, value);
+                            refresh.run();
+                        }));
+    }
 
     private void refreshSafely(GboardPatchesSettingsContract.FeatureHost host) {
         try {

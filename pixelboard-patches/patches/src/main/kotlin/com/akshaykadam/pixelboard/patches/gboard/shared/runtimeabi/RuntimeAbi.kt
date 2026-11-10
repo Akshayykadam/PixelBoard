@@ -1,6 +1,12 @@
 package com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi
 
 internal enum class RuntimeCallId(internal val encodedAbi: String) {
+    MIC_GESTURE_WRAP("Lcom/akshaykadam/pixelboard/extension/rambler/GboardMicGestureRuntime;->wrap(Landroid/inputmethodservice/InputMethodService;Landroid/view/View;)Landroid/view/View;"),
+    MIC_GESTURE_CHECK_SESSION("Lcom/akshaykadam/pixelboard/extension/rambler/GboardMicGestureRuntime;->checkSession(Landroid/inputmethodservice/InputMethodService;)V"),
+    MIC_GESTURE_RESET_SESSION("Lcom/akshaykadam/pixelboard/extension/rambler/GboardMicGestureRuntime;->resetSession(Landroid/inputmethodservice/InputMethodService;)V"),
+    MIC_GESTURE_DESTROY("Lcom/akshaykadam/pixelboard/extension/rambler/GboardMicGestureRuntime;->destroy(Landroid/inputmethodservice/InputMethodService;)V"),
+    MIC_GESTURE_BEFORE_EVENT("Lcom/akshaykadam/pixelboard/extension/rambler/GboardMicBridge;->beforeEvent(Landroid/inputmethodservice/InputMethodService;Ljava/lang/Object;)V"),
+
 
     ADVANCED_VOICE_RUNTIME_AFTER_FLAG_VALUE("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardAdvancedVoice1803Runtime;->afterFlagValue(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"),
     ADVANCED_VOICE_RUNTIME_AFTER_1803_NATIVE_SPLIT_READINESS("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardAdvancedVoice1803Runtime;->after1803NativeSplitReadiness(Z)Z"),
