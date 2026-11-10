@@ -1743,7 +1743,7 @@ public final class GboardPatchesSettingsActivity extends Activity
             }
         } catch (Throwable ignored) {
         }
-        return "1.3.3";
+        return "1.3.4";
     }
 
     private View buildToolbar() {
@@ -3876,11 +3876,11 @@ public final class GboardPatchesSettingsActivity extends Activity
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         card.addView(categoryLabel, catParams);
 
-        // Main Title (e.g. "PixelBoard v1.3.3")
+        // Main Title (e.g. "PixelBoard v1.3.4")
         TextView titleView = new TextView(this);
         String displayTitle = section.getTitle();
         if (displayTitle == null || displayTitle.isEmpty()) {
-            displayTitle = "PixelBoard v1.3.3";
+            displayTitle = "PixelBoard v1.3.4";
         }
         titleView.setText(displayTitle);
         titleView.setTextColor(palette.textPrimary);

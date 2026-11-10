@@ -59,6 +59,7 @@ public class ReleaseInfoTest {
         Assert.assertFalse(patchRelease.isNewerThan("1.3.1"));
         Assert.assertFalse(patchRelease.isNewerThan("1.3.2"));
         Assert.assertFalse(patchRelease.isNewerThan("1.3.3"));
+        Assert.assertFalse(patchRelease.isNewerThan("1.3.4"));
     }
 
     @Test

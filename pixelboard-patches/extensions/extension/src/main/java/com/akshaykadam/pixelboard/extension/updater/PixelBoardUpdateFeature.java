@@ -324,9 +324,19 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
                 "Installed Version",
                 "v" + installedVersion,
                 true));
+        String baseGboardVer = "v18.6.3 (Release)";
+        if (context != null) {
+            try {
+                PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+                if (pi != null && pi.versionName != null && !pi.versionName.isEmpty()) {
+                    baseGboardVer = "v" + pi.versionName.split("-")[0];
+                }
+            } catch (Throwable ignored) {
+            }
+        }
         infoRows.add(new GboardPatchesSettingsContract.DetailRow(
                 "Base Gboard",
-                "v18.5.3 (Release)",
+                baseGboardVer,
                 true));
         infoRows.add(new GboardPatchesSettingsContract.DetailRow(
                 "Package Name",
@@ -370,7 +380,7 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
             } catch (PackageManager.NameNotFoundException ignored) {
             }
         }
-        return "1.3.3";
+        return "1.3.4";
     }
 
     public static String formatRelativeTime(long timestamp) {
@@ -393,11 +403,10 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
     }
 
     private static String getDefaultChangelog() {
-        return "* **In-App Updates**: Dedicated PixelBoard updates section directly in Gboard settings with GitHub release checks, formatted changelogs, and direct APK download\n"
-                + "* **Extended Clipboard History**: Save copied text and images for 1 hour, 24 hours, 7 days, 30 days, or permanently (Never)\n"
-                + "* **Upgraded Base to Gboard v18.5.3**: Rebased on Google's latest stable release with smoother typing performance\n"
-                + "* **TalkBack Accessibility Overhaul**: Full screen reader optimization with clear labels, proper button roles, and audio cues\n"
-                + "* **Arabic Language Support**: Added complete native Arabic (العربية) translation across all settings and AI features\n"
-                + "* **Crash Fixes & Stability**: Resolved clipboard slider crashes, fixed settings layout issues, and improved battery efficiency";
+        return "* **Enhanced Clipboard Retention & 100-Item Limit**: Retain unpinned clips for 24 hours by default, store up to 100 recent clips, and pick your duration (1h, 24h, 7d, 30d, Never) with honest duration labels across 83 languages (#129)\n"
+                + "* **Support for Gboard v18.6.3 & v18.5.3**: Full dual-version compatibility with signature bypass, AI writing tools, and Rambler dictation\n"
+                + "* **Clean Symbol Key Labels**: Fixed \"?attr/\" on question mark key and \"\\?123\" on switch key with automated resource sanitization\n"
+                + "* **Advanced Settings & Updates Navigation**: Restored settings menus and polished Material You interface with start alignment for LTR & RTL\n"
+                + "* **AI Writing Tools & Dictation Stability**: Rephrase, proofread, and continuous voice typing with automatic punctuation and cursor tracking";
     }
 }

@@ -45,7 +45,57 @@ PRESERVED_XML_PATTERNS = {
     'res/xml/setting_clipboard.xml',
     'res/drawable/drawable_0x7f080516.xml',
     'res/drawable/drawable_0x7f08054d.xml',
+    # Known obfuscated paths for Gboard 18.6.3
+    'res/B_o.xml',
+    'res/IeH.xml',
+    'res/oXv.xml',
+    'res/41N.xml',
+    'res/Zn9.xml',
+    'res/70O.xml',
+    'res/cWf.xml',
 }
+
+PIXELBOARD_MARKERS = [
+    b'pixelboard',
+    b'gboardpatches',
+    b'gboard_patches',
+    b'akshaykadam',
+    b'GboardPatchesSettingsActivity',
+    b'PixelBoardUpdateActivity',
+]
+
+def resolve_target_resource_paths(input_apk, aapt2_path):
+    if not aapt2_path or not os.path.isfile(aapt2_path):
+        return set()
+    try:
+        res = subprocess.run([aapt2_path, 'dump', 'resources', input_apk], capture_output=True, text=True, timeout=10)
+        if res.returncode != 0:
+            return set()
+        patterns = [
+            r'xml/settings\b',
+            r'xml/settings_legacy\b',
+            r'xml/settings_homepage\b',
+            r'xml/settings_legacy_homepage\b',
+            r'xml/spell_checker\b',
+            r'xml/setting_expression\b',
+            r'xml/setting_clipboard\b',
+            r'0x7f080516',
+            r'0x7f08054d',
+        ]
+        import re
+        resolved = set()
+        current_match = False
+        for line in res.stdout.splitlines():
+            if line.strip().startswith('resource '):
+                current_match = any(re.search(p, line) for p in patterns)
+            if current_match:
+                m = re.search(r'\(file\)\s+(\S+\.xml)', line)
+                if m:
+                    resolved.add(m.group(1))
+        return resolved
+    except Exception as e:
+        print(f"⚠️ Warning: Could not resolve dynamic resource paths: {e}")
+        return set()
 
 def sanitize_apk(target_apk, input_apk, keystore_path):
     if not os.path.isfile(target_apk):
@@ -55,17 +105,30 @@ def sanitize_apk(target_apk, input_apk, keystore_path):
         print(f"Input APK does not exist: {input_apk}")
         sys.exit(1)
 
+    aapt2 = find_sdk_tool('aapt2')
+    dynamic_paths = resolve_target_resource_paths(input_apk, aapt2)
+    all_preserved_patterns = PRESERVED_XML_PATTERNS | dynamic_paths
+
     print(f"🔍 Checking {target_apk} against {input_apk} for stock XML restoration...")
     entries_to_restore = {}
     with zipfile.ZipFile(input_apk, 'r') as zin, zipfile.ZipFile(target_apk, 'r') as zout:
         in_names = set(zin.namelist())
         for name in zout.namelist():
             if name.endswith('.xml'):
-                # Always preserve intentionally modified or newly added PixelBoard XML resources
-                if name in PRESERVED_XML_PATTERNS or name not in in_names:
+                # Always preserve newly added PixelBoard XML resources
+                if name not in in_names:
                     continue
 
                 out_data = zout.read(name)
+
+                # Always preserve intentionally modified PixelBoard XML resources
+                if name in all_preserved_patterns:
+                    continue
+
+                out_lower = out_data.lower()
+                if any(m.lower() in out_lower for m in PIXELBOARD_MARKERS):
+                    continue
+
                 in_data = zin.read(name)
                 # If Morphe's ARSCLib re-encoded or altered the pristine binary XML, restore it
                 if out_data != in_data:
