@@ -22,6 +22,7 @@ import com.akshaykadam.pixelboard.patches.gboard.shared.returnInstructionIndices
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeAbiCatalog
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeCallEmitter
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeCallId
+import com.akshaykadam.pixelboard.patches.gboard.features.bengalivoice.installBengaliVoiceChoiceHooks
 import com.akshaykadam.pixelboard.patches.shared.Constants.COMPATIBILITY_GBOARD
 
 private const val VOICE_SETTINGS =
@@ -172,6 +173,9 @@ internal val gboardRambler1803OfficialSelectorPatch = bytecodePatch(
             findMutableMethodOrNull(target)?.applyToolbarMicActivation()
         }
         suppressRamblerFeedbackAccessPoint()
+        if (targets == RAMBLER_1853_TARGETS) {
+            installBengaliVoiceChoiceHooks()
+        }
     }
 }
 

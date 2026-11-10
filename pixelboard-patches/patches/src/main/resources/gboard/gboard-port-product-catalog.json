@@ -58,6 +58,7 @@
         "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/advancedvoice/GboardAdvancedVoiceFlagValuePatch.kt",
         "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/advancedvoice/GboardAdvancedVoicePatchSupport.kt",
         "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/rambler/GboardRambler1803OfficialSelectorPatch.kt",
+        "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/features/bengalivoice/GboardBengaliVoiceChoiceHooks.kt",
         "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/registry/GboardPatchRegistry.kt",
         "patches/src/main/kotlin/com/akshaykadam/pixelboard/patches/gboard/shared/GboardFlagFamilyComposer.kt"
       ],
@@ -87,6 +88,9 @@
             "ADVANCED_VOICE_RUNTIME_BEFORE_FORMATTER_CONSTRUCTED",
             "ADVANCED_VOICE_RUNTIME_INCLUDE_EXACT_ZH_TW_SUPPORTED_LOCALE",
             "ADVANCED_VOICE_RUNTIME_SEED_APPLICATION_CONTEXT",
+            "BENGALI_VOICE_AFTER_LANGUAGE_SETTINGS_REBUILT",
+            "BENGALI_VOICE_AFTER_NATIVE_SELECTION",
+            "BENGALI_VOICE_ACTIVE_ROUTE_OVERRIDE",
             "RAMBLER_RUNTIME_AFTER_SELECTION_READ",
             "RAMBLER_RUNTIME_ENTER_DEFAULT_SELECTION_SUPPRESSION",
             "RAMBLER_RUNTIME_ENTER_VOICE_SETTINGS_SCOPE",
