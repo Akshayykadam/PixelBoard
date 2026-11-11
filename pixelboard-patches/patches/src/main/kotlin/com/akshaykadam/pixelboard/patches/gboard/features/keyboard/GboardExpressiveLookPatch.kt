@@ -15,6 +15,13 @@ import com.akshaykadam.pixelboard.patches.shared.bytecodePatch
 // It runs for every keyboard view once the top_rounded_keyboard flag is on, which
 // the Expressive look setting forces through the flag override hook.
 private val topRoundedKeyboardApplyOutlineTargets = listOf(
+    // Gboard 18.6.3
+    GboardMethodTarget(
+        classType = "Lqvg;",
+        name = "t",
+        parameterTypes = listOf("Lpwj;", "Landroid/view/View;"),
+        returnType = "V",
+    ),
     // Gboard 18.5.3
     GboardMethodTarget(
         classType = "Lrbm;",
