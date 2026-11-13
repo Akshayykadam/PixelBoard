@@ -80,9 +80,14 @@ public final class GboardRambler1803StockPolicy {
                 || AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG.equals(flagName)) {
             return originalResult instanceof Boolean ? Boolean.FALSE : originalResult;
         }
-        // Retain stock deactivation delay so dictation and audio recording persist across screen rotations (Issue #147).
+        // Closing the keyboard stops Rambler instantly, except mid-rotation, where Gboard
+        // deactivates and reactivates the extension and needs its grace period to keep the session.
         if (AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName)) {
-            return originalResult;
+            return originalResult instanceof Long
+                            && GboardRambler1803OfficialSelectionRuntime
+                                    .shouldEnableAgenticDictation()
+                    ? Long.valueOf(GboardRamblerRotationGrace.deactivationDelayMs())
+                    : originalResult;
         }
         // The AL toolbar replaces Gboard's stock collapse path: with it off, the Rambler
         // header shows the minimize key and the floating voice toolbar keeps the session.
