@@ -76,11 +76,13 @@ public final class GboardRambler1803StockPolicy {
         if (AD_ACTIVATION_TYPE_FLAG.equals(flagName)) {
             return originalResult instanceof Long ? Long.valueOf(2L) : originalResult;
         }
+        // Closing the keyboard stops Rambler instantly, except mid-rotation, where Gboard
+        // deactivates and reactivates the extension and needs its grace period to keep the session.
         if (AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName)) {
             return originalResult instanceof Long
                             && GboardRambler1803OfficialSelectionRuntime
                                     .shouldEnableAgenticDictation()
-                    ? Long.valueOf(0L)
+                    ? Long.valueOf(GboardRamblerRotationGrace.deactivationDelayMs())
                     : originalResult;
         }
         // The AL toolbar replaces Gboard's stock collapse path: with it off, the Rambler
