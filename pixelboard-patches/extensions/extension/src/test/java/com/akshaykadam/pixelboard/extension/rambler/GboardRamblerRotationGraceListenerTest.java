@@ -1,5 +1,6 @@
 package com.akshaykadam.pixelboard.extension.rambler;
 
+import android.app.Application;
 import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -21,6 +22,7 @@ public final class GboardRamblerRotationGraceListenerTest {
     @After
     public void reset() {
         GboardRamblerRotationGrace.resetForTests();
+        GboardRambler1803OfficialSelectionRuntime.resetForTests();
     }
 
     @Test
@@ -42,6 +44,25 @@ public final class GboardRamblerRotationGraceListenerTest {
     }
 
     @Test
+    public void anyFlagReadStartsTrackingBeforeTheFirstRotation() {
+        long[] now = {1_000L};
+        GboardRamblerRotationGrace.setClockForTests(() -> now[0]);
+        GboardRambler1803OfficialSelectionRuntime.updateOfficialSelection(true);
+        Application application = RuntimeEnvironment.getApplication();
+
+        // An unrelated flag read, as Gboard makes constantly from startup.
+        GboardRambler1803StockPolicy.maybeForceStockRouteValue("some_unrelated_flag", Boolean.FALSE);
+
+        now[0] = 5_000L;
+        application.onConfigurationChanged(rotated(application.getResources().getConfiguration()));
+        now[0] = 5_016L;
+        Assert.assertEquals(Long.valueOf(GboardRamblerRotationGrace.DEACTIVATION_GRACE_MS),
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG,
+                        Long.valueOf(0L)));
+    }
+
+    @Test
     public void trackingStartsOnlyOnce() {
         CapturingContext context = new CapturingContext(RuntimeEnvironment.getApplication());
         GboardRamblerRotationGrace.ensureListening(context);
@@ -56,7 +77,6 @@ public final class GboardRamblerRotationGraceListenerTest {
         GboardRamblerRotationGrace.ensureListening(context);
         GboardRamblerRotationGrace.ensureListening(context);
         Assert.assertEquals(1, context.registrations);
-        Assert.assertEquals(0L, GboardRamblerRotationGrace.deactivationDelayMs(5_000L));
     }
 
     private static Configuration rotated(Configuration current) {

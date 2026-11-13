@@ -46,8 +46,8 @@ public final class GboardRamblerRotationGrace {
     private static int orientation = UNKNOWN;
     private static int widthDp = UNKNOWN;
     private static int heightDp = UNKNOWN;
-    private static volatile long displayChangedAt;
-    private static volatile boolean displayChanged;
+    /** Uptime until which deactivations get the grace; 0 until the display first changes. */
+    private static volatile long graceUntil;
     private static volatile LongSupplier clock;
 
     private GboardRamblerRotationGrace() {
@@ -55,9 +55,8 @@ public final class GboardRamblerRotationGrace {
 
     /** Returns the deactivation delay to hand Gboard: a grace period mid-rotation, else 0. */
     static long deactivationDelayMs() {
-        ensureListening();
         // Also keeps the stock path off SystemClock, which plain JVM unit tests cannot call.
-        if (!displayChanged) {
+        if (graceUntil == 0L) {
             return 0L;
         }
         long delay = deactivationDelayMs(nowUptimeMs());
@@ -68,11 +67,7 @@ public final class GboardRamblerRotationGrace {
     }
 
     static long deactivationDelayMs(long nowUptimeMs) {
-        if (!displayChanged) {
-            return 0L;
-        }
-        long elapsed = nowUptimeMs - displayChangedAt;
-        return elapsed >= 0L && elapsed <= DISPLAY_CHANGE_WINDOW_MS ? DEACTIVATION_GRACE_MS : 0L;
+        return nowUptimeMs <= graceUntil ? DEACTIVATION_GRACE_MS : 0L;
     }
 
     /**
@@ -96,7 +91,7 @@ public final class GboardRamblerRotationGrace {
                 return;
             }
             try {
-                record(context.getResources().getConfiguration());
+                // Register before taking the baseline, so a change in between is not missed.
                 context.registerComponentCallbacks(new ComponentCallbacks() {
                     @Override
                     public void onConfigurationChanged(Configuration newConfig) {
@@ -107,6 +102,7 @@ public final class GboardRamblerRotationGrace {
                     public void onLowMemory() {
                     }
                 });
+                record(context.getResources().getConfiguration());
             } catch (Throwable failure) {
                 logInfo("could not track display changes: " + failure);
             }
@@ -116,9 +112,6 @@ public final class GboardRamblerRotationGrace {
     }
 
     private static void record(Configuration configuration) {
-        if (configuration == null) {
-            return;
-        }
         onDisplayConfiguration(configuration.orientation, configuration.screenWidthDp,
                 configuration.screenHeightDp, nowUptimeMs());
     }
@@ -139,8 +132,7 @@ public final class GboardRamblerRotationGrace {
             widthDp = newWidthDp;
             heightDp = newHeightDp;
             if (known && changed) {
-                displayChangedAt = nowUptimeMs;
-                displayChanged = true;
+                graceUntil = nowUptimeMs + DISPLAY_CHANGE_WINDOW_MS;
             }
         }
     }
@@ -167,8 +159,7 @@ public final class GboardRamblerRotationGrace {
             orientation = UNKNOWN;
             widthDp = UNKNOWN;
             heightDp = UNKNOWN;
-            displayChangedAt = 0L;
-            displayChanged = false;
+            graceUntil = 0L;
         }
     }
 }
