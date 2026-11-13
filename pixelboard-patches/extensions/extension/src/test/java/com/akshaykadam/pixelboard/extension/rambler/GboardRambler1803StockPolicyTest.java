@@ -8,6 +8,7 @@ public final class GboardRambler1803StockPolicyTest {
     @After
     public void tearDown() {
         GboardRambler1803OfficialSelectionRuntime.resetForTests();
+        GboardRamblerRotationGrace.resetForTests();
     }
 
     @Test

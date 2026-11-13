@@ -58,6 +58,26 @@ public final class GboardRamblerRotationGraceTest {
     }
 
     @Test
+    public void windowIncludesItsLastMillisecond() {
+        GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 1_000L);
+        GboardRamblerRotationGrace.onDisplayConfiguration(LANDSCAPE, 751, 475, 5_000L);
+        Assert.assertEquals(GboardRamblerRotationGrace.DEACTIVATION_GRACE_MS,
+                GboardRamblerRotationGrace.deactivationDelayMs(
+                        5_000L + GboardRamblerRotationGrace.DISPLAY_CHANGE_WINDOW_MS));
+    }
+
+    @Test
+    public void laterRotationStartsANewWindow() {
+        GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 1_000L);
+        GboardRamblerRotationGrace.onDisplayConfiguration(LANDSCAPE, 751, 475, 5_000L);
+        Assert.assertEquals(0L, GboardRamblerRotationGrace.deactivationDelayMs(30_000L));
+
+        GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 30_000L);
+        Assert.assertEquals(GboardRamblerRotationGrace.DEACTIVATION_GRACE_MS,
+                GboardRamblerRotationGrace.deactivationDelayMs(30_020L));
+    }
+
+    @Test
     public void unrelatedConfigurationChangesGrantNoGrace() {
         GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 1_000L);
         // Same display shape, e.g. a locale, theme or font scale change.

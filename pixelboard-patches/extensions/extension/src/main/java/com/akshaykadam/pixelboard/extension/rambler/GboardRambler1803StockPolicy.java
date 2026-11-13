@@ -70,6 +70,8 @@ public final class GboardRambler1803StockPolicy {
     }
 
     public static Object maybeForceStockRouteValue(String flagName, Object originalResult) {
+        // Every Gboard flag read passes here, so display tracking starts long before a rotation.
+        GboardRamblerRotationGrace.ensureListening();
         if (SHOW_RAMBLER_DICT_SETTINGS_FLAG.equals(flagName)) {
             return originalResult instanceof Boolean ? Boolean.TRUE : originalResult;
         }

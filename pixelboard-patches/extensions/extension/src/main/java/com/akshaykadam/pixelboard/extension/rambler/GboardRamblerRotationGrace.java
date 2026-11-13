@@ -13,13 +13,14 @@ import android.content.res.Configuration;
 import android.os.SystemClock;
 import android.util.Log;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.LongSupplier;
 
 /**
  * Keeps a Rambler session alive across a screen rotation.
  *
  * <p>A rotation makes Gboard clear and rebuild its input method data, which deactivates the
- * Agentic Dictation extension and reactivates it about 100 ms later. Gboard's
+ * Agentic Dictation extension and reactivates it about 80 ms later. Gboard's
  * {@code agentic_dictation_deactivation_delay_ms} grace period exists for that gap: a reactivation
  * inside it cancels the pending stop. PixelBoard forces the delay to 0 so closing the keyboard
  * stops Rambler instantly, which also made every rotation abort the session (issue #146).</p>
@@ -31,12 +32,14 @@ public final class GboardRamblerRotationGrace {
     private static final String TAG = "GboardPatches";
     private static final String LOG_PREFIX = "[rambler-rotation-grace] ";
 
-    /** Grace Gboard waits before stopping Rambler; reactivation after a rotation takes ~100 ms. */
+    /** Grace Gboard waits before stopping Rambler; reactivation after a rotation takes ~80 ms. */
     static final long DEACTIVATION_GRACE_MS = 1500L;
     /** How long after a display change a deactivation still counts as part of the rotation. */
     static final long DISPLAY_CHANGE_WINDOW_MS = 2000L;
 
     private static final int UNKNOWN = Integer.MIN_VALUE;
+    private static final int MAX_INFO_LOGS = 30;
+    private static final AtomicInteger INFO_LOG_COUNT = new AtomicInteger();
 
     private static final Object LOCK = new Object();
     private static volatile boolean listening;
@@ -53,6 +56,7 @@ public final class GboardRamblerRotationGrace {
     /** Returns the deactivation delay to hand Gboard: a grace period mid-rotation, else 0. */
     static long deactivationDelayMs() {
         ensureListening();
+        // Also keeps the stock path off SystemClock, which plain JVM unit tests cannot call.
         if (!displayChanged) {
             return 0L;
         }
@@ -71,13 +75,20 @@ public final class GboardRamblerRotationGrace {
         return elapsed >= 0L && elapsed <= DISPLAY_CHANGE_WINDOW_MS ? DEACTIVATION_GRACE_MS : 0L;
     }
 
-    /** Starts tracking display changes; cheap to call on every flag read. */
+    /**
+     * Starts tracking display changes. Gboard reads the deactivation delay only inside
+     * {@code onDeactivate}, so this must run on earlier flag reads: tracking that starts during
+     * the first rotation would take the rotated display as its baseline. Cheap once started.
+     */
     static void ensureListening() {
         if (listening) {
             return;
         }
-        Context context = GboardRambler1803OfficialSelectionRuntime.applicationContext();
-        if (context == null) {
+        ensureListening(GboardRambler1803OfficialSelectionRuntime.applicationContext());
+    }
+
+    static void ensureListening(Context context) {
+        if (listening || context == null) {
             return;
         }
         synchronized (LOCK) {
@@ -96,10 +107,11 @@ public final class GboardRamblerRotationGrace {
                     public void onLowMemory() {
                     }
                 });
-                listening = true;
             } catch (Throwable failure) {
                 logInfo("could not track display changes: " + failure);
             }
+            // Never retry a failed registration on every flag read.
+            listening = true;
         }
     }
 
@@ -135,6 +147,9 @@ public final class GboardRamblerRotationGrace {
 
     private static void logInfo(String message) {
         try {
+            if (INFO_LOG_COUNT.getAndIncrement() >= MAX_INFO_LOGS) {
+                return;
+            }
             Log.i(TAG, LOG_PREFIX + message);
         } catch (Throwable ignored) {
         }
@@ -147,6 +162,7 @@ public final class GboardRamblerRotationGrace {
     static void resetForTests() {
         synchronized (LOCK) {
             clock = null;
+            INFO_LOG_COUNT.set(0);
             listening = false;
             orientation = UNKNOWN;
             widthDp = UNKNOWN;
