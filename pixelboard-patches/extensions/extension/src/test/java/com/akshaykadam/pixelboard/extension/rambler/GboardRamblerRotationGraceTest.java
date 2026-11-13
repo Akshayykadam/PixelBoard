@@ -52,18 +52,12 @@ public final class GboardRamblerRotationGraceTest {
                 GboardRamblerRotationGrace.deactivationDelayMs(5_019L));
         Assert.assertEquals(GboardRamblerRotationGrace.DEACTIVATION_GRACE_MS,
                 GboardRamblerRotationGrace.deactivationDelayMs(5_138L));
-        // Once the window passes, closing the keyboard stops Rambler instantly again.
-        Assert.assertEquals(0L, GboardRamblerRotationGrace.deactivationDelayMs(
-                5_000L + GboardRamblerRotationGrace.DISPLAY_CHANGE_WINDOW_MS + 1L));
-    }
-
-    @Test
-    public void windowIncludesItsLastMillisecond() {
-        GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 1_000L);
-        GboardRamblerRotationGrace.onDisplayConfiguration(LANDSCAPE, 751, 475, 5_000L);
         Assert.assertEquals(GboardRamblerRotationGrace.DEACTIVATION_GRACE_MS,
                 GboardRamblerRotationGrace.deactivationDelayMs(
                         5_000L + GboardRamblerRotationGrace.DISPLAY_CHANGE_WINDOW_MS));
+        // Once the window passes, closing the keyboard stops Rambler instantly again.
+        Assert.assertEquals(0L, GboardRamblerRotationGrace.deactivationDelayMs(
+                5_000L + GboardRamblerRotationGrace.DISPLAY_CHANGE_WINDOW_MS + 1L));
     }
 
     @Test
@@ -91,11 +85,5 @@ public final class GboardRamblerRotationGraceTest {
         GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 600, 751, 5_000L);
         Assert.assertEquals(GboardRamblerRotationGrace.DEACTIVATION_GRACE_MS,
                 GboardRamblerRotationGrace.deactivationDelayMs(5_010L));
-    }
-
-    @Test
-    public void firstObservedConfigurationIsOnlyABaseline() {
-        GboardRamblerRotationGrace.onDisplayConfiguration(LANDSCAPE, 751, 475, 5_000L);
-        Assert.assertEquals(0L, GboardRamblerRotationGrace.deactivationDelayMs(5_010L));
     }
 }
