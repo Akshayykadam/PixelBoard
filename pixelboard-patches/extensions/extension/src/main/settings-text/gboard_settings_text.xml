@@ -1143,4 +1143,180 @@
         <translation locale="en">Build Information</translation>
         <translation locale="ar">معلومات البناء</translation>
     </string>
+    <string name="gboard_patches_stickers_title">
+        <translation locale="en">Custom Stickers</translation>
+        <translation locale="it">Sticker personalizzati</translation>
+    </string>
+    <string name="gboard_patches_stickers_summary">
+        <translation locale="en">Your own image and GIF stickers</translation>
+        <translation locale="it">I tuoi sticker da immagini e GIF</translation>
+    </string>
+    <string name="gboard_patches_stickers_header_summary">
+        <translation locale="en">Add stickers here, then send them from the Stickers button in the keyboard\'s top row.</translation>
+        <translation locale="it">Aggiungi gli sticker qui, poi inviali con il pulsante Sticker nella barra superiore della tastiera.</translation>
+    </string>
+    <string name="gboard_patches_stickers_section_add">
+        <translation locale="en">Add</translation>
+        <translation locale="it">Aggiungi</translation>
+    </string>
+    <string name="gboard_patches_stickers_add_file_title">
+        <translation locale="en">Add image or GIF</translation>
+        <translation locale="it">Aggiungi immagine o GIF</translation>
+    </string>
+    <string name="gboard_patches_stickers_add_file_summary">
+        <translation locale="en">Images open in the editor. GIFs are added as they are.</translation>
+        <translation locale="it">Le immagini si aprono nell\'editor. Le GIF vengono aggiunte così come sono.</translation>
+    </string>
+    <string name="gboard_patches_stickers_paste_title">
+        <translation locale="en">Paste from clipboard</translation>
+        <translation locale="it">Incolla dagli appunti</translation>
+    </string>
+    <string name="gboard_patches_stickers_paste_summary">
+        <translation locale="en">Tip: in Google Photos, long-press a subject and tap Copy, then paste it here.</translation>
+        <translation locale="it">Suggerimento: in Google Foto tieni premuto su un soggetto e tocca Copia, poi incollalo qui.</translation>
+    </string>
+    <string name="gboard_patches_stickers_section_library">
+        <translation locale="en">Your stickers (%1$d)</translation>
+        <translation locale="it">I tuoi sticker (%1$d)</translation>
+    </string>
+    <string name="gboard_patches_stickers_empty">
+        <translation locale="en">No stickers yet</translation>
+        <translation locale="it">Ancora nessuno sticker</translation>
+    </string>
+    <string name="gboard_patches_stickers_row_png">
+        <translation locale="en">%1$d×%2$d · Tap to edit</translation>
+        <translation locale="it">%1$d×%2$d · Tocca per modificare</translation>
+    </string>
+    <string name="gboard_patches_stickers_row_gif">
+        <translation locale="en">GIF · Tap to delete</translation>
+        <translation locale="it">GIF · Tocca per eliminare</translation>
+    </string>
+    <string name="gboard_patches_stickers_delete_title">
+        <translation locale="en">Delete this sticker?</translation>
+        <translation locale="it">Eliminare questo sticker?</translation>
+    </string>
+    <string name="gboard_patches_stickers_no_clip_image">
+        <translation locale="en">The clipboard has no image</translation>
+        <translation locale="it">Negli appunti non c\'è un\'immagine</translation>
+    </string>
+    <string name="gboard_patches_stickers_read_failed">
+        <translation locale="en">Couldn\'t open this image</translation>
+        <translation locale="it">Impossibile aprire l\'immagine</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_remove_bg">
+        <translation locale="en">Remove plain background</translation>
+        <translation locale="it">Rimuovi sfondo uniforme</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_no_plain_bg">
+        <translation locale="en">No plain background found. Use the eraser instead.</translation>
+        <translation locale="it">Nessuno sfondo uniforme trovato. Usa la gomma.</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_hint">
+        <translation locale="en">Drag on the image to erase</translation>
+        <translation locale="it">Trascina sull\'immagine per cancellare</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_brush">
+        <translation locale="en">Eraser size</translation>
+        <translation locale="it">Dimensione gomma</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_undo">
+        <translation locale="en">Undo</translation>
+        <translation locale="it">Annulla</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_delete">
+        <translation locale="en">Delete</translation>
+        <translation locale="it">Elimina</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_cancel">
+        <translation locale="en">Cancel</translation>
+        <translation locale="it">Chiudi</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_save">
+        <translation locale="en">Save</translation>
+        <translation locale="it">Salva</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_empty">
+        <translation locale="en">The sticker is empty</translation>
+        <translation locale="it">Lo sticker è vuoto</translation>
+    </string>
+    <string name="gboard_patches_stickers_keyboard_button">
+        <translation locale="en">Stickers</translation>
+        <translation locale="it">Sticker</translation>
+    </string>
+    <string name="gboard_patches_stickers_keyboard_empty">
+        <translation locale="en">No stickers yet. Tap + to add some.</translation>
+        <translation locale="it">Ancora nessuno sticker. Tocca + per aggiungerne.</translation>
+    </string>
+    <string name="gboard_patches_stickers_keyboard_copied">
+        <translation locale="en">This app doesn\'t accept stickers here. Copied to clipboard.</translation>
+        <translation locale="it">Questa app non accetta sticker qui. Copiato negli appunti.</translation>
+    </string>
+    <string name="gboard_patches_stickers_keyboard_close">
+        <translation locale="en">Close stickers</translation>
+        <translation locale="it">Chiudi sticker</translation>
+    </string>
+    <string name="gboard_patches_stickers_keyboard_add">
+        <translation locale="en">Add stickers</translation>
+        <translation locale="it">Aggiungi sticker</translation>
+    </string>
+    <string name="gboard_patches_stickers_section_keyboard">
+        <translation locale="en">Keyboard</translation>
+        <translation locale="it">Tastiera</translation>
+    </string>
+    <string name="gboard_patches_stickers_header_button_title">
+        <translation locale="en">Show in the keyboard top row</translation>
+        <translation locale="it">Mostra nella barra superiore della tastiera</translation>
+    </string>
+    <string name="gboard_patches_stickers_header_button_summary">
+        <translation locale="en">Adds a Stickers button next to Sticker, GIF and Clipboard</translation>
+        <translation locale="it">Aggiunge un pulsante Sticker accanto a Sticker, GIF e Appunti</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_title_new">
+        <translation locale="en">New sticker</translation>
+        <translation locale="it">Nuovo sticker</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_title_edit">
+        <translation locale="en">Edit sticker</translation>
+        <translation locale="it">Modifica sticker</translation>
+    </string>
+    <string name="gboard_patches_stickers_discard_title">
+        <translation locale="en">Discard your changes?</translation>
+        <translation locale="it">Scartare le modifiche?</translation>
+    </string>
+    <string name="gboard_patches_stickers_discard">
+        <translation locale="en">Discard</translation>
+        <translation locale="it">Scarta</translation>
+    </string>
+    <string name="gboard_patches_stickers_capture_button">
+        <translation locale="en">Save a Gboard GIF</translation>
+        <translation locale="it">Salva una GIF di Gboard</translation>
+    </string>
+    <string name="gboard_patches_stickers_capture_hint">
+        <translation locale="en">Now pick a GIF or sticker in Gboard: it will be saved here instead of sent.</translation>
+        <translation locale="it">Ora scegli una GIF o uno sticker in Gboard: verrà salvato qui invece di essere inviato.</translation>
+    </string>
+    <string name="gboard_patches_stickers_capture_saved">
+        <translation locale="en">Saved to your stickers</translation>
+        <translation locale="it">Salvato nei tuoi sticker</translation>
+    </string>
+    <string name="gboard_patches_stickers_capture_failed">
+        <translation locale="en">Couldn\'t save this one</translation>
+        <translation locale="it">Impossibile salvarlo</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_rotate">
+        <translation locale="en">Rotate</translation>
+        <translation locale="it">Ruota</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_crop">
+        <translation locale="en">Crop</translation>
+        <translation locale="it">Ritaglia</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_apply_crop">
+        <translation locale="en">Apply crop</translation>
+        <translation locale="it">Applica ritaglio</translation>
+    </string>
+    <string name="gboard_patches_stickers_editor_crop_hint">
+        <translation locale="en">Drag the corners or the frame to crop</translation>
+        <translation locale="it">Trascina gli angoli o il riquadro per ritagliare</translation>
+    </string>
 </settings-text>

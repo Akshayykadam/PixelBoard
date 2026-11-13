@@ -107,6 +107,7 @@ import java.util.concurrent.RejectedExecutionException;
 import com.akshaykadam.pixelboard.extension.R;
 import com.akshaykadam.pixelboard.extension.BuildConfig;
 import com.akshaykadam.pixelboard.extension.settings.keyboardpreview.GboardKeyboardPreviewController;
+import com.akshaykadam.pixelboard.extension.stickers.GboardCustomStickersFeature;
 import com.akshaykadam.pixelboard.extension.updater.PixelBoardUpdateFeature;
 import com.akshaykadam.pixelboard.extension.updater.PixelBoardUpdateManager;
 
@@ -3203,6 +3204,13 @@ public final class GboardPatchesSettingsActivity extends Activity
                     }
                 }));
 
+        GboardCustomStickersFeature stickersFeature = new GboardCustomStickersFeature(context);
+        rows.add(new GboardPatchesSettingsContract.NavigationRow(
+                stickersFeature.getEntryTitle(),
+                stickersFeature.getEntrySummary(),
+                true,
+                () -> stickersFeature.openRootEntry(this)));
+
         List<GboardPatchesSettingsContract.Section> sections =
                 new ArrayList<GboardPatchesSettingsContract.Section>();
         sections.add(new GboardPatchesSettingsContract.Section(
@@ -3654,7 +3662,11 @@ public final class GboardPatchesSettingsActivity extends Activity
         if (icon != null) {
             iconView = new ImageView(this);
             iconView.setImageDrawable(icon);
-            LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(dp(24), dp(24));
+            // Large icons are picture thumbnails (custom stickers); keep them recognisable.
+            int iconSize = Math.max(icon.getIntrinsicWidth(), icon.getIntrinsicHeight()) > dp(32)
+                    ? dp(44) : dp(24);
+            iconView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(iconSize, iconSize);
             iconParams.rightMargin = dp(16);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 iconParams.setMarginEnd(dp(16));

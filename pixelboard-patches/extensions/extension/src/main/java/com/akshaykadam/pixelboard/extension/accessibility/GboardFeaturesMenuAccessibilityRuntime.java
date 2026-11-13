@@ -8,6 +8,8 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.TextView;
 
+import com.akshaykadam.pixelboard.extension.stickers.GboardCustomStickerRuntime;
+
 public final class GboardFeaturesMenuAccessibilityRuntime {
 
     private static final long DEBOUNCE_MILLIS = 150L;
@@ -21,6 +23,7 @@ public final class GboardFeaturesMenuAccessibilityRuntime {
         if (view == null) {
             return;
         }
+        GboardCustomStickerRuntime.onFeaturesMenuChanged(view);
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
                 view.setAccessibilityPaneTitle(resolvePaneTitle(view));
@@ -31,6 +34,9 @@ public final class GboardFeaturesMenuAccessibilityRuntime {
     }
 
     public static void onAccessPointsPanelVisibilityChanged(final View view) {
+        if (view != null) {
+            GboardCustomStickerRuntime.onFeaturesMenuChanged(view);
+        }
         if (view == null || !isVisible(view)) {
             return;
         }
