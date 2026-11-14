@@ -849,6 +849,12 @@
         <translation locale="th">เปิดใช้รูปแบบปุ่มโค้งมน Material 3 Expressive (Belka)</translation>
         <translation locale="uk">Увімкнути закруглений стиль клавіш Material 3 Expressive (Belka).</translation>
     </string>
+    <string name="gboard_patches_expressive_look_title">
+        <translation locale="en">Expressive look</translation>
+    </string>
+    <string name="gboard_patches_expressive_look_summary">
+        <translation locale="en">Rounded top corners and sunburst toolbar buttons. Takes effect when the keyboard restarts.</translation>
+    </string>
     <string name="gboard_patches_frequently_used_emojis_title">
         <translation locale="en">Frequently used emojis</translation>
         <translation locale="es">Emojis de uso frecuente</translation>
