@@ -33,6 +33,19 @@ public final class GboardAiWritingToolsSettings {
         if (lookupContext == null) {
             return null;
         }
+        if (android.os.Build.VERSION.SDK_INT >= 24) {
+            try {
+                android.os.UserManager um =
+                        (android.os.UserManager) lookupContext.getSystemService(Context.USER_SERVICE);
+                if (um != null && !um.isUserUnlocked()) {
+                    Context dpsContext = lookupContext.createDeviceProtectedStorageContext();
+                    if (dpsContext != null) {
+                        return dpsContext.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+        }
         return lookupContext.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
     }
 

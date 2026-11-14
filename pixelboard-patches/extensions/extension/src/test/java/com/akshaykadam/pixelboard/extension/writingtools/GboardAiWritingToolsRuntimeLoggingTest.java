@@ -506,9 +506,9 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_WHEN_TALKBACK_ON));
 
         // Glide typing and autocorrect decoder flags
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_TWO_STAGE_DECODER));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_SPACE_TRANSPOSITION_POST_CORRECTION));

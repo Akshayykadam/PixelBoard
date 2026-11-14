@@ -20,7 +20,7 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.AD_ACTIVATION_TYPE_FLAG,
                         Long.valueOf(0L)));
-        Assert.assertEquals(Long.valueOf(0L),
+        Assert.assertEquals(Long.valueOf(5000L),
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG,
                         Long.valueOf(5000L)));
@@ -59,7 +59,7 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.ENABLE_AGENTIC_DICTATION_FLAG,
                         Boolean.FALSE));
-        Assert.assertEquals(Long.valueOf(0L),
+        Assert.assertEquals(Long.valueOf(5000L),
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG,
                         Long.valueOf(5000L)));
@@ -91,7 +91,7 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.ENABLE_JETSON_IN_TOOLBAR_FLAG,
                         Boolean.FALSE));
-        Assert.assertEquals(Long.valueOf(0L),
+        Assert.assertEquals(Long.valueOf(5000L),
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG,
                         Long.valueOf(5000L)));
@@ -161,5 +161,29 @@ public final class GboardRambler1803StockPolicyTest {
         Assert.assertTrue(
                 GboardRambler1803StockPolicy.isTargetFlagName(
                         GboardRambler1803StockPolicy.ENABLE_HIDE_RAMBLER_AL_IDLING_STATE_FLAG));
+    }
+
+    @Test
+    public void proactiveAsrAndSeamlessFallbackAreDisabled() {
+        GboardRambler1803OfficialSelectionRuntime.updateOfficialSelection(true);
+        Assert.assertSame(Boolean.FALSE,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG,
+                        Boolean.TRUE));
+        Assert.assertSame(Boolean.FALSE,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG,
+                        Boolean.TRUE));
+        Integer wrongType = Integer.valueOf(1);
+        Assert.assertSame(wrongType,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG,
+                        wrongType));
+        Assert.assertTrue(
+                GboardRambler1803StockPolicy.isTargetFlagName(
+                        GboardRambler1803StockPolicy.AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG));
+        Assert.assertTrue(
+                GboardRambler1803StockPolicy.isTargetFlagName(
+                        GboardRambler1803StockPolicy.AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG));
     }
 }

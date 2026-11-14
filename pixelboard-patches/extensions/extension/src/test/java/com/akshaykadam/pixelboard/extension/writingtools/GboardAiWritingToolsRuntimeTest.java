@@ -54,7 +54,7 @@ public final class GboardAiWritingToolsRuntimeTest {
                         Boolean.FALSE,
                         settings,
                         writingToolsOff));
-        Assert.assertSame(Boolean.TRUE,
+        Assert.assertSame(Boolean.FALSE,
                 GboardAiWritingToolsRuntime.computeOverrideValue(
                         GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_ON_SELECTED_TEXT,
                         Boolean.FALSE,
@@ -396,7 +396,7 @@ public final class GboardAiWritingToolsRuntimeTest {
 
     @Test
     public void autoCorrectionAndDecoderFlagsAreEnforced() {
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_TRY_INITIALIZE_DECODER_AFTER_LM_LOADS));
@@ -411,7 +411,13 @@ public final class GboardAiWritingToolsRuntimeTest {
                 new TestFlagReceiver(
                         GboardAiWritingToolsRuntime.FLAG_DELAY_TO_WAIT_FOR_SUGGESTIONS_BEFORE_COMMIT_MS),
                 Long.valueOf(40L));
-        Assert.assertEquals(Long.valueOf(150L), delayResult);
+        Assert.assertEquals(Long.valueOf(40L), delayResult);
+
+        Object decoderLockResult = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK),
+                Boolean.TRUE);
+        Assert.assertSame(Boolean.FALSE, decoderLockResult);
 
         Object webTextResult = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
                 new TestFlagReceiver(
@@ -543,7 +549,7 @@ public final class GboardAiWritingToolsRuntimeTest {
                 Boolean.FALSE,
                 settings,
                 preferences));
-        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.computeOverrideValue(
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.computeOverrideValue(
                 GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_ON_SELECTED_TEXT,
                 Boolean.FALSE,
                 settings,

@@ -196,31 +196,12 @@ public final class GboardRamblerDictationRuntime {
                         intentField.setInt(action, 0);
                     }
 
-                    String textToInsert = !transcript.isEmpty() ? transcript : spanText;
-                    if (!textToInsert.isEmpty()) {
-                        // Check if spanText ALREADY starts with textBefore, ends with textAfter,
-                        // and contains a non-empty delta (normal dictation path).
-                        boolean hasPrefixAndDelta = !textBefore.isEmpty()
-                                && spanText != null
-                                && spanText.startsWith(textBefore)
-                                && spanText.endsWith(textAfter)
-                                && spanText.length() > (textBefore.length() + textAfter.length());
-
-                        if (!hasPrefixAndDelta) {
-                            // If spanText equals textBefore (Test 1, repeated phrase) or does NOT
-                            // start with textBefore (Test 2, similar phrase), format spanText with
-                            // textBefore + separator + textToInsert + textAfter.
-                            // Gboard's native logic will cleanly extract delta = separator + textToInsert
-                            // and commit it at the cursor without dropping or diff-overwriting!
-                            String formattedText;
-                            if (!textBefore.isEmpty()) {
-                                boolean needsSpace = needsSpaceBetween(textBefore, textToInsert);
-                                formattedText = textBefore + (needsSpace ? " " : "") + textToInsert + textAfter;
-                            } else {
-                                formattedText = textToInsert + textAfter;
-                            }
-                            textSpanField.set(span, formattedText);
-                        }
+                    // If Rambler dropped the spoken text or echoed textBefore, restore verbatim transcript.
+                    // Do not prepend textBefore to spanText (Issue #166): Gboard commits span.c at the
+                    // cursor position, so prepending textBefore repeatedly duplicates pre-existing editor
+                    // text and previously pasted clipboard items.
+                    if (!transcript.isEmpty() && (spanText == null || spanText.isEmpty() || spanText.equals(textBefore))) {
+                        textSpanField.set(span, transcript);
                     }
                 }
             }
@@ -240,14 +221,14 @@ public final class GboardRamblerDictationRuntime {
             return true;
         }
 
-        String lower = transcript.trim().toLowerCase(Locale.ROOT);
-
         // Intent 1 (INTENT_EDIT) and Intent 2 (INTENT_EDIT_HISTORY):
+        // These are always genuine voice commands/actions (e.g. "delete that", "clear", "undo", "redo",
+        // "add exclamation point", etc.) and must never be stripped of their diffs.
         if (intent == 1 || intent == 2) {
-            if (isEditCommand(lower)) {
-                return true;
-            }
+            return true;
         }
+
+        String lower = transcript.trim().toLowerCase(Locale.ROOT);
 
         // Intent 3 (INTENT_REWRITE):
         if (intent == 3) {
@@ -255,10 +236,13 @@ public final class GboardRamblerDictationRuntime {
                 return true;
             }
             // Check if Rambler's diff indicates an echo/correction of surrounding text
-            // rather than a genuine command (Test 2).
+            // rather than a genuine command (Issue #134, Test 2).
             if (isDiffDictationEcho(action, transcript)) {
                 return false;
             }
+            // Any other rewrite intent (e.g. "add exclamation point", "put quotes",
+            // multilingual commands, or custom actions) is a genuine command.
+            return true;
         }
 
         return false;
@@ -285,10 +269,10 @@ public final class GboardRamblerDictationRuntime {
             String normTranscript = normalizeForComparison(transcript);
             String normPrefix = normalizeForComparison(prefix);
 
-            if (!normPrefix.isEmpty() && normTranscript.startsWith(normPrefix)) {
+            if (!normPrefix.isEmpty() && normPrefix.length() >= 6 && normTranscript.startsWith(normPrefix)) {
                 return true;
             }
-            if (!normPrefix.isEmpty() && normPrefix.length() > 5 && normTranscript.contains(normPrefix)) {
+            if (!normPrefix.isEmpty() && normPrefix.length() >= 6 && normTranscript.contains(normPrefix)) {
                 return true;
             }
         } catch (Throwable ignored) {
@@ -300,6 +284,8 @@ public final class GboardRamblerDictationRuntime {
         if (lower.startsWith("delete") || lower.startsWith("clear") || lower.startsWith("erase")
                 || lower.startsWith("remove") || lower.startsWith("scratch that")
                 || lower.startsWith("undo") || lower.startsWith("redo") || lower.startsWith("revert")
+                || lower.startsWith("add ") || lower.startsWith("insert ") || lower.startsWith("put ")
+                || lower.startsWith("добавь") || lower.startsWith("вставь") || lower.startsWith("поставь")
                 || lower.startsWith("удали") || lower.startsWith("стереть") || lower.startsWith("очисти")
                 || lower.startsWith("отмени")) {
             return true;
@@ -308,6 +294,10 @@ public final class GboardRamblerDictationRuntime {
     }
 
     private static boolean isRewriteCommand(String lower) {
+        if (lower.startsWith("add ") || lower.startsWith("insert ") || lower.startsWith("put ")
+                || lower.startsWith("добавь") || lower.startsWith("вставь") || lower.startsWith("поставь")) {
+            return true;
+        }
         if (lower.startsWith("translate") || lower.startsWith("переведи")
                 || lower.startsWith("traduire") || lower.startsWith("traducir") || lower.startsWith("übersetz")) {
             return true;
@@ -350,33 +340,6 @@ public final class GboardRamblerDictationRuntime {
             }
         } catch (Throwable ignored) {
         }
-    }
-
-    private static boolean needsSpaceBetween(String textBefore, String textToInsert) {
-        if (textBefore == null || textBefore.isEmpty()) {
-            return false;
-        }
-        if (textToInsert == null || textToInsert.isEmpty()) {
-            return false;
-        }
-        char lastChar = textBefore.charAt(textBefore.length() - 1);
-        if (Character.isWhitespace(lastChar)) {
-            return false;
-        }
-        char firstChar = textToInsert.charAt(0);
-        if (Character.isWhitespace(firstChar)) {
-            return false;
-        }
-        if (firstChar == '.' || firstChar == ',' || firstChar == '!' || firstChar == '?'
-                || firstChar == ';' || firstChar == ':' || firstChar == ')' || firstChar == ']'
-                || firstChar == '}' || firstChar == '—' || firstChar == '-') {
-            return false;
-        }
-        if (lastChar == '(' || lastChar == '[' || lastChar == '{' || lastChar == '"'
-                || lastChar == '\'' || lastChar == '«') {
-            return false;
-        }
-        return true;
     }
 
     private static String normalizeForComparison(String s) {

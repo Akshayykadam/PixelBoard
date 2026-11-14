@@ -372,6 +372,18 @@ internal fun applyGboardPackageRename(
         }
     }
 
+    val usesSdkList = manifestDocument.getElementsByTagName("uses-sdk")
+    for (i in 0 until usesSdkList.length) {
+        val usesSdk = usesSdkList.item(i) as? Element ?: continue
+        val minSdkAttr = usesSdk.androidAttribute("minSdkVersion")
+        if (minSdkAttr != null) {
+            val minSdkVal = minSdkAttr.value.toIntOrNull()
+            if (minSdkVal != null && minSdkVal > 29) {
+                minSdkAttr.value = "29"
+            }
+        }
+    }
+
     val allManifestAttributes = manifestDocument.getElementsByTagName("*")
         .elements()
         .flatMap { element -> element.attributes.asSequence().map { attribute -> element to attribute } }

@@ -62,9 +62,7 @@ public final class GboardRambler1803StockPolicy {
                     AGENTIC_DICTATION_NEW_GI_MOTION_FLAG,
                     ENABLE_JETSON_S3_QUOTA_EXPERIMENT_OVERRIDE_FLAG,
                     AGENTIC_DICTATION_DISABLE_PRE_SESSION_QUOTA_CHECK_FLAG,
-                    ENABLE_PCM_AUDIO_CACHING_FOR_OFFLINE_FALLBACK_FLAG,
-                    AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG,
-                    AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG)));
+                    ENABLE_PCM_AUDIO_CACHING_FOR_OFFLINE_FALLBACK_FLAG)));
 
     private GboardRambler1803StockPolicy() {
     }
@@ -76,12 +74,15 @@ public final class GboardRambler1803StockPolicy {
         if (AD_ACTIVATION_TYPE_FLAG.equals(flagName)) {
             return originalResult instanceof Long ? Long.valueOf(2L) : originalResult;
         }
+        // Strict language enforcement (Issue #154): disable proactive parallel ASR and seamless fallback
+        // so voice recognition does not automatically switch or detect other languages (e.g. Czech -> Slovak).
+        if (AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG.equals(flagName)
+                || AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG.equals(flagName)) {
+            return originalResult instanceof Boolean ? Boolean.FALSE : originalResult;
+        }
+        // Retain stock deactivation delay so dictation and audio recording persist across screen rotations (Issue #147).
         if (AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName)) {
-            return originalResult instanceof Long
-                            && GboardRambler1803OfficialSelectionRuntime
-                                    .shouldEnableAgenticDictation()
-                    ? Long.valueOf(0L)
-                    : originalResult;
+            return originalResult;
         }
         // The AL toolbar replaces Gboard's stock collapse path: with it off, the Rambler
         // header shows the minimize key and the floating voice toolbar keeps the session.
@@ -107,6 +108,8 @@ public final class GboardRambler1803StockPolicy {
                 || AGENTIC_FEATURE_FLAGS.contains(flagName)
                 || ENABLE_RAMBLER_AL_TOOLBAR_FLAG.equals(flagName)
                 || AD_ACTIVATION_TYPE_FLAG.equals(flagName)
+                || AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG.equals(flagName)
+                || AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG.equals(flagName)
                 || AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName);
     }
 }
