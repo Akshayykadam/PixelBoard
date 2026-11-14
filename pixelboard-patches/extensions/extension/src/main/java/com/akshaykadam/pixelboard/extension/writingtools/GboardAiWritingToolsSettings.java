@@ -81,11 +81,12 @@ public final class GboardAiWritingToolsSettings {
             editor.putString(PREF_KEY_BACKEND_TYPE, DEFAULT_BACKEND_TYPE);
             editor.putBoolean(PREF_KEY_BACKEND_RESET_MIGRATED, true);
         }
-        if (!preferences.contains(PREF_KEY_V2_ENABLED)) {
+        if (!preferences.getBoolean("pref_v2_force_disabled_v1", false)) {
             if (editor == null) {
                 editor = preferences.edit();
             }
-            editor.putBoolean(PREF_KEY_V2_ENABLED, DEFAULT_V2_ENABLED);
+            editor.putBoolean(PREF_KEY_V2_ENABLED, false);
+            editor.putBoolean("pref_v2_force_disabled_v1", true);
         }
         if (editor != null) {
             editor.apply();
@@ -228,7 +229,7 @@ public final class GboardAiWritingToolsSettings {
             this.featureEnabled = featureEnabled;
             this.allKeyboardsEnabled = featureEnabled && allKeyboardsEnabled;
             this.backendType = sanitizeBackendType(backendType);
-            this.v2Enabled = featureEnabled && v2Enabled;
+            this.v2Enabled = false;
         }
     }
 }

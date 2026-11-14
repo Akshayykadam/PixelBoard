@@ -43,7 +43,7 @@ This repository contains the patch definitions and extension bytecode for **Pixe
 - **Modern Spell Checker Suggestion Chips & Grammar Checking**: Enforces Android 12+ inline spellcheck suggestion chips and add-to-dictionary UI on all devices (`GboardSpellCheckerChipsPatch`).
 - **Scan Text / Camera OCR & Floating Screenshot Banner**: Direct optical character recognition camera tool and floating screenshot suggestion chips with permissions.
 - **Emoji Palette V2 & Super Insert Hub**: Dedicated recent/frequent tabs, rich multi-view super insert, and in-line Smart Compose ghost autocompletion.
-- **Writing Tools V2 Gating**: "Suggested" chips, "Describe your edit" prompt bar, hardware/model eligibility device-gating, and dedicated Material You toggles.
+- **Stable AI Writing Assistant**: Proofread and tone rewrite without unwanted experimental prompt bars, ensuring reliable Google server-backed generation.
 - **Device-Gated Backend Selector**: Selectable inference engine (`GBOARD_SERVER`, `PRIVATE_INFERENCE_AICORE`, `PRIVATE_INFERENCE_ASTREA`) on supported Pixel devices.
 - **Material 3 Expressive Rounded Keys**: Belka rounded keyboard styling toggle with runtime Phenotype flag enforcement (#14).
 - **Restored Emoji Size Slider & Vibrant Candidate Emojis**: Restores missing emoji scale slider setting and ensures 100% opacity for candidate emojis (#26).

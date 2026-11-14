@@ -79,6 +79,20 @@ public final class GboardAiWritingToolsRuntime {
             "enable_writing_tools_my_style";
     static final String FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS =
             "enable_writing_tools_my_style_plus";
+    static final String FLAG_ENABLE_WRITING_TOOLS_V2_TUTORIAL_PROMPTS =
+            "enable_writing_tools_v2_tutorial_prompts";
+    static final String FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS_WITHOUT_SCREEN_CONTEXT =
+            "enable_writing_tools_my_style_plus_without_screen_context";
+    static final String FLAG_WRITING_TOOLS_SUGGEST_STYLE =
+            "writing_tools_suggest_style";
+    static final String FLAG_WRITING_TOOLS_MY_STYLE =
+            "writing_tools_my_style";
+    static final String FLAG_WRITING_TOOLS_MY_STYLE_PLUS =
+            "writing_tools_my_style_plus";
+    static final String FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT =
+            "writing_tools_use_v2_landscape_layout";
+    static final String FLAG_AGENTIC_DICTATION_ENABLE_CUSTOM_INSTRUCTION =
+            "agentic_dictation_enable_custom_instruction";
     static final String FLAG_ENABLE_MODELESS_SMART_EDIT =
             "enable_nga_lab_modeless_smartedit";
     static final String FLAG_MODELESS_SMART_EDIT_REGEX_VERSION =
@@ -502,6 +516,30 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_CORRECTION_COMMIT_ANIMATION.equals(flagName);
     }
 
+    static boolean isWritingToolsV2Flag(String flagName) {
+        if (flagName == null) {
+            return false;
+        }
+        if (FLAG_BACKEND_TYPE.equals(flagName)) {
+            return false;
+        }
+        return flagName.startsWith("writing_tools_v2")
+                || flagName.endsWith("_writing_tools_v2")
+                || flagName.contains("writing_tools_v2_")
+                || FLAG_ENABLE_WRITING_TOOLS_V2.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_V2_TUTORIAL_PROMPTS.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS_WITHOUT_SCREEN_CONTEXT.equals(flagName)
+                || FLAG_WRITING_TOOLS_SUGGEST_STYLE.equals(flagName)
+                || FLAG_WRITING_TOOLS_MY_STYLE.equals(flagName)
+                || FLAG_WRITING_TOOLS_MY_STYLE_PLUS.equals(flagName)
+                || FLAG_AGENTIC_DICTATION_ENABLE_CUSTOM_INSTRUCTION.equals(flagName)
+                || FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT.equals(flagName);
+    }
+
     public static Object applyOverriddenFlagValue(Object receiver, Object originalResult) {
         try {
             if (receiver == null) {
@@ -756,26 +794,19 @@ public final class GboardAiWritingToolsRuntime {
                 && originalResult instanceof String) {
             return "";
         }
-        if (!(originalResult instanceof Boolean)) {
+        if (isWritingToolsV2Flag(flagName)) {
+            if (originalResult instanceof Boolean) {
+                return Boolean.FALSE;
+            }
+            if (originalResult instanceof String) {
+                return "";
+            }
+            if (originalResult instanceof Long) {
+                return 0L;
+            }
             return originalResult;
         }
-
-        if (FLAG_ENABLE_WRITING_TOOLS_V2.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_ZERO_STATE.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ALLOW_EMPTY_USER_INSTRUCTION.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS.equals(flagName)) {
-            if (originalResult instanceof Boolean) {
-                return (settings.v2Enabled && GboardAiWritingToolsDeviceSupport.isSupportedDevice())
-                        ? Boolean.TRUE
-                        : Boolean.FALSE;
-            }
+        if (!(originalResult instanceof Boolean)) {
             return originalResult;
         }
 

@@ -21,7 +21,7 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.AD_ACTIVATION_TYPE_FLAG,
                         Long.valueOf(0L)));
-        Assert.assertEquals(Long.valueOf(5000L),
+        Assert.assertEquals(Long.valueOf(GboardRamblerRotationGrace.deactivationDelayMs()),
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG,
                         Long.valueOf(5000L)));
@@ -60,7 +60,7 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.ENABLE_AGENTIC_DICTATION_FLAG,
                         Boolean.FALSE));
-        Assert.assertEquals(Long.valueOf(5000L),
+        Assert.assertEquals(Long.valueOf(GboardRamblerRotationGrace.deactivationDelayMs()),
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG,
                         Long.valueOf(5000L)));
@@ -92,7 +92,7 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.ENABLE_JETSON_IN_TOOLBAR_FLAG,
                         Boolean.FALSE));
-        Assert.assertEquals(Long.valueOf(5000L),
+        Assert.assertEquals(Long.valueOf(GboardRamblerRotationGrace.deactivationDelayMs()),
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG,
                         Long.valueOf(5000L)));
