@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import com.akshaykadam.pixelboard.extension.stickers.StickerStore;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -33,6 +34,10 @@ public final class GboardPatchesSettingsProvider extends ContentProvider {
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
         Context context = getContext();
+        File sticker = context == null ? null : StickerStore.fromUriPath(context, uri.getPath());
+        if (sticker != null) {
+            return ParcelFileDescriptor.open(sticker, ParcelFileDescriptor.MODE_READ_ONLY);
+        }
         if (context != null) {
             File apk = new File(context.getApplicationInfo().sourceDir);
             if (apk.exists()) {
@@ -44,6 +49,11 @@ public final class GboardPatchesSettingsProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
+        Context context = getContext();
+        File sticker = context == null ? null : StickerStore.fromUriPath(context, uri.getPath());
+        if (sticker != null) {
+            return StickerStore.mimeType(sticker);
+        }
         return "application/vnd.android.package-archive";
     }
 

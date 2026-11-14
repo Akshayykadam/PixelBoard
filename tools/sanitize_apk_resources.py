@@ -15,24 +15,23 @@ import zipfile
 import subprocess
 
 def find_sdk_tool(tool_name):
-    # Check environment variables
-    for env_var in ['ANDROID_HOME', 'ANDROID_SDK_ROOT']:
-        val = os.environ.get(env_var)
-        if val:
-            candidates = sorted(glob.glob(os.path.join(val, 'build-tools', '*', tool_name)), reverse=True)
+    # Windows ships the build tools as .exe / .bat
+    names = [tool_name, tool_name + '.exe', tool_name + '.bat']
+    sdk_roots = [os.environ.get(v) for v in ['ANDROID_HOME', 'ANDROID_SDK_ROOT']]
+    # Default macOS and Windows SDK locations
+    sdk_roots.append(os.path.expanduser('~/Library/Android/sdk'))
+    if os.environ.get('LOCALAPPDATA'):
+        sdk_roots.append(os.path.join(os.environ['LOCALAPPDATA'], 'Android', 'Sdk'))
+    for root in filter(None, sdk_roots):
+        for name in names:
+            candidates = sorted(glob.glob(os.path.join(root, 'build-tools', '*', name)), reverse=True)
             if candidates:
                 return candidates[0]
 
-    # Check default macOS path
-    default_path = os.path.expanduser('~/Library/Android/sdk/build-tools')
-    candidates = sorted(glob.glob(os.path.join(default_path, '*', tool_name)), reverse=True)
-    if candidates:
-        return candidates[0]
-
-    # Check which
-    which_path = shutil.which(tool_name)
-    if which_path:
-        return which_path
+    for name in names:
+        which_path = shutil.which(name)
+        if which_path:
+            return which_path
 
     return None
 
@@ -153,17 +152,17 @@ def sanitize_apk(target_apk, input_apk, keystore_path):
     apksigner = find_sdk_tool('apksigner')
 
     if not zipalign or not apksigner:
-        print(f"⚠️ Warning: zipalign ({zipalign}) or apksigner ({apksigner}) not found. Moving temp APK in place.")
-        shutil.move(temp_apk, target_apk)
-        return
+        # The rewritten APK has a broken signature and would not install; stop instead.
+        print(f"❌ zipalign ({zipalign}) or apksigner ({apksigner}) not found. Set ANDROID_HOME.")
+        os.remove(temp_apk)
+        sys.exit(1)
 
     # Run zipalign
     align_cmd = [zipalign, '-f', '-p', '4', temp_apk, aligned_apk]
     res = subprocess.run(align_cmd, capture_output=True, text=True)
     if res.returncode != 0:
         print(f"❌ zipalign failed: {res.stderr}")
-        shutil.move(temp_apk, target_apk)
-        return
+        sys.exit(1)
 
     # Run apksigner
     sign_cmd = [
@@ -177,8 +176,7 @@ def sanitize_apk(target_apk, input_apk, keystore_path):
     res = subprocess.run(sign_cmd, capture_output=True, text=True)
     if res.returncode != 0:
         print(f"❌ apksigner failed: {res.stderr}")
-        shutil.move(temp_apk, target_apk)
-        return
+        sys.exit(1)
 
     # Verify signature
     res = subprocess.run([apksigner, 'verify', aligned_apk], capture_output=True, text=True)
@@ -189,7 +187,7 @@ def sanitize_apk(target_apk, input_apk, keystore_path):
             os.remove(temp_apk)
     else:
         print(f"❌ Verification failed: {res.stderr}")
-        shutil.move(temp_apk, target_apk)
+        sys.exit(1)
 
 if __name__ == '__main__':
     if len(sys.argv) < 4:

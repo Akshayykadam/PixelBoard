@@ -125,7 +125,10 @@ fi
     -r=output/patching-result.json \
     "$INPUT_APK"
 
-python3 tools/sanitize_apk_resources.py output/PixelBoard.apk "$INPUT_APK" "$KEYSTORE_PATH"
+# Windows often only has "python" (python3 may be the Microsoft Store stub)
+PYTHON_BIN=python3
+"$PYTHON_BIN" --version >/dev/null 2>&1 || PYTHON_BIN=python
+PYTHONUTF8=1 "$PYTHON_BIN" tools/sanitize_apk_resources.py output/PixelBoard.apk "$INPUT_APK" "$KEYSTORE_PATH"
 
 if [[ -f "output/patching-result.json" ]]; then
     GBOARD_VER=$(grep -o '"packageVersion":"[^"]*"' output/patching-result.json | cut -d'"' -f4 | cut -d'-' -f1)
