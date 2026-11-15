@@ -817,7 +817,9 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_WRITING_TOOLS_FOR_MINORS.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE.equals(flagName)
                 || FLAG_WRITING_TOOLS_ENABLE_STABLE_ENTRANCE.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_REPLACE_BUTTON.equals(flagName)) {
+                || FLAG_ENABLE_WRITING_TOOLS_REPLACE_BUTTON.equals(flagName)
+                || FLAG_WRITING_TOOLS_REPLACE_BUTTON.equals(flagName)
+                || FLAG_WRITING_TOOLS_CONTEXT_OPT_IN.equals(flagName)) {
             return Boolean.TRUE;
         }
         if (FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName)
@@ -1100,12 +1102,17 @@ public final class GboardAiWritingToolsRuntime {
                 if (editor == null) editor = prefs.edit();
                 editor.putBoolean(PREF_KEY_WRITING_TOOLS_SCREEN_CONTEXT_OPT_IN_V1, true);
             }
-            if (!prefs.contains(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE)) {
+            if (prefs.contains("setting_writing_tools_pi_override")) {
                 if (editor == null) editor = prefs.edit();
-                editor.putBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, true);
+                editor.putBoolean("setting_writing_tools_pi_override", false);
+            }
+            if (!prefs.contains(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE)
+                    || prefs.getBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, false)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, false);
             }
             if (editor != null) {
-                editor.apply();
+                editor.commit();
             }
         } catch (Throwable ignored) {
         }
