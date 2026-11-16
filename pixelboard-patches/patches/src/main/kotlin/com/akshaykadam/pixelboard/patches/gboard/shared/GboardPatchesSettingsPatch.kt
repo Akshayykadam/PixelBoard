@@ -18,10 +18,15 @@ import org.w3c.dom.Node
 import com.akshaykadam.pixelboard.patches.gboard.features.emoji.gboardCandidateEmojiVibrancyPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardSyncPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardHistorySliderPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardRecentLimitPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.addPinTips
+import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardRetentionTextPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardDefaultRetentionPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.spellchecker.gboardSpellCheckerChipsPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.accessibility.gboardFeaturesMenuAccessibilityPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRamblerDictationPromptFixPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRamblerMinimizeKeyPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.keyboard.gboardKeyboardSymbolKeyLabelPatch
 
 internal val gboardPatchesSettingsPatch = resourcePatch(
     description = "Add Patches entry to the bottom of Gboard settings."
@@ -33,10 +38,14 @@ internal val gboardPatchesSettingsPatch = resourcePatch(
         gboardCandidateEmojiVibrancyPatch,
         gboardClipboardSyncPatch,
         gboardClipboardHistorySliderPatch,
+        gboardClipboardRecentLimitPatch,
+        gboardClipboardRetentionTextPatch,
+        gboardClipboardDefaultRetentionPatch,
         gboardSpellCheckerChipsPatch,
         gboardFeaturesMenuAccessibilityPatch,
         gboardRamblerDictationPromptFixPatch,
         gboardRamblerMinimizeKeyPatch,
+        gboardKeyboardSymbolKeyLabelPatch,
     )
 
     finalize {
@@ -428,6 +437,12 @@ internal fun applyPixelboardStringsOverride() = with(context) {
     for (file in stringFiles) {
         var text = file.readText()
         var modified = false
+
+        val withPinTips = addPinTips(text, file.parentFile.name)
+        if (withPinTips != text) {
+            text = withPinTips
+            modified = true
+        }
 
         for (name in spellCheckerStringNames) {
             val regex = Regex("""<string name="$name">.*?</string>""")

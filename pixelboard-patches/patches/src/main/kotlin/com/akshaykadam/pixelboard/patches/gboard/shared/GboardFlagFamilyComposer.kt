@@ -1,9 +1,11 @@
 package com.akshaykadam.pixelboard.patches.gboard.shared
 
 import com.akshaykadam.pixelboard.patches.shared.addInstructions
+import com.akshaykadam.pixelboard.patches.shared.replaceInstruction
 import com.akshaykadam.pixelboard.patches.shared.BytecodePatchContext
 import com.akshaykadam.pixelboard.patches.shared.bytecodePatch
 import com.akshaykadam.pixelboard.patches.shared.MutableMethod
+import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
@@ -142,8 +144,22 @@ private val gboardFlagFamilyComposerPatch = bytecodePatch(
             name = "a",
             type = "Ljava/lang/String;",
         )
+        val targetMethod1863Release = GboardMethodTarget(
+            classType = "Lodo;",
+            name = "g",
+            parameterTypes = emptyList(),
+            returnType = "Ljava/lang/Object;",
+        )
+        val targetField1863Release = GboardFieldTarget(
+            classType = "Lodo;",
+            name = "a",
+            type = "Ljava/lang/String;",
+        )
 
         val (targetMethod, targetField) = when {
+            findMutableMethodOrNull(targetMethod1863Release) != null && mutableFieldOrNull(targetField1863Release) != null -> {
+                targetMethod1863Release to targetField1863Release
+            }
             findMutableMethodOrNull(targetMethod1853Release) != null && mutableFieldOrNull(targetField1853Release) != null -> {
                 targetMethod1853Release to targetField1853Release
             }
@@ -168,7 +184,47 @@ private val gboardFlagFamilyComposerPatch = bytecodePatch(
             selected,
             targetField,
         )
+
+        val targetFallbackMethod1863Release = GboardMethodTarget(
+            classType = "Lodf;",
+            name = "g",
+            parameterTypes = emptyList(),
+            returnType = "Ljava/lang/Object;",
+        )
+        val fallbackMethod = findMutableMethodOrNull(targetFallbackMethod1863Release)
+        if (fallbackMethod != null) {
+            applyFallbackFlagGetterPatch(fallbackMethod, selected)
+        }
     }
+}
+
+internal fun applyFallbackFlagGetterPatch(
+    method: MutableMethod,
+    selectedFeatures: Collection<GboardFlagFamilyFeatureSpec>,
+) {
+    if (selectedFeatures.isEmpty()) return
+    val ordered = selectedFeatures.sortedBy { it.feature.compositionOrder }
+    val instructions = method.implementation?.instructions ?: return
+    if (instructions.any { it.isFlagFamilyRuntimeReference() }) {
+        return
+    }
+
+    val registerCountField = MutableMethodImplementation::class.java
+        .getDeclaredField("registerCount").apply {
+            isAccessible = true
+        }
+    registerCountField.setInt(method.implementation, 2)
+
+    val firstInsn = instructions.firstOrNull() ?: return
+    val fieldRef = ((firstInsn as? TwoRegisterInstruction) as? ReferenceInstruction)?.reference as? FieldReference
+        ?: return
+    method.replaceInstruction(0, "iget-object v0, v1, ${fieldRef.definingClass}->${fieldRef.name}:${fieldRef.type}")
+
+    val delegateInstructions = ordered.joinToString("\n\n") { spec ->
+        emitFlagFamilyRuntimeCall(spec.runtimeCall, "v1, v0") + "\n\nmove-result-object v0"
+    }
+    val returnIndex = method.returnInstructionIndices().singleOrNull() ?: 1
+    method.addInstructions(returnIndex, delegateInstructions)
 }
 
 internal fun gboardFlagFamilyFeaturePatch(
@@ -478,7 +534,8 @@ private fun com.android.tools.smali.dexlib2.iface.instruction.Instruction
             field.definingClass == "Lacqf;" && field.name == "a" ||
             field.definingClass == "Locf;" && field.name == "a" ||
             field.definingClass == "Loeg;" && field.name == "a" ||
-            field.definingClass == "Lokr;" && field.name == "a") &&
+            field.definingClass == "Lokr;" && field.name == "a" ||
+            field.definingClass == "Lody;" && field.name == "a") &&
         field.type == "Ljava/lang/Object;"
 }
 

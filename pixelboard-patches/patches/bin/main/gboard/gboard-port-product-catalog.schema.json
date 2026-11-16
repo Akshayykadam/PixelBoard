@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Akshayykadam/PixelBoard/schemas/gboard-port-product-catalog.schema.json",
+  "title": "Gboard port product catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "catalog_version", "composition", "binding_contracts", "anchor_families", "features"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "format": { "const": "gboard-port-product-catalog.v1" },
+    "catalog_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "composition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selected_only_call_chain", "runtime_feature_mask"],
+      "properties": {
+        "selected_only_call_chain": { "const": true },
+        "runtime_feature_mask": { "const": false }
+      }
+    },
+    "binding_contracts": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$" },
+      "additionalProperties": { "enum": ["method", "field", "type"] }
+    },
+    "anchor_families": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/anchorFamilyId" }
+    },
+    "features": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/feature" }
+    }
+  },
+  "definitions": {
+    "featureId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "migrationScope": {
+      "enum": [
+        "generic",
+        "version-neutral-extension",
+        "version-sensitive"
+      ]
+    },
+    "consumerFile": {
+      "type": "string",
+      "pattern": "^patches/src/main/(kotlin|resources)/(?!\\.{1,2}(/|$))[A-Za-z0-9_.-]+(/(?!\\.{1,2}(/|$))[A-Za-z0-9_.-]+)*$"
+    },
+    "anchorFamilyId": {
+      "enum": [
+        "dedicated_bytecode",
+        "flag_bool_getter",
+        "gesture_dispatch",
+        "pointer_lifecycle",
+        "resource_only",
+        "soft_key_bind"
+      ]
+    },
+    "phase": {
+      "enum": [
+        "after_stock",
+        "after_stock_result",
+        "before_stock",
+        "cleanup",
+        "dedicated",
+        "resource"
+      ]
+    },
+    "contribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contribution_id",
+        "anchor_family_id",
+        "phase",
+        "order",
+        "required_bindings",
+        "runtime_calls"
+      ],
+      "properties": {
+        "contribution_id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]*$" },
+        "anchor_family_id": { "$ref": "#/definitions/anchorFamilyId" },
+        "phase": { "$ref": "#/definitions/phase" },
+        "order": { "type": "integer", "minimum": 0 },
+        "required_bindings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+        },
+        "runtime_calls": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" }
+        }
+      }
+    },
+    "feature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "feature_id",
+        "public_patch_name",
+        "feature_marker",
+        "target_family_ids",
+        "migration_scope",
+        "consumer_files",
+        "contributions"
+      ],
+      "properties": {
+        "feature_id": { "$ref": "#/definitions/featureId" },
+        "public_patch_name": { "type": "string", "minLength": 1 },
+        "feature_marker": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "pattern": "^dev\\.jason\\.gboardpatches\\.feature\\.[a-z0-9_]+$" }
+          ]
+        },
+        "target_family_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9.]*$" }
+        },
+        "migration_scope": { "$ref": "#/definitions/migrationScope" },
+        "consumer_files": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/consumerFile" }
+        },
+        "depends_on_feature_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/featureId" }
+        },
+        "contributions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/contribution" }
+        }
+      }
+    }
+  }
+}

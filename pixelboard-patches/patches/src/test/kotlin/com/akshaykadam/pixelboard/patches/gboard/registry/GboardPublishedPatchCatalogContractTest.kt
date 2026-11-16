@@ -13,7 +13,7 @@ class GboardPublishedPatchCatalogContractTest {
         val registrations = GboardPublishedPatchCatalog.publishedRegistrations
 
         assertTrue(registrations.isNotEmpty())
-        assertEquals(4, registrations.size)
+        assertEquals(5, registrations.size)
         assertEquals(registrations.size, registrations.map { patch -> patch.name }.distinct().size)
         assertSame(
             gboardAdvancedVoiceTypingPatch,
@@ -30,6 +30,10 @@ class GboardPublishedPatchCatalogContractTest {
         assertSame(
             gboardPackageRenamePatch,
             registrations.single { patch -> patch.name == "Package Rename" },
+        )
+        assertSame(
+            gboardSimpleCalculatorPatch,
+            registrations.single { patch -> patch.name == "Simple Calculator" },
         )
     }
 
@@ -57,6 +61,7 @@ class GboardPublishedPatchCatalogContractTest {
                 "18.3.1.977415014-release-arm64-v8a",
                 "18.4.1.985164140-release-arm64-v8a",
                 "18.5.3.993608717-release-arm64-v8a",
+                "18.6.3.1002251336-release-arm64-v8a",
             ),
             aiWriting.getAsJsonObject("compatiblePackages")
                 .getAsJsonArray("com.google.android.inputmethod.latin")

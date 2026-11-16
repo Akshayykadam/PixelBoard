@@ -62,25 +62,34 @@ public final class GboardRambler1803StockPolicy {
                     AGENTIC_DICTATION_NEW_GI_MOTION_FLAG,
                     ENABLE_JETSON_S3_QUOTA_EXPERIMENT_OVERRIDE_FLAG,
                     AGENTIC_DICTATION_DISABLE_PRE_SESSION_QUOTA_CHECK_FLAG,
-                    ENABLE_PCM_AUDIO_CACHING_FOR_OFFLINE_FALLBACK_FLAG,
-                    AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG,
-                    AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG)));
+                    ENABLE_PCM_AUDIO_CACHING_FOR_OFFLINE_FALLBACK_FLAG)));
 
     private GboardRambler1803StockPolicy() {
     }
 
     public static Object maybeForceStockRouteValue(String flagName, Object originalResult) {
+        // Start tracking on the first flag read the policy sees, long before a rotation: Gboard
+        // reads the deactivation delay only inside onDeactivate, which may be the rotation itself.
+        GboardRamblerRotationGrace.ensureListening();
         if (SHOW_RAMBLER_DICT_SETTINGS_FLAG.equals(flagName)) {
             return originalResult instanceof Boolean ? Boolean.TRUE : originalResult;
         }
         if (AD_ACTIVATION_TYPE_FLAG.equals(flagName)) {
             return originalResult instanceof Long ? Long.valueOf(2L) : originalResult;
         }
+        // Strict language enforcement (Issue #154): disable proactive parallel ASR and seamless fallback
+        // so voice recognition does not automatically switch or detect other languages (e.g. Czech -> Slovak).
+        if (AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG.equals(flagName)
+                || AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG.equals(flagName)) {
+            return originalResult instanceof Boolean ? Boolean.FALSE : originalResult;
+        }
+        // Closing the keyboard stops Rambler instantly, except mid-rotation, where Gboard
+        // deactivates and reactivates the extension and needs its grace period to keep the session.
         if (AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName)) {
             return originalResult instanceof Long
                             && GboardRambler1803OfficialSelectionRuntime
                                     .shouldEnableAgenticDictation()
-                    ? Long.valueOf(0L)
+                    ? Long.valueOf(GboardRamblerRotationGrace.deactivationDelayMs())
                     : originalResult;
         }
         // The AL toolbar replaces Gboard's stock collapse path: with it off, the Rambler
@@ -107,6 +116,8 @@ public final class GboardRambler1803StockPolicy {
                 || AGENTIC_FEATURE_FLAGS.contains(flagName)
                 || ENABLE_RAMBLER_AL_TOOLBAR_FLAG.equals(flagName)
                 || AD_ACTIVATION_TYPE_FLAG.equals(flagName)
+                || AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG.equals(flagName)
+                || AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG.equals(flagName)
                 || AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName);
     }
 }

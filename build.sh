@@ -40,7 +40,7 @@ MPP_PATH="patches/PixelBoard.mpp"
 if [[ "$REBUILD_PATCH" == true ]] || [[ ! -f "$MPP_PATH" ]]; then
     echo "=== 🎹 Compiling PixelBoard Patch Bundle from Source ==="
     cd pixelboard-patches
-    ./gradlew :patches:buildAndroid
+    ./gradlew clean :patches:buildAndroid
     cd "$SCRIPT_DIR"
 
     COMPILED_MPP="pixelboard-patches/patches/build/libs/patches-${PATCH_VERSION}.mpp"
@@ -124,6 +124,8 @@ fi
     -o=output/PixelBoard.apk \
     -r=output/patching-result.json \
     "$INPUT_APK"
+
+python3 tools/sanitize_apk_resources.py output/PixelBoard.apk "$INPUT_APK" "$KEYSTORE_PATH"
 
 if [[ -f "output/patching-result.json" ]]; then
     GBOARD_VER=$(grep -o '"packageVersion":"[^"]*"' output/patching-result.json | cut -d'"' -f4 | cut -d'-' -f1)

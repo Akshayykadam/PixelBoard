@@ -195,6 +195,7 @@ private fun sanitizeMissingSplitResources() = with(context) {
     }
 }
 
+
 internal data class GboardPackageRenameMapping(
     val elementName: String,
     val namespaceUri: String?,
@@ -366,6 +367,20 @@ internal fun applyGboardPackageRename(
             versionCodeAttr.value = "176004240"
         } else if (currentCode == 176027078L) {
             versionCodeAttr.value = "176027079"
+        } else if (currentCode in 176071766L..176071767L) {
+            versionCodeAttr.value = "176071768"
+        }
+    }
+
+    val usesSdkList = manifestDocument.getElementsByTagName("uses-sdk")
+    for (i in 0 until usesSdkList.length) {
+        val usesSdk = usesSdkList.item(i) as? Element ?: continue
+        val minSdkAttr = usesSdk.androidAttribute("minSdkVersion")
+        if (minSdkAttr != null) {
+            val minSdkVal = minSdkAttr.value.toIntOrNull()
+            if (minSdkVal != null && minSdkVal > 29) {
+                minSdkAttr.value = "29"
+            }
         }
     }
 

@@ -39,10 +39,20 @@ private val ramblerOnVoiceTextTargets = listOf(
         ),
         returnType = "V",
     ),
+    GboardMethodTarget(
+        classType = "Lffh;",
+        name = "j",
+        parameterTypes = listOf(
+            "Laaks;",
+            "Lsao;",
+            "Ljava/lang/String;",
+        ),
+        returnType = "V",
+    ),
 )
 
 internal val gboardRamblerDictationPromptFixPatch = bytecodePatch(
-    description = "Ensure Rambler dictation commits verbatim spoken transcript instead of AI prompt responses.",
+    description = "Ensure Rambler dictation commits verbatim spoken transcript instead of AI prompt responses or diff-overwriting preceding text.",
 ) {
     compatibleWith(COMPATIBILITY_GBOARD)
     dependsOn(gboardPatchesExtensionCarrierPatch)
@@ -56,11 +66,11 @@ internal val gboardRamblerDictationPromptFixPatch = bytecodePatch(
             return@execute
         }
 
-        // p1 is the Laajc voice text proto parameter.
-        // Method j has 30 locals (registers 30-33), so range invocation is required for p1.
+        // p0 is this (AgenticDictationExtension), p1 is the voice text proto parameter.
+        // Method j has 30 locals (registers 30-33), so range invocation is required for p0 .. p1.
         method.addInstructions(
             0,
-            RuntimeCallEmitter.invoke(call, "p1 .. p1")
+            RuntimeCallEmitter.invoke(call, "p0 .. p1")
         )
     }
 }

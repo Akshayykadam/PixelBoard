@@ -21,7 +21,7 @@ import com.akshaykadam.pixelboard.extension.settings.GboardPatchesSettings;
  * preference:</p>
  * <ul>
  *   <li>{@link #DURATION_1_HOUR} ("1") – 1 hour</li>
- *   <li>{@link #DURATION_24_HOURS} ("24") – 24 hours (Current maximum)</li>
+ *   <li>{@link #DURATION_24_HOURS} ("24") – 24 hours</li>
  *   <li>{@link #DURATION_7_DAYS} ("168") – 7 days</li>
  *   <li>{@link #DURATION_30_DAYS} ("720") – 30 days</li>
  *   <li>{@link #DURATION_NEVER} ("876000") – Never (Unlimited / Manual deletion only, 100 years)</li>
@@ -117,6 +117,62 @@ public final class GboardClipboardHistorySettings {
                 gboardPrefs.edit().putString(GBOARD_NATIVE_PREF_KEY, sanitize(duration)).apply();
             }
         } catch (Throwable ignored) {
+        }
+    }
+
+    /**
+     * Returns the retention Gboard uses. Until one is chosen that is {@link #DEFAULT_DURATION},
+     * which GboardClipboardDefaultRetentionPatch makes Gboard's own fallback too.
+     */
+    public static String readGboardDuration(Context context) {
+        try {
+            SharedPreferences gboardPrefs = gboardPreferences(context);
+            if (gboardPrefs != null) {
+                return sanitize(gboardPrefs.getString(GBOARD_NATIVE_PREF_KEY, DEFAULT_DURATION));
+            }
+        } catch (Throwable ignored) {
+        }
+        return DEFAULT_DURATION;
+    }
+
+    /** True while clips are kept for 1 hour, the only time Google's clipboard texts name. */
+    public static boolean isOneHourRetention(Context context) {
+        return DURATION_1_HOUR.equals(readGboardDuration(context));
+    }
+
+    /**
+     * Gboard keeps its settings in the default preferences of device-protected storage, so
+     * read and write them there.
+     */
+    static SharedPreferences gboardPreferences(Context context) {
+        if (context == null) return null;
+        Context storageContext = context.getApplicationContext() != null
+                ? context.getApplicationContext()
+                : context;
+        if (!storageContext.isDeviceProtectedStorage()) {
+            Context deviceProtected = storageContext.createDeviceProtectedStorageContext();
+            if (deviceProtected != null) {
+                storageContext = deviceProtected;
+            }
+        }
+        return PreferenceManager.getDefaultSharedPreferences(storageContext);
+    }
+
+    private static volatile java.lang.reflect.Method currentApplication;
+
+    /** The keyboard's application context, for hooks that are not handed one. */
+    static Context applicationContext() {
+        try {
+            java.lang.reflect.Method method = currentApplication;
+            if (method == null) {
+                method = Class.forName("android.app.ActivityThread")
+                        .getMethod("currentApplication");
+                currentApplication = method;
+            }
+            Object application = method.invoke(null);
+            return application instanceof Context ? (Context) application : null;
+        } catch (Throwable ignored) {
+            return null;
         }
     }
 

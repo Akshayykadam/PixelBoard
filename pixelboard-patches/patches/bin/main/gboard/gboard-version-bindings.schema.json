@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Akshayykadam/PixelBoard/schemas/gboard-version-bindings.schema.json",
+  "title": "Gboard LS version bindings export",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "target_version", "profile_version", "bindings"],
+  "properties": {
+    "format": { "const": "gboard-version-bindings.v1" },
+    "target_version": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+){2}$" },
+    "profile_version": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+){2}$" },
+    "projection_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "profile_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "port_bundle_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "bindings": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$" },
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/definitions/methodBinding" },
+          { "$ref": "#/definitions/fieldBinding" },
+          { "$ref": "#/definitions/typeBinding" }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "classDescriptor": {
+      "type": "string",
+      "pattern": "^L[^.;\\[]+(/[^.;\\[]+)*;$"
+    },
+    "typeDescriptor": {
+      "type": "string",
+      "pattern": "^([VZBSCIJFD]|L[^.;\\[]+(/[^.;\\[]+)*;|\\[+([ZBSCIJFD]|L[^.;\\[]+(/[^.;\\[]+)*;))$"
+    },
+    "nonVoidTypeDescriptor": {
+      "type": "string",
+      "pattern": "^([ZBSCIJFD]|L[^.;\\[]+(/[^.;\\[]+)*;|\\[+([ZBSCIJFD]|L[^.;\\[]+(/[^.;\\[]+)*;))$"
+    },
+    "memberName": {
+      "type": "string",
+      "pattern": "^(<init>|<clinit>|[A-Za-z_$][A-Za-z0-9_$]*)$"
+    },
+    "methodBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "class_type",
+        "method_name",
+        "parameter_types",
+        "return_type",
+        "confidence"
+      ],
+      "properties": {
+        "kind": { "const": "method" },
+        "class_type": { "$ref": "#/definitions/classDescriptor" },
+        "method_name": { "$ref": "#/definitions/memberName" },
+        "parameter_types": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/nonVoidTypeDescriptor" }
+        },
+        "return_type": { "$ref": "#/definitions/typeDescriptor" },
+        "confidence": { "$ref": "#/definitions/confidence" }
+      }
+    },
+    "fieldBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "class_type", "field_name", "field_type", "confidence"],
+      "properties": {
+        "kind": { "const": "field" },
+        "class_type": { "$ref": "#/definitions/classDescriptor" },
+        "field_name": { "$ref": "#/definitions/memberName" },
+        "field_type": { "$ref": "#/definitions/nonVoidTypeDescriptor" },
+        "confidence": { "$ref": "#/definitions/confidence" }
+      }
+    },
+    "typeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "source", "confidence"],
+      "properties": {
+        "kind": { "const": "type" },
+        "source": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["binding", "component"],
+              "properties": {
+                "binding": { "type": "string", "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$" },
+                "component": { "enum": ["owner", "return", "field_type"] }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["binding", "component", "index"],
+              "properties": {
+                "binding": { "type": "string", "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$" },
+                "component": { "const": "parameter" },
+                "index": { "type": "integer", "minimum": 0 }
+              }
+            }
+          ]
+        },
+        "confidence": { "$ref": "#/definitions/confidence" }
+      }
+    }
+  }
+}

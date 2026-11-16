@@ -42,7 +42,7 @@ class GboardPackageRenamePatchContractTest {
         assertSame(COMPATIBILITY_GBOARD, compatibilities.single())
         assertEquals(GBOARD_PACKAGE_NAME, compatibilities.single().packageName)
         assertEquals(
-            listOf(TARGET_VERSION, TARGET_VERSION_1831, TARGET_VERSION_1831_RELEASE, TARGET_VERSION_1841_RELEASE, TARGET_VERSION_1853_RELEASE),
+            listOf(TARGET_VERSION, TARGET_VERSION_1831, TARGET_VERSION_1831_RELEASE, TARGET_VERSION_1841_RELEASE, TARGET_VERSION_1853_RELEASE, TARGET_VERSION_1863_RELEASE),
             compatibilities.single().targets.map { target -> target.version },
         )
         assertTrue(compatibilities.single().targets.none { target -> target.isExperimental })
@@ -77,7 +77,7 @@ class GboardPackageRenamePatchContractTest {
         val packages = row.getAsJsonObject("compatiblePackages")
         assertEquals(setOf(GBOARD_PACKAGE_NAME), packages.keySet())
         assertEquals(
-            listOf(TARGET_VERSION, TARGET_VERSION_1831, TARGET_VERSION_1831_RELEASE, TARGET_VERSION_1841_RELEASE, TARGET_VERSION_1853_RELEASE),
+            listOf(TARGET_VERSION, TARGET_VERSION_1831, TARGET_VERSION_1831_RELEASE, TARGET_VERSION_1841_RELEASE, TARGET_VERSION_1853_RELEASE, TARGET_VERSION_1863_RELEASE),
             packages.getAsJsonArray(GBOARD_PACKAGE_NAME).map { it.asString },
         )
     }
@@ -91,6 +91,27 @@ class GboardPackageRenamePatchContractTest {
         assertFalse(bindings.has("flag_factory"))
         assertTrue(bindings.keySet().none { key -> key.contains("package_rename") })
         assertFalse(GboardPublishedPatchCatalog.publishedInventory("test-version").contains("family_ids"))
+    }
+
+    @Test
+    fun `keyboard symbol key label escaping regex correctly sanitizes escaped question mark attributes`() {
+        val escapedQuestionRegex = Regex("""(=["'])\\\\+(\?[^"']*["'])""")
+
+        val testCases = listOf(
+            """<item android:label_value="\\?123" />""" to """<item android:label_value="\?123" />""",
+            """<item value="\\?123" />""" to """<item value="\?123" />""",
+            """<item long_press_data="\\?,¿" />""" to """<item long_press_data="\?,¿" />""",
+            """<item value="\\\?123" />""" to """<item value="\?123" />""",
+            """<item value="\\?१२३" />""" to """<item value="\?१२३" />""",
+            """<item value="\\?!@#" />""" to """<item value="\?!@#" />""",
+        )
+
+        for ((input, expected) in testCases) {
+            val sanitized = escapedQuestionRegex.replace(input) { match ->
+                "${match.groupValues[1]}\\${match.groupValues[2]}"
+            }
+            assertEquals(expected, sanitized)
+        }
     }
 
     private fun readSource(relativePath: String): String = Files.readString(
@@ -112,6 +133,7 @@ class GboardPackageRenamePatchContractTest {
         const val TARGET_VERSION_1831_RELEASE = "18.3.1.977415014-release-arm64-v8a"
         const val TARGET_VERSION_1841_RELEASE = "18.4.1.985164140-release-arm64-v8a"
         const val TARGET_VERSION_1853_RELEASE = "18.5.3.993608717-release-arm64-v8a"
+        const val TARGET_VERSION_1863_RELEASE = "18.6.3.1002251336-release-arm64-v8a"
         const val PACKAGE_RENAME_DESCRIPTION =
             "Rename the package to com.akshaykadam.pixelboard " +
                 "and allow a custom app name so it can be installed alongside " +

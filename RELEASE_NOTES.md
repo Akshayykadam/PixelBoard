@@ -1,60 +1,29 @@
-# PixelBoard Stable Release (Patch v1.3.3 / Gboard v18.5.3)
+# PixelBoard Stable Release (Patch v1.3.4 / Gboard v18.6.3.100)
 
 ## Summary
-PixelBoard v1.3.3 brings important daily usability fixes and AI stability updates: **word suggestions are back**, the **glowing voice bar no longer gets stuck**, the **one-tap blue "Fix it" proofreading button is restored**, you can now **minimize the voice typing bar** easily, and **AI Writing Tools (Rephrase, Tone changes) work reliably across all your apps** without errors.
+PixelBoard v1.3.4 brings comprehensive clipboard retention enhancements: **unpinned clips are now kept for 24 hours by default**, the clipboard history cap is **raised from 5 to 100 recent clips**, a customizable **retention slider** is available in Settings, and **accurate retention texts & pin tips** are localized across 83 languages. In addition, the base app is now updated to **Gboard v18.6.3** with clean symbol key labels, restored Advanced Settings, and RTL/LTR layout polish.
 
 ---
 
-## What's New in v1.3.3
+## What's New in v1.3.4
 
-- 💡 **Word Suggestions Are Back**: Next-word suggestions and predictive text now display normally above the keyboard as you type.
-- 🎨 **Fixed Stuck Voice Bar**: The animated glowing gradient bar no longer stays stuck across your keyboard when you pause speaking.
-- ✨ **"Fix it" Button Restored**: The blue "Fix it" button and inline grammar suggestions now appear automatically whenever spelling or grammar mistakes are detected.
-- 🎙️ **Minimize Voice Typing Bar**: Tap the minimize arrow during voice typing to smoothly collapse the voice bar and return to the keyboard anytime.
-- 🤖 **More Reliable AI Writing Tools**: Changing tone (Professional, Casual, Concise) and rephrasing text now works smoothly without timeouts or "can't use writing tools" errors.
-- 🌐 **Works in Every App**: AI Proofread and Writing Tools now work across all third-party messaging and notes apps with zero restrictions.
-- ♿ **Clear Voice Button Labels**: TalkBack screen readers now clearly announce voice buttons as *"Minimize keyboard"* and *"Back to keyboard"*.
-- ⚡ **Zero Setup Needed**: Modern Google Sans font and the convenient Undo button are enabled automatically from the start.
-
----
-
-## Detailed Improvements
-
-### 💡 Word Suggestions & Stuck Voice Bar Fix ([#109](https://github.com/Akshayykadam/PixelBoard/issues/109))
-  - **Word Suggestions Restored**: When typing, predictive next-word candidates were previously blocked because the voice toolbar remained active. Word suggestions now display cleanly and responsively above your keys.
-  - **Fixed Stuck Glowing Bar**: After using voice dictation, the rainbow gradient bar previously stayed stuck across the top of the keyboard even when idle. It now hides immediately when speech is done, keeping your keyboard clean and clutter-free.
-
-### ✨ "Fix it" Proofreading Button & Grammar Checks ([#109](https://github.com/Akshayykadam/PixelBoard/issues/109))
-  - **One-Tap "Fix it" Button**: Restored the prominent blue "Fix it" chip above your keyboard. Whenever you type a misspelled word or grammar error, tapping "Fix it" instantly corrects it.
-  - **Inline Grammar Chips**: Helpful suggestions for punctuation and grammar now appear directly in the suggestion strip as interactive, clickable chips.
-
-### 🎙️ Minimize Voice Typing Toolbar ([#108](https://github.com/Akshayykadam/PixelBoard/pull/108))
-  - **Easy Collapse**: Added back the down-arrow minimize key on the voice typing bar. You can smoothly collapse the voice bar back down to a floating button or return to the regular keyboard with one tap.
-  - **TalkBack Screen Reader Support**: Added clear spoken descriptions (*"Minimize keyboard"* and *"Back to keyboard"*) so users with screen readers can easily navigate voice typing controls.
-
-### 🤖 Reliable AI Writing Tools Across All Apps
-  - **Smooth Rewriting & Tone Switching**: Fixed connection issues that caused Rephrase, Professional, Casual, Concise, and Emotive tones to fail or time out. Text generation is now fast and dependable.
-  - **No App Restrictions**: Removed artificial app limits—use AI proofreading and rewriting inside any messaging app, social media, or text editor.
-
-### 🎨 Clean Defaults Out of the Box
-  - **Google Sans Font**: Keycaps use modern Google Sans variable typography automatically on Android 12+.
-  - **Quick Undo**: The Undo button is ready in your suggestion strip whenever autocorrect changes a word you didn't want changed.
-  - **Emoji Quick Bar & Magic Emoji**: Fast emoji bar and magic emoji suggestions (🪄) are ready out of the box with all-app support.
-
-### 🛠️ Stability & Under-the-Hood Fixes
-  - Fully verified and tested against the latest **Gboard v18.5.3 Release** (`18.5.3.993608717-release-arm64-v8a`).
-  - Preserves native **Personal dictionary** and **Physical keyboard** settings without collisions.
-  - Passes all 249 unit tests across patch wiring and runtime feature policies.
+- **24-Hour Default Clipboard Retention**: Unpinned copied text and images are now kept for 24 hours (up from Google's 1-hour limit) by default.
+- **100 Recent Clips History**: The recent unpinned clipboard items cap is raised from 5 to 100 clips, matching the clipboard's full capacity (#129).
+- **Customizable Retention Slider**: Pick between 1 hour, 24 hours, 7 days, 30 days, or Never in PixelBoard Clipboard Settings.
+- **Honest Multi-Language Pin Tips**: Pin tips and empty-state texts dynamically display the selected retention duration across 83 locales.
+- **Base app is now updated to 18.6.3**
+- **Clean Symbol Key Labels**: Fixed `?attr/` and `\?123` labels so question mark and symbol keys render cleanly.
+- **Restored Advanced & Update Settings**: Ensured Settings and Updates sections are reliably accessible across all base APK configurations.
 
 ---
 
 ## Community & Acknowledgements
 
-Special thanks to the community contributor whose pull request made this release possible:
+Special thanks to the community contributors:
 
 | Contributor | Focus / Contribution |
 | :--- | :--- |
-| **AnhDuck** ([@AnhDuck](https://github.com/AnhDuck)) | Restored Rambler voice toolbar minimize key and added TalkBack accessibility labels ([#108](https://github.com/Akshayykadam/PixelBoard/pull/108)) |
+| **AnhDuck** ([@AnhDuck](https://github.com/AnhDuck)) | Clipboard retention slider, 24h default, honest text across 83 locales, and 100-item history cap ([#129](https://github.com/Akshayykadam/PixelBoard/pull/129)) |
 
 ---
 
@@ -62,23 +31,23 @@ Special thanks to the community contributor whose pull request made this release
 
 | Package | Type | Size | Description |
 | :--- | :--- | :--- | :--- |
-| [**PixelBoard-1.3.3.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/PixelBoard-1.3.3.apk) | **Signed APK** *(Recommended)* | ~79 MB | **Ready to install.** Signed stable APK (v18.5.3 base, side-by-side coexistence). |
-| [**patches-1.3.3.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/patches-1.3.3.mpp) | **Morphe Patch Bundle** | ~1.6 MB | Standalone patch file (v1.3.3) for Morphe Manager to patch your own base APK. |
-| [**Stock Gboard v18.5.3**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/) | **Base APK** | ~67 MB | Official unmodified base APK from APKMirror *(only needed if patching manually)*. |
+| [**PixelBoard-1.3.4.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.4/PixelBoard-1.3.4.apk) | **Signed APK** *(Recommended)* | ~122 MB | **Ready to install.** Signed stable APK (v18.6.3 base, side-by-side coexistence). |
+| [**patches-1.3.4.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.4/patches-1.3.4.mpp) | **Morphe Patch Bundle** | ~1.7 MB | Standalone patch file (v1.3.4) for Morphe Manager. ⚠️ **Strictly requires Gboard version 18.6.3.100** (`18.6.3.1002251336-release-arm64-v8a`). Older versions like 18.5 are unsupported. |
+| [**Stock Gboard v18.6.3.100**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-6-3-1002251336-release/) | **Base APK** | ~117 MB | Official unmodified base APK from APKMirror (`18.6.3.1002251336-release-arm64-v8a`). |
 
 ---
 
 ## Installation
 
 ### Option 1: Direct APK Installation (Recommended)
-1. Download [**PixelBoard-1.3.3.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.3/PixelBoard-1.3.3.apk) directly to your Android device.
+1. Download [**PixelBoard-1.3.4.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.4/PixelBoard-1.3.4.apk) directly to your Android device.
 2. Tap the downloaded APK in your file manager or browser downloads.
 3. Allow installation from unknown sources if prompted, and complete installation.
 4. Enable PixelBoard in **Settings > System > Languages & input > On-screen keyboard**.
 
 ### Option 2: ADB Sideload
 ```bash
-adb install -r PixelBoard-1.3.3.apk
+adb install -r PixelBoard-1.3.4.apk
 adb shell am force-stop com.akshaykadam.pixelboard
 ```
 
@@ -87,7 +56,7 @@ Add the custom patch source in Morphe Manager:
 ```text
 https://raw.githubusercontent.com/Akshayykadam/PixelBoard/main/patches-bundle.json
 ```
-Select stock Gboard [**v18.5.3.993608717-release-arm64-v8a**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/) and apply patches.
+Select stock Gboard (v18.6.3.100 only) and apply patches.
 
 ---
 
@@ -96,8 +65,8 @@ Select stock Gboard [**v18.5.3.993608717-release-arm64-v8a**](https://www.apkmir
 | Specification | Details |
 | :--- | :--- |
 | **Base App** | Google Keyboard (`com.google.android.inputmethod.latin`) |
-| **Recommended Base Version** | `18.5.3.993608717-release-arm64-v8a` (APKMirror) |
-| **Also Supported** | `18.4.1`, `18.3.1`, `18.0.3` |
+| **Required Base Version** | `18.6.3.1002251336-release-arm64-v8a` (**v18.6.3.100** only) |
+| **Unsupported Versions** | Gboard 18.5 and older are **not supported** by this patch bundle |
 | **Architecture** | `arm64-v8a` |
 | **Minimum Android Version** | Android 10 (API 29) or higher |
 | **Standalone Coexistence** | Supported (package `com.akshaykadam.pixelboard` installs alongside factory Gboard) |

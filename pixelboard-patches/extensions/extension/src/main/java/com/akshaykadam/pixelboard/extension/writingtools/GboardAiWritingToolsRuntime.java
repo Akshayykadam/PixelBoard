@@ -79,6 +79,20 @@ public final class GboardAiWritingToolsRuntime {
             "enable_writing_tools_my_style";
     static final String FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS =
             "enable_writing_tools_my_style_plus";
+    static final String FLAG_ENABLE_WRITING_TOOLS_V2_TUTORIAL_PROMPTS =
+            "enable_writing_tools_v2_tutorial_prompts";
+    static final String FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS_WITHOUT_SCREEN_CONTEXT =
+            "enable_writing_tools_my_style_plus_without_screen_context";
+    static final String FLAG_WRITING_TOOLS_SUGGEST_STYLE =
+            "writing_tools_suggest_style";
+    static final String FLAG_WRITING_TOOLS_MY_STYLE =
+            "writing_tools_my_style";
+    static final String FLAG_WRITING_TOOLS_MY_STYLE_PLUS =
+            "writing_tools_my_style_plus";
+    static final String FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT =
+            "writing_tools_use_v2_landscape_layout";
+    static final String FLAG_AGENTIC_DICTATION_ENABLE_CUSTOM_INSTRUCTION =
+            "agentic_dictation_enable_custom_instruction";
     static final String FLAG_ENABLE_MODELESS_SMART_EDIT =
             "enable_nga_lab_modeless_smartedit";
     static final String FLAG_MODELESS_SMART_EDIT_REGEX_VERSION =
@@ -405,7 +419,11 @@ public final class GboardAiWritingToolsRuntime {
     private static final ThreadLocal<Integer> SETTINGS_CONTROLLER_SCOPE_DEPTH =
             new ThreadLocal<Integer>();
 
-    private static final java.util.concurrent.atomic.AtomicBoolean DEFAULT_PREFERENCES_INITIALIZED =
+    private static final java.util.concurrent.atomic.AtomicBoolean DPS_PREFERENCES_INITIALIZED =
+            new java.util.concurrent.atomic.AtomicBoolean(false);
+    private static final java.util.concurrent.atomic.AtomicBoolean CE_PREFERENCES_INITIALIZED =
+            new java.util.concurrent.atomic.AtomicBoolean(false);
+    private static final java.util.concurrent.atomic.AtomicBoolean UNLOCK_RECEIVER_REGISTERED =
             new java.util.concurrent.atomic.AtomicBoolean(false);
     private static volatile Context applicationContext;
 
@@ -448,8 +466,6 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_EMOJIFY_SETTINGS_OPTION.equals(flagName)
                 || FLAG_ENABLE_EMOJIFY_SHORTCUT_WHEN_FOLLOWED_BY_EMOJI.equals(flagName)
                 || FLAG_ENABLE_EMOJIFY_WHEN_TALKBACK_ON.equals(flagName)
-                || FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE.equals(flagName)
-                || FLAG_ENABLE_TWO_STAGE_DECODER.equals(flagName)
                 || FLAG_ENABLE_SPACE_TRANSPOSITION_POST_CORRECTION.equals(flagName)
                 || FLAG_ENABLE_PK_SPATIAL_MODEL_FEATURES.equals(flagName)
                 || FLAG_ENABLE_PK_AUTO_CORRECTION_TRIGGER_PREDICTOR.equals(flagName)
@@ -494,11 +510,34 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS.equals(flagName)
                 || FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT.equals(flagName)
                 || FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK.equals(flagName)
-                || FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK.equals(flagName)
                 || FLAG_TRY_INITIALIZE_DECODER_AFTER_LM_LOADS.equals(flagName)
                 || FLAG_PK_AUTO_CAPITALIZATION_USE_AUTO_CORRECTION.equals(flagName)
                 || FLAG_ENABLE_AUTO_CORRECTION_STATS.equals(flagName)
                 || FLAG_ENABLE_CORRECTION_COMMIT_ANIMATION.equals(flagName);
+    }
+
+    static boolean isWritingToolsV2Flag(String flagName) {
+        if (flagName == null) {
+            return false;
+        }
+        if (FLAG_BACKEND_TYPE.equals(flagName)) {
+            return false;
+        }
+        return flagName.startsWith("writing_tools_v2")
+                || flagName.endsWith("_writing_tools_v2")
+                || flagName.contains("writing_tools_v2_")
+                || FLAG_ENABLE_WRITING_TOOLS_V2.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_V2_TUTORIAL_PROMPTS.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS.equals(flagName)
+                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS_WITHOUT_SCREEN_CONTEXT.equals(flagName)
+                || FLAG_WRITING_TOOLS_SUGGEST_STYLE.equals(flagName)
+                || FLAG_WRITING_TOOLS_MY_STYLE.equals(flagName)
+                || FLAG_WRITING_TOOLS_MY_STYLE_PLUS.equals(flagName)
+                || FLAG_AGENTIC_DICTATION_ENABLE_CUSTOM_INSTRUCTION.equals(flagName)
+                || FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT.equals(flagName);
     }
 
     public static Object applyOverriddenFlagValue(Object receiver, Object originalResult) {
@@ -561,10 +600,6 @@ public final class GboardAiWritingToolsRuntime {
                     && originalResult instanceof Long) {
                 return 1L;
             }
-            if (FLAG_DELAY_TO_WAIT_FOR_SUGGESTIONS_BEFORE_COMMIT_MS.equals(flagName)
-                    && originalResult instanceof Long) {
-                return ENFORCED_DELAY_TO_WAIT_FOR_SUGGESTIONS_BEFORE_COMMIT_MS;
-            }
             if ((FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_WEB_TEXT.equals(flagName)
                     || FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION.equals(flagName)
                     || FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_SPECIAL_TYPES.equals(flagName)
@@ -581,7 +616,10 @@ public final class GboardAiWritingToolsRuntime {
                     || FLAG_SIGNBOARD_DOWNLOAD_DIALOG.equals(flagName)
                     || FLAG_SIGNBOARD_MOVE_AP_PROMPT.equals(flagName)
                     || FLAG_USE_4C_IN_SIGNBOARD.equals(flagName)
-                    || FLAG_ENABLE_EMOJIFY_MODEL.equals(flagName))
+                    || FLAG_ENABLE_EMOJIFY_MODEL.equals(flagName)
+                    || FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE.equals(flagName)
+                    || FLAG_ENABLE_TWO_STAGE_DECODER.equals(flagName)
+                    || FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK.equals(flagName))
                     && originalResult instanceof Boolean) {
                 return Boolean.FALSE;
             }
@@ -756,26 +794,19 @@ public final class GboardAiWritingToolsRuntime {
                 && originalResult instanceof String) {
             return "";
         }
-        if (!(originalResult instanceof Boolean)) {
+        if (isWritingToolsV2Flag(flagName)) {
+            if (originalResult instanceof Boolean) {
+                return Boolean.FALSE;
+            }
+            if (originalResult instanceof String) {
+                return "";
+            }
+            if (originalResult instanceof Long) {
+                return 0L;
+            }
             return originalResult;
         }
-
-        if (FLAG_ENABLE_WRITING_TOOLS_V2.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_ZERO_STATE.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_ALLOW_EMPTY_USER_INSTRUCTION.equals(flagName)
-                || FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS.equals(flagName)) {
-            if (originalResult instanceof Boolean) {
-                return (settings.v2Enabled && GboardAiWritingToolsDeviceSupport.isSupportedDevice())
-                        ? Boolean.TRUE
-                        : Boolean.FALSE;
-            }
+        if (!(originalResult instanceof Boolean)) {
             return originalResult;
         }
 
@@ -784,12 +815,16 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_WRITING_HELPER_ENABLE_TEXT_STYLIZATION_INTERNAL.equals(flagName)
                 || FLAG_WRITING_HELPER.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_FOR_MINORS.equals(flagName)
-                || FLAG_ENABLE_MODELESS_SMART_EDIT.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_COOPERATIVE_MODE.equals(flagName)
-                || FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName)
                 || FLAG_WRITING_TOOLS_ENABLE_STABLE_ENTRANCE.equals(flagName)
-                || FLAG_ENABLE_WRITING_TOOLS_REPLACE_BUTTON.equals(flagName)) {
+                || FLAG_ENABLE_WRITING_TOOLS_REPLACE_BUTTON.equals(flagName)
+                || FLAG_WRITING_TOOLS_REPLACE_BUTTON.equals(flagName)
+                || FLAG_WRITING_TOOLS_CONTEXT_OPT_IN.equals(flagName)) {
             return Boolean.TRUE;
+        }
+        if (FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName)
+                || FLAG_ENABLE_MODELESS_SMART_EDIT.equals(flagName)) {
+            return Boolean.FALSE;
         }
         return originalResult;
     }
@@ -924,7 +959,9 @@ public final class GboardAiWritingToolsRuntime {
     static Context resolveContext() {
         Context cached = applicationContext;
         if (cached != null) {
-            ensureDefaultPreferencesInitialized(cached);
+            if (!CE_PREFERENCES_INITIALIZED.get()) {
+                ensureDefaultPreferencesInitialized(cached);
+            }
             return cached;
         }
         Context reflected = reflectedApplicationContext(
@@ -940,24 +977,63 @@ public final class GboardAiWritingToolsRuntime {
         return reflected;
     }
 
-    private static void ensureDefaultPreferencesInitialized(Context context) {
-        if (context == null || !DEFAULT_PREFERENCES_INITIALIZED.compareAndSet(false, true)) {
+    private static void ensureDefaultPreferencesInitialized(final Context context) {
+        if (context == null) {
             return;
         }
-        initializeDefaultPreferences(context);
-        try {
-            if (android.os.Build.VERSION.SDK_INT >= 24) {
+        if (android.os.Build.VERSION.SDK_INT >= 24 && !DPS_PREFERENCES_INITIALIZED.get()) {
+            try {
                 Context dpsContext = context.createDeviceProtectedStorageContext();
                 if (dpsContext != null) {
                     initializeDefaultPreferences(dpsContext);
+                    DPS_PREFERENCES_INITIALIZED.set(true);
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+        if (!CE_PREFERENCES_INITIALIZED.get()) {
+            boolean canAccessCe = true;
+            if (android.os.Build.VERSION.SDK_INT >= 24) {
+                try {
+                    android.os.UserManager um =
+                            (android.os.UserManager) context.getSystemService(Context.USER_SERVICE);
+                    if (um != null && !um.isUserUnlocked()) {
+                        canAccessCe = false;
+                    }
+                } catch (Throwable ignored) {
                 }
             }
-        } catch (Throwable ignored) {
+            if (canAccessCe) {
+                try {
+                    initializeDefaultPreferences(context);
+                    CE_PREFERENCES_INITIALIZED.set(true);
+                } catch (Throwable ignored) {
+                }
+            } else if (android.os.Build.VERSION.SDK_INT >= 24 && !UNLOCK_RECEIVER_REGISTERED.getAndSet(true)) {
+                try {
+                    android.content.IntentFilter filter = new android.content.IntentFilter(
+                            android.content.Intent.ACTION_USER_UNLOCKED);
+                    context.registerReceiver(new android.content.BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context ctx, android.content.Intent intent) {
+                            try {
+                                initializeDefaultPreferences(context);
+                                CE_PREFERENCES_INITIALIZED.set(true);
+                                context.unregisterReceiver(this);
+                            } catch (Throwable ignored) {
+                            }
+                        }
+                    }, filter);
+                } catch (Throwable ignored) {
+                    UNLOCK_RECEIVER_REGISTERED.set(false);
+                }
+            }
         }
     }
 
     private static void initializeDefaultPreferences(Context context) {
         try {
+            GboardAiWritingToolsSettings.ensureDefaults(context);
             android.content.SharedPreferences prefs =
                     android.preference.PreferenceManager.getDefaultSharedPreferences(context);
             android.content.SharedPreferences.Editor editor = null;
@@ -1026,12 +1102,17 @@ public final class GboardAiWritingToolsRuntime {
                 if (editor == null) editor = prefs.edit();
                 editor.putBoolean(PREF_KEY_WRITING_TOOLS_SCREEN_CONTEXT_OPT_IN_V1, true);
             }
-            if (!prefs.contains(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE)) {
+            if (prefs.contains("setting_writing_tools_pi_override")) {
                 if (editor == null) editor = prefs.edit();
-                editor.putBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, true);
+                editor.putBoolean("setting_writing_tools_pi_override", false);
+            }
+            if (!prefs.contains(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE)
+                    || prefs.getBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, false)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, false);
             }
             if (editor != null) {
-                editor.apply();
+                editor.commit();
             }
         } catch (Throwable ignored) {
         }

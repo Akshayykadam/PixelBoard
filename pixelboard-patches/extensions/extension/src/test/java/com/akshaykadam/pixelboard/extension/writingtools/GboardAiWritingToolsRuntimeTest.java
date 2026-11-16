@@ -54,7 +54,7 @@ public final class GboardAiWritingToolsRuntimeTest {
                         Boolean.FALSE,
                         settings,
                         writingToolsOff));
-        Assert.assertSame(Boolean.TRUE,
+        Assert.assertSame(Boolean.FALSE,
                 GboardAiWritingToolsRuntime.computeOverrideValue(
                         GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_ON_SELECTED_TEXT,
                         Boolean.FALSE,
@@ -316,7 +316,7 @@ public final class GboardAiWritingToolsRuntimeTest {
     }
 
     @Test
-    public void writingToolsV2EnabledOnSupportedDeviceWhenToggleActive() {
+    public void writingToolsV2DisabledAcrossAllDevicesAndSnapshots() {
         GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(true);
         try {
             GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
@@ -333,54 +333,23 @@ public final class GboardAiWritingToolsRuntimeTest {
                     GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_ALLOW_EMPTY_USER_INSTRUCTION,
                     GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS,
                     GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE,
-                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS
+                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS,
+                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2_TUTORIAL_PROMPTS,
+                    GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_MY_STYLE_PLUS_WITHOUT_SCREEN_CONTEXT,
+                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_SUGGEST_STYLE,
+                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_MY_STYLE,
+                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_MY_STYLE_PLUS,
+                    GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT,
+                    GboardAiWritingToolsRuntime.FLAG_AGENTIC_DICTATION_ENABLE_CUSTOM_INSTRUCTION
             };
 
             for (String flag : v2Flags) {
-                Assert.assertSame(flag, Boolean.TRUE,
+                Assert.assertTrue("isWritingToolsV2Flag should match " + flag,
+                        GboardAiWritingToolsRuntime.isWritingToolsV2Flag(flag));
+                Assert.assertSame(flag, Boolean.FALSE,
                         GboardAiWritingToolsRuntime.computeOverrideValue(
-                                flag, Boolean.FALSE, settings, official(true, true)));
+                                flag, Boolean.TRUE, settings, official(true, true)));
             }
-        } finally {
-            GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(null);
-        }
-    }
-
-    @Test
-    public void writingToolsV2DisabledOnUnsupportedDeviceEvenWhenToggleActive() {
-        GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(false);
-        try {
-            GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
-                    true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, true);
-
-            Assert.assertSame(Boolean.FALSE,
-                    GboardAiWritingToolsRuntime.computeOverrideValue(
-                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
-                            Boolean.TRUE, settings, official(true, true)));
-            Assert.assertSame(Boolean.FALSE,
-                    GboardAiWritingToolsRuntime.computeOverrideValue(
-                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
-                            Boolean.TRUE, settings, official(true, true)));
-        } finally {
-            GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(null);
-        }
-    }
-
-    @Test
-    public void writingToolsV2DisabledOnSupportedDeviceWhenToggleInactive() {
-        GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(true);
-        try {
-            GboardAiWritingToolsSettings.Snapshot settings = new GboardAiWritingToolsSettings.Snapshot(
-                    true, true, GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER, false);
-
-            Assert.assertSame(Boolean.FALSE,
-                    GboardAiWritingToolsRuntime.computeOverrideValue(
-                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_V2,
-                            Boolean.TRUE, settings, official(true, true)));
-            Assert.assertSame(Boolean.FALSE,
-                    GboardAiWritingToolsRuntime.computeOverrideValue(
-                            GboardAiWritingToolsRuntime.FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE,
-                            Boolean.TRUE, settings, official(true, true)));
         } finally {
             GboardAiWritingToolsDeviceSupport.setForcedDeviceSupportForTesting(null);
         }
@@ -396,7 +365,7 @@ public final class GboardAiWritingToolsRuntimeTest {
 
     @Test
     public void autoCorrectionAndDecoderFlagsAreEnforced() {
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_TRY_INITIALIZE_DECODER_AFTER_LM_LOADS));
@@ -411,7 +380,13 @@ public final class GboardAiWritingToolsRuntimeTest {
                 new TestFlagReceiver(
                         GboardAiWritingToolsRuntime.FLAG_DELAY_TO_WAIT_FOR_SUGGESTIONS_BEFORE_COMMIT_MS),
                 Long.valueOf(40L));
-        Assert.assertEquals(Long.valueOf(150L), delayResult);
+        Assert.assertEquals(Long.valueOf(40L), delayResult);
+
+        Object decoderLockResult = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK),
+                Boolean.TRUE);
+        Assert.assertSame(Boolean.FALSE, decoderLockResult);
 
         Object webTextResult = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
                 new TestFlagReceiver(
@@ -543,7 +518,7 @@ public final class GboardAiWritingToolsRuntimeTest {
                 Boolean.FALSE,
                 settings,
                 preferences));
-        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.computeOverrideValue(
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.computeOverrideValue(
                 GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_ON_SELECTED_TEXT,
                 Boolean.FALSE,
                 settings,
