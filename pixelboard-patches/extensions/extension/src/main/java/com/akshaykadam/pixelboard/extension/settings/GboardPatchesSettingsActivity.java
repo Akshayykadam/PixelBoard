@@ -3128,6 +3128,7 @@ public final class GboardPatchesSettingsActivity extends Activity
             GboardRoundedKeysSettings.ensureDefaults(context, patchesPrefs);
             GboardGoogleSansSettings.ensureDefaults(context, patchesPrefs);
             GboardUndoSettings.ensureDefaults(context, patchesPrefs);
+            GboardExpressiveLookSettings.ensureDefaults(context, patchesPrefs);
         }
 
         boolean aiWritingToolsEnabled = writingPrefs == null
@@ -3138,6 +3139,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 || GboardAdvancedVoiceSettings.readEnabled(voicePrefs);
         boolean roundedKeysEnabled = patchesPrefs == null
                 || GboardRoundedKeysSettings.readEnabled(patchesPrefs);
+        boolean expressiveLookEnabled = patchesPrefs == null
+                || GboardExpressiveLookSettings.readEnabled(patchesPrefs);
         boolean frequentEmojisEnabled = patchesPrefs != null
                 && GboardEmojiSettings.readFrequentEmojisEnabled(patchesPrefs);
 
@@ -3187,6 +3190,18 @@ public final class GboardPatchesSettingsActivity extends Activity
                     if (patchesPrefs != null) {
                         GboardRoundedKeysSettings.writeEnabled(patchesPrefs, value);
                         GboardRoundedKeysSettings.applyToGboardPreferences(context, value);
+                        renderCurrentScreenSafely();
+                    }
+                }));
+
+        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+                GboardSettingsText.get(context, R.string.gboard_patches_expressive_look_title),
+                GboardSettingsText.get(context, R.string.gboard_patches_expressive_look_summary),
+                true,
+                expressiveLookEnabled,
+                value -> {
+                    if (patchesPrefs != null) {
+                        GboardExpressiveLookSettings.writeEnabled(patchesPrefs, value);
                         renderCurrentScreenSafely();
                     }
                 }));
