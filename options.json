@@ -15,6 +15,9 @@
                 "options": {
                     "app_display_name": "PixelBoard"
                 }
+            },
+            "Simple Calculator": {
+                "enabled": true
             }
         }
     }
