@@ -523,10 +523,7 @@ public final class GboardAiWritingToolsRuntime {
         if (FLAG_BACKEND_TYPE.equals(flagName)) {
             return false;
         }
-        return flagName.startsWith("writing_tools_v2")
-                || flagName.endsWith("_writing_tools_v2")
-                || flagName.contains("writing_tools_v2_")
-                || FLAG_ENABLE_WRITING_TOOLS_V2.equals(flagName)
+        return FLAG_ENABLE_WRITING_TOOLS_V2.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_V2_ON_TOOLBAR.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_V2_TUTORIAL_PROMPTS.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_SUGGEST_STYLE.equals(flagName)
@@ -537,7 +534,13 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_WRITING_TOOLS_MY_STYLE.equals(flagName)
                 || FLAG_WRITING_TOOLS_MY_STYLE_PLUS.equals(flagName)
                 || FLAG_AGENTIC_DICTATION_ENABLE_CUSTOM_INSTRUCTION.equals(flagName)
-                || FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT.equals(flagName);
+                || FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_DISPLAY_INSTRUCTION_SUGGESTIONS_ZERO_STATE.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_ALLOW_EMPTY_USER_INSTRUCTION.equals(flagName)
+                || FLAG_WRITING_TOOLS_V2_SHOW_PREDEFINED_PROMPTS.equals(flagName);
     }
 
     public static Object applyOverriddenFlagValue(Object receiver, Object originalResult) {
@@ -797,12 +800,6 @@ public final class GboardAiWritingToolsRuntime {
         if (isWritingToolsV2Flag(flagName)) {
             if (originalResult instanceof Boolean) {
                 return Boolean.FALSE;
-            }
-            if (originalResult instanceof String) {
-                return "";
-            }
-            if (originalResult instanceof Long) {
-                return 0L;
             }
             return originalResult;
         }
@@ -1102,14 +1099,10 @@ public final class GboardAiWritingToolsRuntime {
                 if (editor == null) editor = prefs.edit();
                 editor.putBoolean(PREF_KEY_WRITING_TOOLS_SCREEN_CONTEXT_OPT_IN_V1, true);
             }
-            if (prefs.contains("setting_writing_tools_pi_override")) {
-                if (editor == null) editor = prefs.edit();
-                editor.putBoolean("setting_writing_tools_pi_override", false);
-            }
             if (!prefs.contains(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE)
-                    || prefs.getBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, false)) {
+                    || !prefs.getBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, true)) {
                 if (editor == null) editor = prefs.edit();
-                editor.putBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, false);
+                editor.putBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, true);
             }
             if (editor != null) {
                 editor.commit();

@@ -3,7 +3,7 @@
 <div align="center">
 
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
-[![Version](https://img.shields.io/badge/Patch%20Version-1.3.4-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
+[![Version](https://img.shields.io/badge/Patch%20Version-1.3.5-blue?style=flat-square)](https://github.com/Akshayykadam/PixelBoard)
 [![Target](https://img.shields.io/badge/Gboard-v18.6.3.100_Release-orange?style=flat-square&logo=google)](https://github.com/Akshayykadam/PixelBoard)
 [![Author](https://img.shields.io/badge/Author-Akshay%20Kadam-9cf?style=flat-square&logo=github)](https://github.com/Akshayykadam)
 
@@ -16,8 +16,8 @@
 **You don't need to build from source unless you want to customize patches:**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.4/PixelBoard-1.3.4.apk">
-    <img src="https://img.shields.io/badge/📥_Download_Stable_APK-v1.3.4_(122_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Stable APK"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.5/PixelBoard-1.3.5.apk">
+    <img src="https://img.shields.io/badge/📥_Download_Stable_APK-v1.3.5_(122_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="40" alt="Download PixelBoard Stable APK"/>
   </a>
   &nbsp;&nbsp;
   <a href="https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-6-3-1002251336-release/">
@@ -29,7 +29,7 @@
   </a>
 </p>
 
-[**⬇️ Direct Download Stable APK (v1.3.4)**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.4/PixelBoard-1.3.4.apk) • [**🌐 Stock Base APK (APKMirror)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-6-3-1002251336-release/) • [**📦 Patch Bundle (.mpp)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) • [**📦 GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
+[**⬇️ Direct Download Stable APK (v1.3.5)**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.5/PixelBoard-1.3.5.apk) • [**🌐 Stock Base APK (APKMirror)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-6-3-1002251336-release/) • [**📦 Patch Bundle (.mpp)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) • [**📦 GitHub Releases**](https://github.com/Akshayykadam/PixelBoard/releases)
 
 ---
 
@@ -76,7 +76,7 @@ Build the Android patch bundle (`.mpp`):
 
 The compiled patch bundle will be located at:
 ```text
-patches/build/libs/patches-1.3.4.mpp
+patches/build/libs/patches-1.3.5.mpp
 ```
 
 Run tests to verify all patch contracts and bytecode transformations:
@@ -96,6 +96,7 @@ Run tests to verify all patch contracts and bytecode transformations:
 
 ## Credits & Upstream Acknowledgements
 
+- **Screen Rotation Grace Period for Rambler Dictation**: Diagnosed and resolved by Francisco Valentim Castilho ([@franciscovalentim](https://github.com/franciscovalentim)) to keep Rambler voice dictation alive across display orientation changes ([#146](https://github.com/Akshayykadam/PixelBoard/issues/146), [#165](https://github.com/Akshayykadam/PixelBoard/pull/165)).
 - **Original Gboard Patches**: Developed by Jason Wu ([@jasonwu1994](https://github.com/jasonwu1994)).
 - **Rambler Voice Toolbar Minimize & TalkBack Labels**: Contributed by AnhDuck ([@AnhDuck](https://github.com/AnhDuck)) to restore the voice toolbar minimize action and label voice keys for TalkBack ([#108](https://github.com/Akshayykadam/PixelBoard/pull/108)).
 - **Personal Dictionary & Settings Key Resolution**: Diagnosed and resolved by Akash Mahedy ([@akashmahedy](https://github.com/akashmahedy)) to preserve native Personal Dictionary and Physical Keyboard settings across shifting Gboard base resource IDs ([#91](https://github.com/Akshayykadam/PixelBoard/issues/91), [#94](https://github.com/Akshayykadam/PixelBoard/pull/94)).
