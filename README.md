@@ -52,12 +52,23 @@
 | [**patches-1.3.5.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.5/patches-1.3.5.mpp) | **Morphe Patch Bundle** | Standalone patch bundle for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher). <br>**⚠️ Note:** This patch **only works on Gboard version 18.6.3.100** (`18.6.3.1002251336-release-arm64-v8a`). Older versions like 18.5 are **not** supported. |
 
 ### 🌟 What's New in v1.3.5
-- **Screen Rotation Grace Period for Rambler Voice Dictation**: Maintains Rambler voice dictation across device display orientation changes by introducing a 1.5s grace period during display rotation, preventing voice typing sessions from abruptly aborting ([#146](https://github.com/Akshayykadam/PixelBoard/issues/146), PR [#165](https://github.com/Akshayykadam/PixelBoard/pull/165) by Francisco Valentim Castilho).
-- **Preserve Speech Diff for Mid-Sentence Voice Edits**: Retains speech diffs for voice replacements and mid-sentence voice commands (such as "replace X with Y"), preventing accidental overwriting ([#167](https://github.com/Akshayykadam/PixelBoard/issues/167)).
-- **Native Split Readiness Gate Check for Gboard 18.6.3**: Added native library readiness gate check for split APK components on Gboard 18.6.3 (`Lsmi;`, `Locf;`) ensuring seamless JNI loading ([#168](https://github.com/Akshayykadam/PixelBoard/issues/168)).
-- **AI Writing Tools Connection Fix**: Repaired request timeout and prompt template evaluation to restore reliable server connection for Rephrase, Proofreading, and Tone adjustments without "cannot connect to server" errors.
-- **Morphe Manager Patch Bundle DEX Packaging**: Included `classes.dex` directly in the root of the `.mpp` patch bundle via `:patches:buildAndroid` so Morphe Manager detects and loads all 4 patches out-of-the-box.
-- **Base App Compatibility**: Full compatibility with Gboard v18.6.3.100 Release (`18.6.3.1002251336-release-arm64-v8a`).
+
+#### 🎙️ Gemini Rambler Natural Voice Dictation
+- **Screen Rotation Grace Period**: Maintains active Rambler voice dictation across device display orientation changes by introducing a 1.5s grace period during display rotation, preventing sessions from abruptly aborting ([#146](https://github.com/Akshayykadam/PixelBoard/issues/146), PR [#165](https://github.com/Akshayykadam/PixelBoard/pull/165) by Francisco Valentim Castilho).
+- **Preserve Speech Diff for Mid-Sentence Voice Edits**: Retains speech diffs for voice replacements and mid-sentence voice commands (such as *"replace X with Y"*), word edits in respoken phrases, and mid-sentence cursor placements without overwriting surrounding compositions ([#167](https://github.com/Akshayykadam/PixelBoard/issues/167)).
+- **Strict Language Enforcement & Anti-Drift**: Disabled proactive parallel ASR and seamless fallback in Rambler stock policy to prevent voice dictation from unintentionally switching languages or drifting to similar locales (e.g., Czech &rarr; Slovak) ([#154](https://github.com/Akshayykadam/PixelBoard/issues/154)).
+- **Eliminate Text Duplication on Dictation Start**: Fixed an issue where starting dictation in an editor containing pre-existing text or recently pasted clipboard items would duplicate text at the cursor ([#166](https://github.com/Akshayykadam/PixelBoard/issues/166)).
+- **Native Split Readiness Gate Check for Gboard 18.6.3**: Added native library readiness gate verification on split components for Gboard 18.6.3 (`Lsmi;`, `Locf;`), ensuring smooth and stable JNI initialization on fused and split APKs ([#168](https://github.com/Akshayykadam/PixelBoard/issues/168)).
+
+#### 🤖 AI Writing Assistant
+- **Server Connectivity & Timeout Repair**: Repaired request timeout and prompt template evaluation in `GboardAiWritingToolsRuntime`, eliminating *"cannot connect to server"* errors and restoring reliable Rephrase, Proofreading, and Tone adjustments (*Professional*, *Casual*, *Concise*, *Emotive*) via Google's Gboard server backend.
+- **Direct Boot & Secure Storage Safety**: Added user unlock state checks (`UserManager.isUserUnlocked`) to avoid premature preference reads or crashes during direct boot before initial device unlock.
+
+#### 📦 Packaging, Platform & Quality of Life
+- **Morphe Manager Patch Bundle DEX Packaging**: Included `classes.dex` directly in the root of the `.mpp` patch bundle via `:patches:buildAndroid` so Morphe Manager detects and loads all 4 patches out-of-the-box (resolving "0 patches found").
+- **Android 10+ (API 29) Minimum SDK Compatibility**: Clamped `minSdkVersion` in the package manifest to API 29, enabling full installation and coexistence on Android 10 and Android 11 devices without package parser errors.
+- **Refined Softkey Label Sanitizer**: Cleaned up the symbol key label patch to focus strictly on `AutoCenterScaleTextView` keycap rendering, removing unnecessary input connection hooks to prevent text insertion side-effects.
+- **Base App Compatibility**: Full support and verification for Gboard v18.6.3.100 Release (`18.6.3.1002251336-release-arm64-v8a`).
 
 ---
 
