@@ -9,6 +9,22 @@ import java.nio.file.Path;
 
 public final class GboardAdvancedVoiceSettingsSourceTest {
     @Test
+    public void advancedSettingsPageShowsTheMicrophoneTapRow() throws Exception {
+        String activity = read(repositoryRoot(),
+                "extensions/extension/src/main/java/com/akshaykadam/pixelboard/extension/"
+                        + "settings/GboardPatchesSettingsActivity.java");
+        int start = activity.indexOf("private GboardPatchesSettingsContract.Screen buildRootScreen()");
+        int end = activity.indexOf("static GboardPatchesSettingsContract.Screen createRootScreen(");
+        Assert.assertTrue(start > 0 && end > start);
+        String root = activity.substring(start, end);
+        int voiceToggle = root.indexOf("gboard_patches_advanced_voice_enabled_title");
+        int micRow = root.indexOf(".micTapRow(this,");
+        Assert.assertTrue(voiceToggle > 0);
+        Assert.assertTrue("the flat Advanced settings page has no Microphone tap row",
+                micRow > voiceToggle);
+    }
+
+    @Test
     public void settingsFeaturePreservesAcceptedRowsAndGuidance()
             throws Exception {
         Path root = repositoryRoot();
@@ -28,7 +44,7 @@ public final class GboardAdvancedVoiceSettingsSourceTest {
                 "new GboardAdvancedVoiceSettingsFeature(context)"));
         Assert.assertEquals(1, count(feature,
                 "new GboardPatchesSettingsContract.ToggleRow("));
-        Assert.assertEquals(0, count(feature,
+        Assert.assertEquals(1, count(feature,
                 "new GboardPatchesSettingsContract.SelectorRow("));
         Assert.assertFalse(feature.contains("GboardAdvancedVoiceSettings.readBackend("));
         Assert.assertFalse(feature.contains("showBackendDialog("));

@@ -56,4 +56,21 @@ public final class GboardSettingsTextTest {
                     GboardSettingsText.resolveStableTextForTesting(resId, "en"));
         }
     }
+
+    @Test
+    public void microphoneTapUsesEnglishFallbackForUntranslatedLocales() {
+        Assert.assertEquals(
+                "Microphone tap",
+                GboardSettingsText.resolveStableTextForTesting(
+                        R.string.gboard_patches_mic_gesture_title,
+                        "ar"));
+        Assert.assertEquals(
+                "Quick switch",
+                GboardSettingsText.resolveStableTextForTesting(
+                        R.string.gboard_patches_mic_gesture_quick_switch,
+                        "de"));
+        Assert.assertTrue(GboardSettingsText.resolveStableTextForTesting(
+                R.string.gboard_patches_mic_gesture_summary,
+                "de").contains("300 ms"));
+    }
 }
