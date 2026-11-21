@@ -41,6 +41,8 @@ public final class GboardRambler1803StockPolicy {
             "agentic_dictation_disable_pre_session_quota_check";
     public static final String ENABLE_PCM_AUDIO_CACHING_FOR_OFFLINE_FALLBACK_FLAG =
             "enable_pcm_audio_caching_for_offline_fallback";
+    public static final String JETSON_ENABLE_CURSOR_AWARENESS_FLAG =
+            "jetson_enable_cursor_awareness";
     public static final String AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG =
             "agentic_dictation_enable_seamless_fallback";
     public static final String AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG =
@@ -62,7 +64,8 @@ public final class GboardRambler1803StockPolicy {
                     AGENTIC_DICTATION_NEW_GI_MOTION_FLAG,
                     ENABLE_JETSON_S3_QUOTA_EXPERIMENT_OVERRIDE_FLAG,
                     AGENTIC_DICTATION_DISABLE_PRE_SESSION_QUOTA_CHECK_FLAG,
-                    ENABLE_PCM_AUDIO_CACHING_FOR_OFFLINE_FALLBACK_FLAG)));
+                    ENABLE_PCM_AUDIO_CACHING_FOR_OFFLINE_FALLBACK_FLAG,
+                    JETSON_ENABLE_CURSOR_AWARENESS_FLAG)));
 
     private GboardRambler1803StockPolicy() {
     }

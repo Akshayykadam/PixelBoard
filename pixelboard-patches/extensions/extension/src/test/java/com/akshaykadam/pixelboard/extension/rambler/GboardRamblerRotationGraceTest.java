@@ -22,7 +22,7 @@ public final class GboardRamblerRotationGraceTest {
         String flag = GboardRambler1803StockPolicy.AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG;
 
         GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, now[0]);
-        Assert.assertEquals(Long.valueOf(0L),
+        Assert.assertEquals(Long.valueOf(GboardRamblerRotationGrace.BASELINE_DEACTIVATION_DELAY_MS),
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(flag, Long.valueOf(5000L)));
 
         now[0] = 5_000L;
@@ -32,14 +32,15 @@ public final class GboardRamblerRotationGraceTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(flag, Long.valueOf(5000L)));
 
         now[0] = 9_000L;
-        Assert.assertEquals(Long.valueOf(0L),
+        Assert.assertEquals(Long.valueOf(GboardRamblerRotationGrace.BASELINE_DEACTIVATION_DELAY_MS),
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(flag, Long.valueOf(5000L)));
     }
 
     @Test
-    public void noGraceBeforeAnyDisplayChange() {
+    public void baselineDelayBeforeAnyDisplayChange() {
         GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 1_000L);
-        Assert.assertEquals(0L, GboardRamblerRotationGrace.deactivationDelayMs(1_010L));
+        Assert.assertEquals(GboardRamblerRotationGrace.BASELINE_DEACTIVATION_DELAY_MS,
+                GboardRamblerRotationGrace.deactivationDelayMs(1_010L));
     }
 
     @Test
@@ -55,16 +56,18 @@ public final class GboardRamblerRotationGraceTest {
         Assert.assertEquals(GboardRamblerRotationGrace.DEACTIVATION_GRACE_MS,
                 GboardRamblerRotationGrace.deactivationDelayMs(
                         5_000L + GboardRamblerRotationGrace.DISPLAY_CHANGE_WINDOW_MS));
-        // Once the window passes, closing the keyboard stops Rambler instantly again.
-        Assert.assertEquals(0L, GboardRamblerRotationGrace.deactivationDelayMs(
-                5_000L + GboardRamblerRotationGrace.DISPLAY_CHANGE_WINDOW_MS + 1L));
+        // Once the window passes, closing the keyboard stops Rambler after the baseline delay.
+        Assert.assertEquals(GboardRamblerRotationGrace.BASELINE_DEACTIVATION_DELAY_MS,
+                GboardRamblerRotationGrace.deactivationDelayMs(
+                        5_000L + GboardRamblerRotationGrace.DISPLAY_CHANGE_WINDOW_MS + 1L));
     }
 
     @Test
     public void laterRotationStartsANewWindow() {
         GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 1_000L);
         GboardRamblerRotationGrace.onDisplayConfiguration(LANDSCAPE, 751, 475, 5_000L);
-        Assert.assertEquals(0L, GboardRamblerRotationGrace.deactivationDelayMs(30_000L));
+        Assert.assertEquals(GboardRamblerRotationGrace.BASELINE_DEACTIVATION_DELAY_MS,
+                GboardRamblerRotationGrace.deactivationDelayMs(30_000L));
 
         GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 30_000L);
         Assert.assertEquals(GboardRamblerRotationGrace.DEACTIVATION_GRACE_MS,
@@ -76,13 +79,23 @@ public final class GboardRamblerRotationGraceTest {
         GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 1_000L);
         // Same display shape, e.g. a locale, theme or font scale change.
         GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 5_000L);
-        Assert.assertEquals(0L, GboardRamblerRotationGrace.deactivationDelayMs(5_010L));
+        Assert.assertEquals(GboardRamblerRotationGrace.BASELINE_DEACTIVATION_DELAY_MS,
+                GboardRamblerRotationGrace.deactivationDelayMs(5_010L));
     }
 
     @Test
     public void screenSizeChangeWithoutOrientationChangeGrantsGrace() {
         GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 475, 751, 1_000L);
         GboardRamblerRotationGrace.onDisplayConfiguration(PORTRAIT, 600, 751, 5_000L);
+        Assert.assertEquals(GboardRamblerRotationGrace.DEACTIVATION_GRACE_MS,
+                GboardRamblerRotationGrace.deactivationDelayMs(5_010L));
+    }
+
+    @Test
+    public void flip180GrantsGraceWhenRotationChanges() {
+        GboardRamblerRotationGrace.onDisplayConfigurationWithRotation(PORTRAIT, 475, 751, 0, 1_000L);
+        // 180-degree flip: portrait to reverse-portrait (rotation 0 -> 2)
+        GboardRamblerRotationGrace.onDisplayConfigurationWithRotation(PORTRAIT, 475, 751, 2, 5_000L);
         Assert.assertEquals(GboardRamblerRotationGrace.DEACTIVATION_GRACE_MS,
                 GboardRamblerRotationGrace.deactivationDelayMs(5_010L));
     }

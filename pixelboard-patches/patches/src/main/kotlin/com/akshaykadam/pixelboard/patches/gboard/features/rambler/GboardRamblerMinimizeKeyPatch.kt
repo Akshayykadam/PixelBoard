@@ -43,6 +43,36 @@ private data class RamblerMinimizeKeyTargets(
     val removeAccessPoint: String,
 )
 
+// Gboard 18.6.3: fjo is the Rambler keyboard header, fjk the floating Rambler widget, fio
+// their shared base, mmm a soft key definition built by mmh, mmw/mmy the add/remove access
+// point notifications.
+private val RAMBLER_MINIMIZE_KEY_1863_TARGETS = RamblerMinimizeKeyTargets(
+    headerCloseKey = GboardMethodTarget("Lfjo;", "G", emptyList(), "Lmmm;"),
+    headerTeardown = GboardMethodTarget(
+        "Lfio;",
+        "M",
+        listOf("Lfij;", "Landroid/view/View;", "Landroid/view/View;"),
+        "V",
+    ),
+    headerHideSlots = GboardMethodTarget(
+        "Lfjo;",
+        "aa",
+        listOf("Landroid/view/ViewGroup;", "Z"),
+        "V",
+    ),
+    widgetCloseKey = GboardMethodTarget("Lfjk;", "G", emptyList(), "Lmmm;"),
+    softKeyFactory = "Lfio;->I(ILjava/lang/Runnable;)Lmmm;",
+    softKeyBuilder = "Lfio;->F(ILjava/lang/Runnable;)Lmmh;",
+    setContentDescription = "Lmmh;->h(I)V",
+    buildSoftKey = "Lmmh;->a()Lmmm;",
+    minimizeKeyDescription = "0x7f14167c",
+    showKeyboardKeyDescription = "0x7f1401ab",
+    closeIcon = "Lfio;->w()I",
+    closeKey = "Lfio;->H(I)Lmmm;",
+    addAccessPoint = "Lmmw;->a(ILmmm;)V",
+    removeAccessPoint = "Lmmy;->a(ILjava/lang/String;)V",
+)
+
 // Gboard 18.5.3: flz is the Rambler keyboard header, flw the floating Rambler widget, flb
 // their shared base, mtr a soft key definition built by mtm, mub/mue the add/remove access
 // point notifications.
@@ -82,7 +112,10 @@ internal val gboardRamblerMinimizeKeyPatch = bytecodePatch(
     dependsOn(gboardPatchesExtensionCarrierPatch)
 
     execute {
-        val targets = RAMBLER_MINIMIZE_KEY_1853_TARGETS
+        val targets = listOf(RAMBLER_MINIMIZE_KEY_1863_TARGETS, RAMBLER_MINIMIZE_KEY_1853_TARGETS).firstOrNull { candidate ->
+            findMutableMethodOrNull(candidate.headerCloseKey) != null &&
+                findMutableMethodOrNull(candidate.headerTeardown) != null
+        } ?: return@execute
         val closeKeyMethod = findMutableMethodOrNull(targets.headerCloseKey) ?: return@execute
         val teardownMethod = findMutableMethodOrNull(targets.headerTeardown) ?: return@execute
         val hideSlotsMethod = findMutableMethodOrNull(targets.headerHideSlots) ?: return@execute
@@ -106,16 +139,22 @@ private fun MutableMethod.moveMinimizeKeyToEndSlot(targets: RamblerMinimizeKeyTa
     // the stock close key for the close slot instead.
     val factoryIndex = instructions.indexOfFirst { it.isMethodReference(targets.softKeyFactory) }
     check(factoryIndex >= 0) { "Rambler header minimize key factory not found" }
+    val isGoto = instructions[factoryIndex + 2].isOpcode("GOTO")
     check(
         instructions[factoryIndex + 1].isOpcode("MOVE_RESULT_OBJECT") &&
-            instructions[factoryIndex + 2].isOpcode("RETURN_OBJECT"),
+            (instructions[factoryIndex + 2].isOpcode("RETURN_OBJECT") || isGoto),
     ) { "Unexpected Rambler header minimize key shape" }
     // p0 still holds the header after the factory call, so keep the key in v0.
     replaceInstruction(factoryIndex + 1, "move-result-object v0")
-    replaceInstruction(factoryIndex + 2, "return-object v0")
+    if (!isGoto) {
+        replaceInstruction(factoryIndex + 2, "return-object v0")
+    }
     labelSoftKey(factoryIndex, targets.minimizeKeyDescription, targets)
     // labelSoftKey() added four instructions before the return.
     val returnIndex = factoryIndex + 6
+    if (isGoto) {
+        addInstructions(returnIndex, "move-object p0, v0")
+    }
     addInstructionsWithLabels(
         returnIndex,
         """

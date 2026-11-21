@@ -1,7 +1,30 @@
 package com.akshaykadam.pixelboard.extension.keyboard;
 
+import android.view.View;
+
 public final class GboardKeyboardRuntime {
     private GboardKeyboardRuntime() {}
+
+    /**
+     * Performs haptic feedback for key presses, explicitly passing
+     * {@code HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING} (0x1) to ensure
+     * keypress haptics function as configured in Gboard settings even on OEMs
+     * like Honor MagicOS / Huawei EMUI when system-wide vibration is disabled (Issue #7).
+     *
+     * @param view the View triggering the haptic feedback
+     * @param feedbackConstant the haptic feedback constant (e.g. KEYPRESS_STANDARD)
+     * @return true if the haptic feedback was successfully performed, false otherwise
+     */
+    public static boolean performHapticFeedback(View view, int feedbackConstant) {
+        if (view == null) {
+            return false;
+        }
+        try {
+            return view.performHapticFeedback(feedbackConstant, 1 /* FLAG_IGNORE_GLOBAL_SETTING */);
+        } catch (Throwable t) {
+            return view.performHapticFeedback(feedbackConstant);
+        }
+    }
 
     /**
      * Sanitizes softkey labels at runtime.

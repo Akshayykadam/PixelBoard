@@ -14,15 +14,20 @@ class GboardRamblerMinimizeKeyPatchSourceTest {
                 "features/rambler/GboardRamblerMinimizeKeyPatch.kt",
         )
         assertTrue(source.contains("GboardMethodTarget(\"Lflz;\", \"D\", emptyList(), \"Lmtr;\")"))
+        assertTrue(source.contains("GboardMethodTarget(\"Lfjo;\", \"G\", emptyList(), \"Lmmm;\")"))
         assertTrue(source.contains("\"Lflb;\",\n        \"I\","))
+        assertTrue(source.contains("\"Lfio;\",\n        \"M\","))
         assertTrue(source.contains("\"Lflz;\",\n        \"W\","))
+        assertTrue(source.contains("\"Lfjo;\",\n        \"aa\","))
         assertTrue(source.contains("RAMBLER_MINIMIZE_KEY_RUNTIME_PLACE_MINIMIZE_KEY"))
         assertTrue(source.contains("RAMBLER_MINIMIZE_KEY_RUNTIME_CLEAR_MINIMIZE_KEY"))
         assertTrue(source.contains("RAMBLER_MINIMIZE_KEY_RUNTIME_REVEAL_MINIMIZE_KEY"))
         assertTrue(source.contains("ExternalLabel(\"pixelboard_stock_minimize_key\""))
         assertTrue(source.contains("softKeyBuilder = \"Lflb;->C(ILjava/lang/Runnable;)Lmtm;\""))
+        assertTrue(source.contains("softKeyBuilder = \"Lfio;->F(ILjava/lang/Runnable;)Lmmh;\""))
         assertTrue(source.contains("minimizeKeyDescription = \"0x7f14167c\""))
         assertTrue(source.contains("widgetCloseKey = GboardMethodTarget(\"Lflw;\", \"D\", emptyList(), \"Lmtr;\")"))
+        assertTrue(source.contains("widgetCloseKey = GboardMethodTarget(\"Lfjk;\", \"G\", emptyList(), \"Lmmm;\")"))
         assertTrue(source.contains("showKeyboardKeyDescription = \"0x7f1401ab\""))
 
         val settings = read(

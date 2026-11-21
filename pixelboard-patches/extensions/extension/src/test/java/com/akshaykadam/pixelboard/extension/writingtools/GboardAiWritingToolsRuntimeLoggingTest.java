@@ -397,33 +397,20 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     }
 
     @Test
-    public void superInsertPersonalContextFlagsGuardAgainstMissingBundleHint() throws Exception {
+    public void superInsertPersonalContextFlagsAreDisabled() throws Exception {
         SuperInsertBrowsingHistoryFlagReceiver browsingHistoryReceiver =
                 new SuperInsertBrowsingHistoryFlagReceiver();
         SuperInsertNestaFlagReceiver nestaReceiver =
                 new SuperInsertNestaFlagReceiver();
 
-        try {
-            // When PersonalContext BundleHint is not supported on the platform (e.g. Android 16 and lower)
-            GboardAiWritingToolsRuntime.setPersonalContextHintSupportedForTesting(Boolean.FALSE);
-            Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                    browsingHistoryReceiver, Boolean.FALSE));
-            Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                    browsingHistoryReceiver, Boolean.TRUE));
-            Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                    nestaReceiver, Boolean.FALSE));
-            Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                    nestaReceiver, Boolean.TRUE));
-
-            // When PersonalContext BundleHint is supported (e.g. future Android 17+)
-            GboardAiWritingToolsRuntime.setPersonalContextHintSupportedForTesting(Boolean.TRUE);
-            Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                    browsingHistoryReceiver, Boolean.FALSE));
-            Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                    nestaReceiver, Boolean.FALSE));
-        } finally {
-            GboardAiWritingToolsRuntime.setPersonalContextHintSupportedForTesting(null);
-        }
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                browsingHistoryReceiver, Boolean.FALSE));
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                browsingHistoryReceiver, Boolean.TRUE));
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                nestaReceiver, Boolean.FALSE));
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                nestaReceiver, Boolean.TRUE));
     }
 
     @Test
@@ -520,7 +507,7 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_POST_CORRECTION_TRIGGER_PREDICTOR));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK));
@@ -566,7 +553,7 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_VK));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_ENABLE_DYNAMIC_MULTI_VIEW));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_CONTACTS));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_CLIPBOARD_QUERY_RESULTS));
@@ -574,9 +561,9 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_EXPRESSION_QUERY_RESULTS));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_LOCAL_IMAGE_RESULTS));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_BROWSING_HISTORY_RESULTS));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_NESTA_RESULTS));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_BELOW_CURSOR));
@@ -867,12 +854,12 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     }
 
     @Test
-    public void thresholdForCandidatesFromUserHistoryEnforcesMinusFive() throws Exception {
+    public void thresholdForCandidatesFromUserHistoryEnforcesZero() throws Exception {
         ThresholdForCandidatesFlagReceiver receiver =
                 new ThresholdForCandidatesFlagReceiver();
         Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                receiver, Double.valueOf(0.0d));
-        Assert.assertEquals(Double.valueOf(-5.0d), enforced);
+                receiver, Double.valueOf(-5.0d));
+        Assert.assertEquals(Double.valueOf(0.0d), enforced);
     }
 
     @Test

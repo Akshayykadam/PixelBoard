@@ -91,6 +91,17 @@ public final class GboardAiWritingToolsRuntime {
             "writing_tools_my_style_plus";
     static final String FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT =
             "writing_tools_use_v2_landscape_layout";
+    static final String FLAG_WRITING_HELPER_INPUT_WORDS_LIMIT =
+            "writing_helper_input_words_limit";
+    static final String FLAG_WRITING_HELPER_INPUT_WORDS_LIMIT_V2 =
+            "writing_helper_input_words_limit_v2";
+    static final String FLAG_WRITING_HELPER_INPUT_WORDS_LIMIT_FOR_ON_DEVICE_PROOFREAD =
+            "writing_helper_input_words_limit_for_on_device_proofread";
+    static final String FLAG_WRITING_HELPER_ENABLE_PARTIAL_SELECTION_ON_LONG_INPUT =
+            "writing_helper_enable_partial_selection_on_long_input";
+    static final String FLAG_TRUNCATE_TEXT_AFTER_CURSOR_IN_GMAIL =
+            "truncate_text_after_cursor_in_gmail_if_no_content_before_cursor";
+    static final Long ENFORCED_WRITING_HELPER_INPUT_WORDS_LIMIT = 2000L;
     static final String FLAG_AGENTIC_DICTATION_ENABLE_CUSTOM_INSTRUCTION =
             "agentic_dictation_enable_custom_instruction";
     static final String FLAG_ENABLE_MODELESS_SMART_EDIT =
@@ -136,7 +147,7 @@ public final class GboardAiWritingToolsRuntime {
     static final Long ENFORCED_ADD_PENDING_OOVS_MAX_MS = 500L;
     static final String FLAG_THRESHOLD_FOR_CANDIDATES_FROM_USER_HISTORY =
             "threshold_for_candidates_from_user_history";
-    static final Double ENFORCED_THRESHOLD_FOR_CANDIDATES_FROM_USER_HISTORY = -5.0d;
+    static final Double ENFORCED_THRESHOLD_FOR_CANDIDATES_FROM_USER_HISTORY = 0.0d;
     static final String FLAG_FIX_FIRST_AUTO_CORRECTION_COMMIT =
             "fix_first_auto_correction_commit";
     static final String FLAG_LEARNING_FOR_EDITOR_WITHOUT_AUTO_CORRECTION =
@@ -486,12 +497,9 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_SUPER_INSERT.equals(flagName)
                 || FLAG_SUPER_INSERT_VK.equals(flagName)
                 || FLAG_SUPER_INSERT_ENABLE_DYNAMIC_MULTI_VIEW.equals(flagName)
-                || FLAG_SUPER_INSERT_CONTACTS.equals(flagName)
                 || FLAG_SUPER_INSERT_CLIPBOARD_QUERY_RESULTS.equals(flagName)
                 || FLAG_SUPER_INSERT_EXPRESSION_QUERY_RESULTS.equals(flagName)
                 || FLAG_SUPER_INSERT_LOCAL_IMAGE_RESULTS.equals(flagName)
-                || FLAG_SUPER_INSERT_BROWSING_HISTORY_RESULTS.equals(flagName)
-                || FLAG_SUPER_INSERT_NESTA_RESULTS.equals(flagName)
                 || FLAG_SUPER_INSERT_BELOW_CURSOR.equals(flagName)
                 || FLAG_ENABLE_SI_SHORTCUT_KEYS.equals(flagName)
                 || FLAG_ENABLE_SMART_COMPOSE.equals(flagName)
@@ -508,10 +516,8 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_FIX_FIRST_AUTO_CORRECTION_COMMIT.equals(flagName)
                 || FLAG_LEARNING_FOR_EDITOR_WITHOUT_AUTO_CORRECTION.equals(flagName)
                 || FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS.equals(flagName)
-                || FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT.equals(flagName)
                 || FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK.equals(flagName)
                 || FLAG_TRY_INITIALIZE_DECODER_AFTER_LM_LOADS.equals(flagName)
-                || FLAG_PK_AUTO_CAPITALIZATION_USE_AUTO_CORRECTION.equals(flagName)
                 || FLAG_ENABLE_AUTO_CORRECTION_STATS.equals(flagName)
                 || FLAG_ENABLE_CORRECTION_COMMIT_ANIMATION.equals(flagName);
     }
@@ -534,7 +540,6 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_WRITING_TOOLS_MY_STYLE.equals(flagName)
                 || FLAG_WRITING_TOOLS_MY_STYLE_PLUS.equals(flagName)
                 || FLAG_AGENTIC_DICTATION_ENABLE_CUSTOM_INSTRUCTION.equals(flagName)
-                || FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT.equals(flagName)
                 || FLAG_WRITING_TOOLS_V2.equals(flagName)
                 || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS.equals(flagName)
                 || FLAG_WRITING_TOOLS_V2_ENABLE_SUGGESTED_INSTRUCTIONS_IN_DRAFT.equals(flagName)
@@ -583,6 +588,12 @@ public final class GboardAiWritingToolsRuntime {
                     && originalResult instanceof Double) {
                 return ENFORCED_THRESHOLD_FOR_CANDIDATES_FROM_USER_HISTORY;
             }
+            if ((FLAG_WRITING_HELPER_INPUT_WORDS_LIMIT.equals(flagName)
+                    || FLAG_WRITING_HELPER_INPUT_WORDS_LIMIT_V2.equals(flagName)
+                    || FLAG_WRITING_HELPER_INPUT_WORDS_LIMIT_FOR_ON_DEVICE_PROOFREAD.equals(flagName))
+                    && originalResult instanceof Long) {
+                return ENFORCED_WRITING_HELPER_INPUT_WORDS_LIMIT;
+            }
             if ((FLAG_WRITING_HELPER_SERVER_TARGET.equals(flagName)
                     || FLAG_GBOARD_IMAGEN_API_HOST.equals(flagName))
                     && originalResult instanceof String) {
@@ -591,7 +602,8 @@ public final class GboardAiWritingToolsRuntime {
             if ((FLAG_ENABLED_OCR_LANGUAGE_TAGS.equals(flagName)
                     || FLAG_FAST_ACCESS_BAR_APP_WHITELIST.equals(flagName)
                     || FLAG_ENABLE_EMOJIFY_LANGUAGE_TAGS.equals(flagName)
-                    || FLAG_EMOJIFY_APP_ALLOWLIST.equals(flagName))
+                    || FLAG_EMOJIFY_APP_ALLOWLIST.equals(flagName)
+                    || FLAG_PROOFREAD_SUPPORTED_APPS.equals(flagName))
                     && originalResult instanceof String) {
                 return ALL_LANGUAGES_ALLOWLIST_VALUE;
             }
@@ -605,8 +617,7 @@ public final class GboardAiWritingToolsRuntime {
             }
             if ((FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_WEB_TEXT.equals(flagName)
                     || FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION.equals(flagName)
-                    || FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_SPECIAL_TYPES.equals(flagName)
-                    || FLAG_PROOFREAD_SUPPORTED_APPS.equals(flagName))
+                    || FLAG_APPS_TO_RESPECT_NO_AUTO_CORRECTION_IN_SPECIAL_TYPES.equals(flagName))
                     && originalResult instanceof String) {
                 return "";
             }
@@ -622,17 +633,18 @@ public final class GboardAiWritingToolsRuntime {
                     || FLAG_ENABLE_EMOJIFY_MODEL.equals(flagName)
                     || FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE.equals(flagName)
                     || FLAG_ENABLE_TWO_STAGE_DECODER.equals(flagName)
-                    || FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK.equals(flagName))
+                    || FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK.equals(flagName)
+                    || FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT.equals(flagName)
+                    || FLAG_WRITING_HELPER_ENABLE_PARTIAL_SELECTION_ON_LONG_INPUT.equals(flagName)
+                    || FLAG_TRUNCATE_TEXT_AFTER_CURSOR_IN_GMAIL.equals(flagName)
+                    || FLAG_SUPER_INSERT_CONTACTS.equals(flagName)
+                    || FLAG_SUPER_INSERT_BROWSING_HISTORY_RESULTS.equals(flagName)
+                    || FLAG_SUPER_INSERT_NESTA_RESULTS.equals(flagName))
                     && originalResult instanceof Boolean) {
                 return Boolean.FALSE;
             }
             if (isStockPhenotypeEnforcedFlag(flagName)
                     && originalResult instanceof Boolean) {
-                if ((FLAG_SUPER_INSERT_BROWSING_HISTORY_RESULTS.equals(flagName)
-                        || FLAG_SUPER_INSERT_NESTA_RESULTS.equals(flagName))
-                        && !isPersonalContextHintSupported()) {
-                    return Boolean.FALSE;
-                }
                 if (!Boolean.TRUE.equals(originalResult)) {
                     logLimited(FLAG_LOG_COUNT,
                             "flag=" + flagName
@@ -795,7 +807,7 @@ public final class GboardAiWritingToolsRuntime {
         }
         if (FLAG_PROOFREAD_SUPPORTED_APPS.equals(flagName)
                 && originalResult instanceof String) {
-            return "";
+            return ALL_LANGUAGES_ALLOWLIST_VALUE;
         }
         if (isWritingToolsV2Flag(flagName)) {
             if (originalResult instanceof Boolean) {
@@ -816,11 +828,15 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_WRITING_TOOLS_ENABLE_STABLE_ENTRANCE.equals(flagName)
                 || FLAG_ENABLE_WRITING_TOOLS_REPLACE_BUTTON.equals(flagName)
                 || FLAG_WRITING_TOOLS_REPLACE_BUTTON.equals(flagName)
-                || FLAG_WRITING_TOOLS_CONTEXT_OPT_IN.equals(flagName)) {
+                || FLAG_WRITING_TOOLS_CONTEXT_OPT_IN.equals(flagName)
+                || FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName)
+                || FLAG_WRITING_TOOLS_USE_V2_LANDSCAPE_LAYOUT.equals(flagName)) {
             return Boolean.TRUE;
         }
-        if (FLAG_WRITING_HELPER_ON_SELECTED_TEXT.equals(flagName)
-                || FLAG_ENABLE_MODELESS_SMART_EDIT.equals(flagName)) {
+        if (FLAG_ENABLE_MODELESS_SMART_EDIT.equals(flagName)
+                || FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT.equals(flagName)
+                || FLAG_WRITING_HELPER_ENABLE_PARTIAL_SELECTION_ON_LONG_INPUT.equals(flagName)
+                || FLAG_TRUNCATE_TEXT_AFTER_CURSOR_IN_GMAIL.equals(flagName)) {
             return Boolean.FALSE;
         }
         return originalResult;

@@ -64,9 +64,18 @@ public final class GboardRamblerDictationRuntimeTest {
 
     public static class FakeExtension {
         public FakeSurroundingText i;
+        public android.view.inputmethod.EditorInfo g;
 
         public FakeExtension(String textBefore, String selectedText, String textAfter) {
             this.i = new FakeSurroundingText(textBefore, selectedText, textAfter);
+        }
+
+        public FakeExtension(String textBefore, String selectedText, String textAfter, String packageName) {
+            this.i = new FakeSurroundingText(textBefore, selectedText, textAfter);
+            if (packageName != null) {
+                this.g = new android.view.inputmethod.EditorInfo();
+                this.g.packageName = packageName;
+            }
         }
     }
 
@@ -492,6 +501,37 @@ public final class GboardRamblerDictationRuntimeTest {
         Assert.assertNotNull(action.e);
         Assert.assertEquals(3, action.c);
         Assert.assertEquals("station", span.c);
+    }
+
+    @Test
+    public void clearsDiffAndCommitsVerbatimTranscriptForMicrosoftWord() {
+        FakeExtension ext = new FakeExtension("Existing text in doc", "", "", "com.microsoft.office.word");
+
+        FakeAction action = new FakeAction();
+        action.b = 0x10;
+        action.c = 3;
+        action.d = "dictated speech";
+
+        FakeDiff diff = new FakeDiff();
+        diff.c = "Existing ";
+        diff.d = "text";
+        diff.e = "";
+        action.e = diff;
+
+        FakeSpan span = new FakeSpan();
+        span.c = "Existing dictated speech in doc";
+        span.j = action;
+
+        FakeProto proto = new FakeProto();
+        proto.b = Collections.singletonList(span);
+
+        GboardRamblerDictationRuntime.filterVoiceText(ext, proto);
+
+        // In Word, diff must be cleared and verbatim transcript committed directly
+        Assert.assertNull(action.e);
+        Assert.assertEquals(0, action.c);
+        Assert.assertEquals(0, action.b & 0x10);
+        Assert.assertEquals("dictated speech", span.c);
     }
 
     @Test

@@ -2,9 +2,15 @@ package com.akshaykadam.pixelboard.extension.rambler;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public final class GboardRambler1803StockPolicyTest {
+    @Before
+    public void setUp() {
+        GboardRamblerRotationGrace.setClockForTests(() -> 1000L);
+    }
+
     @After
     public void tearDown() {
         GboardRambler1803OfficialSelectionRuntime.resetForTests();
@@ -92,6 +98,10 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.ENABLE_JETSON_IN_TOOLBAR_FLAG,
                         Boolean.FALSE));
+        Assert.assertSame(Boolean.TRUE,
+                GboardRambler1803StockPolicy.maybeForceStockRouteValue(
+                        GboardRambler1803StockPolicy.JETSON_ENABLE_CURSOR_AWARENESS_FLAG,
+                        Boolean.FALSE));
         Assert.assertEquals(Long.valueOf(GboardRamblerRotationGrace.deactivationDelayMs()),
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG,
@@ -102,6 +112,9 @@ public final class GboardRambler1803StockPolicyTest {
         Assert.assertTrue(
                 GboardRambler1803StockPolicy.isTargetFlagName(
                         GboardRambler1803StockPolicy.CONFIG_AGENTIC_DICTATION_FLAG));
+        Assert.assertTrue(
+                GboardRambler1803StockPolicy.isTargetFlagName(
+                        GboardRambler1803StockPolicy.JETSON_ENABLE_CURSOR_AWARENESS_FLAG));
         Assert.assertTrue(
                 GboardRambler1803StockPolicy.isTargetFlagName(
                         GboardRambler1803StockPolicy.AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG));

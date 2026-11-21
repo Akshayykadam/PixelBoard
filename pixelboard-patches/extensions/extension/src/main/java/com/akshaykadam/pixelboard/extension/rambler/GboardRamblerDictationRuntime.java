@@ -187,7 +187,10 @@ public final class GboardRamblerDictationRuntime {
                 // mistook newly spoken text at the end of the document for an edit of preceding text).
                 // In contrast, genuine mid-sentence edits (Issue #167, where cursor is placed mid-text
                 // or diff has a suffix) and explicit voice commands must retain their diffs.
-                boolean isErrantDiff = isErrantDictationDiff(
+                // In Microsoft Word / Office (Issue #112), diff deletion desynchronizes the cursor to (0, 0),
+                // so all diffs are treated as errant to commit verbatim speech text cleanly.
+                boolean isWord = isWordOrOfficeApp(extension);
+                boolean isErrantDiff = isWord || isErrantDictationDiff(
                         action, transcript, textBefore, textAfter, selectedText, intent);
 
                 if (isErrantDiff) {
@@ -387,6 +390,43 @@ public final class GboardRamblerDictationRuntime {
             }
         }
         return sb.toString();
+    }
+
+    private static boolean isWordOrOfficeApp(Object extension) {
+        if (extension == null) {
+            return false;
+        }
+        try {
+            String targetPackage = null;
+            Field gField = findField(extension.getClass(), "g");
+            if (gField == null) gField = findField(extension.getClass(), "m");
+            if (gField == null) gField = findField(extension.getClass(), "N");
+            if (gField != null) {
+                Object editorInfo = gField.get(extension);
+                if (editorInfo instanceof android.view.inputmethod.EditorInfo) {
+                    targetPackage = ((android.view.inputmethod.EditorInfo) editorInfo).packageName;
+                }
+            }
+            if (targetPackage == null || targetPackage.isEmpty()) {
+                Method vMethod = findMethod(extension.getClass(), "v");
+                Object operator = vMethod != null ? vMethod.invoke(extension) : null;
+                if (operator != null) {
+                    Method lMethod = findMethod(operator.getClass(), "l");
+                    if (lMethod != null) {
+                        Object editorInfo = lMethod.invoke(operator);
+                        if (editorInfo instanceof android.view.inputmethod.EditorInfo) {
+                            targetPackage = ((android.view.inputmethod.EditorInfo) editorInfo).packageName;
+                        }
+                    }
+                }
+            }
+            if (targetPackage != null) {
+                String lower = targetPackage.toLowerCase(Locale.ROOT);
+                return lower.contains("office.word") || lower.contains("officehub") || lower.startsWith("com.microsoft.office");
+            }
+        } catch (Throwable ignored) {
+        }
+        return false;
     }
 
     private static Field findField(Class<?> clazz, String fieldName) {

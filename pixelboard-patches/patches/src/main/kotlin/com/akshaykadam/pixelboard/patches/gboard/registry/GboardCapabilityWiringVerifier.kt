@@ -11,7 +11,7 @@ internal object GboardCapabilityWiringVerifier {
     fun main(args: Array<String>) {
         require(args.size == 1) { "Expected product catalog path" }
         val catalog = JsonParser.parseString(
-            Files.readString(Path.of(args[0]), StandardCharsets.UTF_8),
+            java.io.File(args[0]).readText(StandardCharsets.UTF_8),
         ).asJsonObject
         val features = catalog.getAsJsonArray("features").associateBy { feature ->
             feature.asJsonObject.get("feature_id").asString

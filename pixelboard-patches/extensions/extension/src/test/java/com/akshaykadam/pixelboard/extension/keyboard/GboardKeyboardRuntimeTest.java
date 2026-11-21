@@ -37,4 +37,9 @@ public class GboardKeyboardRuntimeTest {
         String unmodified = "Regular Text";
         Assert.assertSame(unmodified, GboardKeyboardRuntime.sanitizeKeyLabel(unmodified));
     }
+
+    @Test
+    public void testPerformHapticFeedbackNullSafety() {
+        Assert.assertFalse(GboardKeyboardRuntime.performHapticFeedback(null, 1));
+    }
 }

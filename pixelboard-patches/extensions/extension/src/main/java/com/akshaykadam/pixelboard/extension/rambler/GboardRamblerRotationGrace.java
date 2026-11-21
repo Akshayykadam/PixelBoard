@@ -32,8 +32,10 @@ public final class GboardRamblerRotationGrace {
     private static final String TAG = "GboardPatches";
     private static final String LOG_PREFIX = "[rambler-rotation-grace] ";
 
+    /** Baseline delay Gboard waits before stopping Rambler, preventing timing races on flips/rotations. */
+    static final long BASELINE_DEACTIVATION_DELAY_MS = 1000L;
     /** Grace Gboard waits before stopping Rambler; reactivation after a rotation takes ~80 ms. */
-    static final long DEACTIVATION_GRACE_MS = 1500L;
+    static final long DEACTIVATION_GRACE_MS = 2500L;
     /** How long after a display change a deactivation still counts as part of the rotation. */
     static final long DISPLAY_CHANGE_WINDOW_MS = 2000L;
 
@@ -46,6 +48,7 @@ public final class GboardRamblerRotationGrace {
     private static int orientation = UNKNOWN;
     private static int widthDp = UNKNOWN;
     private static int heightDp = UNKNOWN;
+    private static int displayRotation = UNKNOWN;
     /** Uptime until which deactivations get the grace; 0 until the display first changes. */
     private static volatile long graceUntil;
     private static volatile LongSupplier clock;
@@ -53,21 +56,17 @@ public final class GboardRamblerRotationGrace {
     private GboardRamblerRotationGrace() {
     }
 
-    /** Returns the deactivation delay to hand Gboard: a grace period mid-rotation, else 0. */
+    /** Returns the deactivation delay to hand Gboard: a grace period mid-rotation, else baseline delay. */
     static long deactivationDelayMs() {
-        // Also keeps the stock path off SystemClock, which plain JVM unit tests cannot call.
-        if (graceUntil == 0L) {
-            return 0L;
-        }
         long delay = deactivationDelayMs(nowUptimeMs());
-        if (delay > 0L) {
+        if (delay > BASELINE_DEACTIVATION_DELAY_MS) {
             logInfo("display changed, keeping Rambler alive for " + delay + " ms");
         }
         return delay;
     }
 
     static long deactivationDelayMs(long nowUptimeMs) {
-        return nowUptimeMs <= graceUntil ? DEACTIVATION_GRACE_MS : 0L;
+        return nowUptimeMs <= graceUntil ? DEACTIVATION_GRACE_MS : BASELINE_DEACTIVATION_DELAY_MS;
     }
 
     /**
@@ -82,7 +81,7 @@ public final class GboardRamblerRotationGrace {
         ensureListening(GboardRambler1803OfficialSelectionRuntime.applicationContext());
     }
 
-    static void ensureListening(Context context) {
+    static void ensureListening(final Context context) {
         if (listening || context == null) {
             return;
         }
@@ -95,14 +94,14 @@ public final class GboardRamblerRotationGrace {
                 context.registerComponentCallbacks(new ComponentCallbacks() {
                     @Override
                     public void onConfigurationChanged(Configuration newConfig) {
-                        record(newConfig);
+                        record(context, newConfig);
                     }
 
                     @Override
                     public void onLowMemory() {
                     }
                 });
-                record(context.getResources().getConfiguration());
+                record(context, context.getResources().getConfiguration());
             } catch (Throwable failure) {
                 logInfo("could not track display changes: " + failure);
             }
@@ -112,8 +111,31 @@ public final class GboardRamblerRotationGrace {
     }
 
     private static void record(Configuration configuration) {
-        onDisplayConfiguration(configuration.orientation, configuration.screenWidthDp,
-                configuration.screenHeightDp, nowUptimeMs());
+        record(null, configuration);
+    }
+
+    private static void record(Context context, Configuration configuration) {
+        int rot = UNKNOWN;
+        if (context != null) {
+            try {
+                if (android.os.Build.VERSION.SDK_INT >= 30) {
+                    android.view.Display display = context.getDisplay();
+                    if (display != null) {
+                        rot = display.getRotation();
+                    }
+                }
+                if (rot == UNKNOWN) {
+                    android.view.WindowManager wm = (android.view.WindowManager)
+                            context.getSystemService(Context.WINDOW_SERVICE);
+                    if (wm != null && wm.getDefaultDisplay() != null) {
+                        rot = wm.getDefaultDisplay().getRotation();
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+        onDisplayConfigurationWithRotation(configuration.orientation, configuration.screenWidthDp,
+                configuration.screenHeightDp, rot, nowUptimeMs());
     }
 
     private static long nowUptimeMs() {
@@ -123,15 +145,25 @@ public final class GboardRamblerRotationGrace {
 
     static void onDisplayConfiguration(int newOrientation, int newWidthDp, int newHeightDp,
             long nowUptimeMs) {
+        onDisplayConfigurationWithRotation(newOrientation, newWidthDp, newHeightDp, UNKNOWN, nowUptimeMs);
+    }
+
+    static void onDisplayConfigurationWithRotation(int newOrientation, int newWidthDp, int newHeightDp,
+            int newRotation, long nowUptimeMs) {
         synchronized (LOCK) {
             boolean known = orientation != UNKNOWN;
-            boolean changed = newOrientation != orientation
+            boolean rotKnown = displayRotation != UNKNOWN;
+            boolean rotChanged = newRotation != UNKNOWN && (!rotKnown || newRotation != displayRotation);
+            boolean configChanged = newOrientation != orientation
                     || newWidthDp != widthDp
                     || newHeightDp != heightDp;
             orientation = newOrientation;
             widthDp = newWidthDp;
             heightDp = newHeightDp;
-            if (known && changed) {
+            if (newRotation != UNKNOWN) {
+                displayRotation = newRotation;
+            }
+            if ((known && configChanged) || (rotKnown && rotChanged)) {
                 graceUntil = nowUptimeMs + DISPLAY_CHANGE_WINDOW_MS;
             }
         }
@@ -159,6 +191,7 @@ public final class GboardRamblerRotationGrace {
             orientation = UNKNOWN;
             widthDp = UNKNOWN;
             heightDp = UNKNOWN;
+            displayRotation = UNKNOWN;
             graceUntil = 0L;
         }
     }

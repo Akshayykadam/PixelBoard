@@ -16,6 +16,13 @@ import com.android.tools.smali.dexlib2.iface.reference.StringReference
 
 /** LanguageDownloadQueue.enqueue(languageTag, source, durationConsumer) in 18.3.1 and 18.4.1. */
 private val languageDownloadEnqueueTargets = listOf(
+    // 18.6.3 release
+    GboardMethodTarget(
+        classType = "Lsrp;",
+        name = "c",
+        parameterTypes = listOf("Ljava/lang/String;", "Lssh;", "Ljava/util/function/Consumer;"),
+        returnType = "V",
+    ),
     // 18.5.3 release
     GboardMethodTarget(
         classType = "Lsxs;",
