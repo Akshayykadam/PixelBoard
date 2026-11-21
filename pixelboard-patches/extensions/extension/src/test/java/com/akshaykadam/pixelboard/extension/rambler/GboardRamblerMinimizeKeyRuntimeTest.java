@@ -12,15 +12,15 @@ public final class GboardRamblerMinimizeKeyRuntimeTest {
 
     @Test
     public void nothingIsClearedBeforeTheMinimizeKeyIsPlaced() {
-        GboardRamblerMinimizeKeyRuntime.seedEndExtraKeyIdForTests(0x7f0b0507);
+        GboardRamblerMinimizeKeyRuntime.seedSlotKeyIdForTests(0x7f0b04f9);
         Assert.assertEquals(0, GboardRamblerMinimizeKeyRuntime.clearMinimizeKey());
     }
 
     @Test
     public void placedMinimizeKeyIsClearedExactlyOnce() {
-        GboardRamblerMinimizeKeyRuntime.seedEndExtraKeyIdForTests(0x7f0b0507);
-        Assert.assertEquals(0x7f0b0507, GboardRamblerMinimizeKeyRuntime.placeMinimizeKey());
-        Assert.assertEquals(0x7f0b0507, GboardRamblerMinimizeKeyRuntime.clearMinimizeKey());
+        GboardRamblerMinimizeKeyRuntime.seedSlotKeyIdForTests(0x7f0b04f9);
+        Assert.assertEquals(0x7f0b04f9, GboardRamblerMinimizeKeyRuntime.placeMinimizeKey());
+        Assert.assertEquals(0x7f0b04f9, GboardRamblerMinimizeKeyRuntime.clearMinimizeKey());
         Assert.assertEquals(0, GboardRamblerMinimizeKeyRuntime.clearMinimizeKey());
     }
 

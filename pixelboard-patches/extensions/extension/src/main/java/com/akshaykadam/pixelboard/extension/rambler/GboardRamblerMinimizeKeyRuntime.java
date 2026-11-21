@@ -12,17 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Keeps Gboard's own Rambler minimize key next to the finish key instead of in the close slot.
+ * Keeps Gboard's own Rambler minimize key next to the close key on the left side instead of replacing it.
  *
  * <p>With the AL toolbar off, stock Gboard swaps the Rambler close key for a minimize key that
  * collapses the keyboard into the floating voice toolbar. The patch keeps the close key and moves
- * the minimize key into the header's end extra key slot, the same slot the stock voice typing
- * minimize key uses.</p>
+ * the minimize key into the header's start extra key slot (or end extra key slot as fallback),
+ * keeping both Close and Minimise accessible on the left side.</p>
  */
 public final class GboardRamblerMinimizeKeyRuntime {
+    private static final String START_EXTRA_KEY_NAME = "key_pos_header_start_extra_key";
     private static final String END_EXTRA_KEY_NAME = "key_pos_header_end_extra_key";
 
-    private static int endExtraKeyId;
+    private static int minimizeKeySlotId;
     private static boolean minimizeKeyPlaced;
 
     private GboardRamblerMinimizeKeyRuntime() {
@@ -30,7 +31,7 @@ public final class GboardRamblerMinimizeKeyRuntime {
 
     /** Returns the slot for the minimize key, or 0 to keep Gboard's stock placement. */
     public static int placeMinimizeKey() {
-        int id = resolveEndExtraKeyId(null);
+        int id = resolveMinimizeKeySlotId(null);
         minimizeKeyPlaced = id != 0;
         return id;
     }
@@ -41,7 +42,7 @@ public final class GboardRamblerMinimizeKeyRuntime {
             return 0;
         }
         minimizeKeyPlaced = false;
-        return resolveEndExtraKeyId(null);
+        return resolveMinimizeKeySlotId(null);
     }
 
     /** Undoes the Rambler header's hiding of non-Rambler slots for the minimize key slot. */
@@ -49,7 +50,7 @@ public final class GboardRamblerMinimizeKeyRuntime {
         if (!minimizeKeyPlaced || header == null) {
             return;
         }
-        int id = resolveEndExtraKeyId(header.getContext());
+        int id = resolveMinimizeKeySlotId(header.getContext());
         if (id == 0) {
             return;
         }
@@ -62,29 +63,39 @@ public final class GboardRamblerMinimizeKeyRuntime {
         key.setVisibility(View.VISIBLE);
     }
 
-    private static int resolveEndExtraKeyId(Context context) {
-        if (endExtraKeyId != 0) {
-            return endExtraKeyId;
+    private static int resolveMinimizeKeySlotId(Context context) {
+        if (minimizeKeySlotId != 0) {
+            return minimizeKeySlotId;
         }
         Context target = context != null ? context : GboardRambler1803OfficialSelectionRuntime.applicationContext();
         if (target == null) {
             return 0;
         }
         try {
-            endExtraKeyId = target.getResources().getIdentifier(
-                    END_EXTRA_KEY_NAME, "id", target.getPackageName());
+            // Prefer left side next to close key: key_pos_header_start_extra_key
+            minimizeKeySlotId = target.getResources().getIdentifier(
+                    START_EXTRA_KEY_NAME, "id", target.getPackageName());
+            if (minimizeKeySlotId == 0) {
+                // Fallback to right side if start extra key is missing
+                minimizeKeySlotId = target.getResources().getIdentifier(
+                        END_EXTRA_KEY_NAME, "id", target.getPackageName());
+            }
         } catch (Throwable ignored) {
-            endExtraKeyId = 0;
+            minimizeKeySlotId = 0;
         }
-        return endExtraKeyId;
+        return minimizeKeySlotId;
     }
 
     static void resetForTests() {
-        endExtraKeyId = 0;
+        minimizeKeySlotId = 0;
         minimizeKeyPlaced = false;
     }
 
+    static void seedSlotKeyIdForTests(int id) {
+        minimizeKeySlotId = id;
+    }
+
     static void seedEndExtraKeyIdForTests(int id) {
-        endExtraKeyId = id;
+        seedSlotKeyIdForTests(id);
     }
 }
