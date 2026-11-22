@@ -8,32 +8,32 @@
   <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.6">
     <img src="https://img.shields.io/badge/Release-v1.3.6-8A2BE2?style=flat-square&logo=github&logoColor=white" alt="Latest Release"/>
   </a>
-  <img src="https://img.shields.io/badge/Android-10%20to%2016-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android Support"/>
+  <img src="https://img.shields.io/badge/Android-10%20to%2017-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android Support"/>
   <img src="https://img.shields.io/badge/Architecture-arm64--v8a-blue?style=flat-square" alt="Arch Support"/>
   <img src="https://img.shields.io/badge/Base%20App-Gboard%20v18.6.3.100-orange?style=flat-square&logo=google" alt="Base Gboard"/>
   <img src="https://img.shields.io/badge/Root-Not%20Required-success?style=flat-square" alt="No Root"/>
   <img src="https://img.shields.io/badge/License-GPL--3.0-lightgrey?style=flat-square" alt="License"/>
 </p>
 
-<!-- Primary Action: Direct Download Links -->
+<!-- Primary Action: 1-Click Direct Download Links -->
 <p>
   <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk">
-    <img src="https://img.shields.io/badge/📥_Direct_Download_(APK)-v1.3.6_(122_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Ready-to-Install APK"/>
+    <img src="https://img.shields.io/badge/⚡_1--Click_Download_(APK)-v1.3.6_(122_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="44" alt="Download Ready-to-Install APK"/>
   </a>
   &nbsp;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/patches-1.3.6.mpp">
-    <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.3.6_(1.7_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download Morphe Patch Bundle"/>
+    <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.3.6_(1.7_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="44" alt="Download Morphe Patch Bundle"/>
   </a>
 </p>
 
 <p>
-  <sub><b>Recommended:</b> Download the ready-to-install <b>APK</b> directly (pre-signed, no root needed, installs side-by-side with stock Gboard). Use the <b>Morphe Patch</b> only if patching manually on Gboard <b>v18.6.3.100</b>.</sub>
+  <sub><b>Recommended:</b> Tap <b>1-Click Download (APK)</b> above for the pre-built, signed APK (no root required, installs alongside stock Gboard). Use the <b>Morphe Patch</b> only if patching manually via Morphe Manager on Gboard <b>v18.6.3.100</b>.</sub>
 </p>
 
 <p>
   <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk"> <b>⬇️ Direct Download APK (v1.3.6)</b></a> &nbsp;&bull;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/releases/latest/download/PixelBoard.apk"> <b>⬇️ Latest APK (Direct)</b></a> &nbsp;&bull;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/patches-1.3.6.mpp"> <b>📦 Morphe Patch (v18.6.3.100 only)</b></a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/patches-1.3.6.mpp"> <b>📦 Morphe Patch (v1.3.6 .mpp)</b></a> &nbsp;&bull;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.6"> <b>Release Notes</b></a> &nbsp;&bull;&nbsp;
   <a href="#installation-guide"> <b>Installation Guide</b></a> &nbsp;&bull;&nbsp;
   <a href="https://github.com/Akshayykadam/PixelBoard/releases"> <b>All Releases</b></a>
@@ -44,18 +44,23 @@
 ---
 
 <a id="release-assets"></a>
-## 📥 Release Assets (v1.3.6 / Gboard v18.6.3.100)
+## 📥 1-Click Download & Release Assets (v1.3.6 / Gboard v18.6.3.100)
 
-| Package | Type | Description |
-| :--- | :--- | :--- |
-| [**PixelBoard-1.3.6.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk) | **Signed APK** *(Recommended)* | **Ready to install.** Pre-built, signed APK with all mods enabled. Installs side-by-side with stock Gboard without root (`com.akshaykadam.pixelboard`). Base Gboard v18.6.3.100 Release. |
-| [**patches-1.3.6.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/patches-1.3.6.mpp) | **Morphe Patch Bundle** | Standalone patch bundle for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher). <br>**⚠️ Note:** This patch **only works on Gboard version 18.6.3.100** (`18.6.3.1002251336-release-arm64-v8a`). Older versions like 18.5 are **not** supported. |
+| Package | Type | Size | SHA-256 Checksum | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| [**PixelBoard-1.3.6.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk) | **Signed APK** *(Recommended)* | ~122 MB | `862ff3a7c277f1e5d6cc2655793a78ad3bfa312e99ebbda60cada4bf918b5760` | **1-Click Ready to install.** Pre-built, signed APK with all mods enabled. Installs side-by-side with stock Gboard (`com.akshaykadam.pixelboard`). Base Gboard v18.6.3.100. |
+| [**PixelBoard.apk**](https://github.com/Akshayykadam/PixelBoard/releases/latest/download/PixelBoard.apk) | **Latest Signed APK** | ~122 MB | `862ff3a7c277f1e5d6cc2655793a78ad3bfa312e99ebbda60cada4bf918b5760` | Direct link to the latest stable APK release. |
+| [**patches-1.3.6.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/patches-1.3.6.mpp) | **Morphe Patch Bundle** | ~1.7 MB | `7ade07bb79d1b9c8dcdb777ac72350c01b799c9407683924f98984304ffddf16` | Standalone patch bundle for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher) with verified v1.3.6 manifest. <br>**⚠️ Note:** Strictly for Gboard version **18.6.3.100** (`18.6.3.1002251336-release-arm64-v8a`). |
+| [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) | **Raw GitHub Patch Bundle** | ~1.7 MB | `7ade07bb79d1b9c8dcdb777ac72350c01b799c9407683924f98984304ffddf16` | Direct raw URL from main branch for on-device patchers. |
 
 ### 🌟 What's New in v1.3.6
 
+- **Candidate Suggestion Strip Restored**: Fixed an issue where the candidate suggestions strip would appear blank. Corrected method signatures in `LatinFixedCountCandidatesHolderView.D` bytecode hooks to maintain continuous candidate evaluation.
+- **Emoji Right Slot Placement**: Refined candidate slot index assignment (`candidate.l = i`). Primary word auto-completions stay centrally in **Slot 1 (Center)**, while contextual emojis are placed in **Slot 2 (Right)** without displacing word predictions or creating empty gaps.
+- **Morphe Manager v1.3.6 Manifest Sync**: Corrected `META-INF/MANIFEST.MF` inside both `PixelBoard.mpp` and `patches-1.3.6.mpp` so Morphe Manager displays `Version: 1.3.6` (resolving issue where it previously displayed `1.3.5`).
 - **Advanced Settings Crash Resolution**: Restored all extension Android resource `R` classes (`R`, `R$string`, `R$color`, `R$drawable`) in extension DEX runtime, preventing `NoClassDefFoundError` crashes when launching Advanced Settings (`GboardPatchesSettingsActivity`).
-- **Candidate Suggestions Reordering**: Added candidate suggestions reordering for the suggestion strip (`reorderCandidatesForStrip`).
-- **Safe Haptic Feedback Hook**: Hardened haptic feedback invocation (`performHapticFeedback`) across devices and themes to prevent potential null pointer or context crashes.
+- **Safe Preference Hook & Haptic Feedback**: Hardened `System.identityHashCode` invocations in preference hooks with null guards and wrapped `performHapticFeedback` across devices and custom system themes.
+- **Android 17 / Pixel 8 Pro Tested & Verified**: Thoroughly tested and verified running smoothly on Android 10 through Android 17 (tested on Google Pixel 8 Pro `husky`).
 - **Retained All v1.3.5 Features**: Screen rotation grace period for Rambler voice dictation, speech diff preservation, strict language enforcement, duplicate text elimination, 18.6.3 native split readiness check, 24-hour clipboard retention, and 100-item cap.
 
 #### 🎙️ Gemini Rambler Natural Voice Dictation
@@ -255,7 +260,7 @@ GBoardMod/
 | **Required Base Version** | `18.6.3.1002251336-release-arm64-v8a` (**v18.6.3.100** only) |
 | **Unsupported Versions** | Gboard `18.5.x` and older versions are **not supported** by this patch bundle |
 | **Architecture** | `arm64-v8a` |
-| **Android Version** | Android 12 (API 31) through Android 16 / 17 Preview |
+| **Android Version** | Android 10 (API 29) through Android 17 (Tested on Pixel 8 Pro) |
 | **Root Required** | **No** (Standalone side-by-side coexistence) |
 
 > [!CAUTION]
