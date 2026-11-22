@@ -184,6 +184,8 @@ public final class GboardAiWritingToolsRuntime {
             "enable_suffix_rule_based_concept_prediction";
     static final String FLAG_ENABLE_EMOJI_SUGGESTION_FROM_TOP_CANDIDATE =
             "enable_emoji_suggestion_from_top_candidate";
+    static final String FLAG_HIGHER_RANKED_EMOJI_CANDIDATES_AT_END =
+            "higher_ranked_emoji_candidates_at_end";
     static final String FLAG_ENABLE_PREDICTIONS_FROM_EMOJI_SHORTCUTS =
             "enable_predictions_from_emoji_shortcuts";
     static final String FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_BY_SPANS =
@@ -468,6 +470,7 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_LAST_WORD_RULE_BASED_CONCEPT_PREDICTION.equals(flagName)
                 || FLAG_ENABLE_SUFFIX_RULE_BASED_CONCEPT_PREDICTION.equals(flagName)
                 || FLAG_ENABLE_EMOJI_SUGGESTION_FROM_TOP_CANDIDATE.equals(flagName)
+                || FLAG_HIGHER_RANKED_EMOJI_CANDIDATES_AT_END.equals(flagName)
                 || FLAG_ENABLE_PREDICTIONS_FROM_EMOJI_SHORTCUTS.equals(flagName)
                 || FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_BY_SPANS.equals(flagName)
                 || FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_FOR_PREDICTION.equals(flagName)

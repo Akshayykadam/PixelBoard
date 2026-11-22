@@ -472,6 +472,8 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJI_SUGGESTION_FROM_TOP_CANDIDATE));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_HIGHER_RANKED_EMOJI_CANDIDATES_AT_END));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_PREDICTIONS_FROM_EMOJI_SHORTCUTS));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_BY_SPANS));

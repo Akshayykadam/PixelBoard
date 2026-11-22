@@ -418,6 +418,16 @@ public final class GboardAiWritingToolsRuntimeTest {
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_SHORTCUT_WHEN_FOLLOWED_BY_EMOJI));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJIFY_WHEN_TALKBACK_ON));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJI_SUGGESTION_FROM_TOP_CANDIDATE));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_HIGHER_RANKED_EMOJI_CANDIDATES_AT_END));
+
+        Object emojiSuggestionFromTopCandidate = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                new TestFlagReceiver(
+                        GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJI_SUGGESTION_FROM_TOP_CANDIDATE),
+                Boolean.FALSE);
+        Assert.assertEquals(Boolean.TRUE, emojiSuggestionFromTopCandidate);
 
         Object fastAccessWhitelist = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
                 new TestFlagReceiver(

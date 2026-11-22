@@ -79,4 +79,89 @@ public class GboardCandidateEmojiRuntimeTest {
 
         assertEquals(initialColor, paint.getColor());
     }
+
+    public static class TestCandidate {
+        public final CharSequence a;
+        public int l;
+
+        public TestCandidate(CharSequence a, int l) {
+            this.a = a;
+            this.l = l;
+        }
+    }
+
+    public static class TestHolderView {
+        public int d = 3;
+    }
+
+    @Test
+    public void testReorderCandidatesForStrip_movesMiddleEmojiToRightSlot() {
+        TestHolderView holderView = new TestHolderView();
+        java.util.List<TestCandidate> candidates = new java.util.ArrayList<>();
+        candidates.add(new TestCandidate("funny", 0));
+        candidates.add(new TestCandidate("😂", 1));
+        candidates.add(new TestCandidate("runny", 2));
+
+        GboardCandidateEmojiRuntime.reorderCandidatesForStrip(holderView, candidates);
+
+        assertEquals(3, candidates.size());
+        assertEquals("funny", candidates.get(0).a.toString());
+        assertEquals(0, GboardCandidateEmojiRuntime.getCandidateSlot(candidates.get(0)));
+
+        assertEquals("runny", candidates.get(1).a.toString());
+        assertEquals(1, GboardCandidateEmojiRuntime.getCandidateSlot(candidates.get(1)));
+
+        assertEquals("😂", candidates.get(2).a.toString());
+        assertEquals(2, GboardCandidateEmojiRuntime.getCandidateSlot(candidates.get(2)));
+    }
+
+    @Test
+    public void testReorderCandidatesForStrip_twoCandidates_emojiOnRight() {
+        TestHolderView holderView = new TestHolderView();
+        java.util.List<TestCandidate> candidates = new java.util.ArrayList<>();
+        candidates.add(new TestCandidate("funny", 0));
+        candidates.add(new TestCandidate("😂", 1));
+
+        GboardCandidateEmojiRuntime.reorderCandidatesForStrip(holderView, candidates);
+
+        assertEquals(2, candidates.size());
+        assertEquals("funny", candidates.get(0).a.toString());
+        assertEquals(0, GboardCandidateEmojiRuntime.getCandidateSlot(candidates.get(0)));
+
+        assertEquals("😂", candidates.get(1).a.toString());
+        assertEquals(2, GboardCandidateEmojiRuntime.getCandidateSlot(candidates.get(1)));
+    }
+
+    @Test
+    public void testReorderCandidatesForStrip_noEmoji_untouched() {
+        TestHolderView holderView = new TestHolderView();
+        java.util.List<TestCandidate> candidates = new java.util.ArrayList<>();
+        candidates.add(new TestCandidate("funny", 0));
+        candidates.add(new TestCandidate("fun", 1));
+        candidates.add(new TestCandidate("runny", 2));
+
+        GboardCandidateEmojiRuntime.reorderCandidatesForStrip(holderView, candidates);
+
+        assertEquals(3, candidates.size());
+        assertEquals("funny", candidates.get(0).a.toString());
+        assertEquals(0, candidates.get(0).l);
+        assertEquals("fun", candidates.get(1).a.toString());
+        assertEquals(1, candidates.get(1).l);
+        assertEquals("runny", candidates.get(2).a.toString());
+        assertEquals(2, candidates.get(2).l);
+    }
+
+    @Test
+    public void testReorderCandidatesForStrip_allEmojis_untouched() {
+        TestHolderView holderView = new TestHolderView();
+        java.util.List<TestCandidate> candidates = new java.util.ArrayList<>();
+        candidates.add(new TestCandidate("😂", 0));
+        candidates.add(new TestCandidate("🤣", 1));
+
+        GboardCandidateEmojiRuntime.reorderCandidatesForStrip(holderView, candidates);
+
+        assertEquals(2, candidates.size());
+        assertEquals("😂", candidates.get(0).a.toString());
+        assertEquals("🤣", candidates.get(1).a.toString());
+    }
 }
