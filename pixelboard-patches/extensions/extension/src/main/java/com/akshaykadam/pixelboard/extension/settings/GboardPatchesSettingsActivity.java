@@ -3140,6 +3140,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 || GboardRoundedKeysSettings.readEnabled(patchesPrefs);
         boolean frequentEmojisEnabled = patchesPrefs != null
                 && GboardEmojiSettings.readFrequentEmojisEnabled(patchesPrefs);
+        boolean skipDuplicateLanguagePairs = patchesPrefs != null
+                && GboardLanguageCycleSettings.readSkipDuplicatePairs(patchesPrefs);
 
         List<GboardPatchesSettingsContract.Row> rows =
                 new ArrayList<GboardPatchesSettingsContract.Row>();
@@ -3200,6 +3202,17 @@ public final class GboardPatchesSettingsActivity extends Activity
                     if (patchesPrefs != null) {
                         GboardEmojiSettings.writeFrequentEmojisEnabled(patchesPrefs, value);
                         renderCurrentScreenSafely();
+                    }
+                }));
+
+        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+                GboardSettingsText.get(context, R.string.gboard_patches_language_cycle_skip_duplicates_title),
+                GboardSettingsText.get(context, R.string.gboard_patches_language_cycle_skip_duplicates_summary),
+                true,
+                skipDuplicateLanguagePairs,
+                value -> {
+                    if (patchesPrefs != null) {
+                        GboardLanguageCycleSettings.writeSkipDuplicatePairs(patchesPrefs, value);
                     }
                 }));
 
