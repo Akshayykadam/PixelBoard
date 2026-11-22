@@ -69,13 +69,13 @@ public class GboardCandidateEmojiRuntimeStripTest {
 
         assertEquals(3, result.size());
         assertEquals("funny", result.get(0).a.toString());
-        assertEquals(-1, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(0)));
+        assertEquals(0, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(0)));
 
         assertEquals("runny", result.get(1).a.toString());
-        assertEquals(-1, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(1)));
+        assertEquals(1, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(1)));
 
         assertEquals("😂", result.get(2).a.toString());
-        assertEquals(-1, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(2)));
+        assertEquals(2, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(2)));
     }
 
     @Test
@@ -101,8 +101,8 @@ public class GboardCandidateEmojiRuntimeStripTest {
         // Slot 3 (overflow): next text candidate
         assertEquals("function", result.get(3).a.toString());
 
-        for (TestCandidate c : result) {
-            assertEquals(-1, GboardCandidateEmojiRuntime.getCandidateSlot(c));
+        for (int i = 0; i < result.size(); i++) {
+            assertEquals(i, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(i)));
         }
     }
 
@@ -138,10 +138,10 @@ public class GboardCandidateEmojiRuntimeStripTest {
 
         assertEquals(2, result.size());
         assertEquals("funny", result.get(0).a.toString());
-        assertEquals(-1, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(0)));
+        assertEquals(0, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(0)));
 
         assertEquals("😂", result.get(1).a.toString());
-        assertEquals(-1, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(1)));
+        assertEquals(1, GboardCandidateEmojiRuntime.getCandidateSlot(result.get(1)));
     }
 
     @Test
