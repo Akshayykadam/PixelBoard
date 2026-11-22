@@ -1,5 +1,5 @@
 package com.akshaykadam.pixelboard.patches.shared
 
 internal object PatchBuildInfo {
-    const val VERSION = "1.3.5"
+    const val VERSION = "1.3.6"
 }

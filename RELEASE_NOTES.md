@@ -1,7 +1,10 @@
-# PixelBoard Stable Release (Patch v1.3.5 / Gboard v18.6.3.100)
+# PixelBoard Stable Release (Patch v1.3.6 / Gboard v18.6.3.100)
 
 ## Summary
-PixelBoard v1.3.5 delivers critical stability, lifecycle, and voice dictation enhancements across the board:
+PixelBoard v1.3.6 brings critical stability fixes for Advanced Settings, candidate suggestions reordering, and haptic feedback:
+* **Advanced Settings Crash Resolution**: Restored all extension Android resource `R` classes (`R`, `R$string`, `R$color`, `R$drawable`) in extension DEX runtime, completely resolving the `NoClassDefFoundError: Failed resolution of: Lcom/akshaykadam/pixelboard/extension/R$string;` crash when launching Advanced Settings.
+* **Candidate Strip Suggestions Reordering**: Implemented candidate suggestions reordering for the suggestion strip (`reorderCandidatesForStrip`).
+* **Safe Haptic Feedback Hook**: Hardened haptic feedback invocation (`performHapticFeedback`) across devices and themes.
 * **Screen Rotation Grace Period for Rambler Voice Dictation**: Maintains continuous voice typing and audio recording across device orientation changes without aborting active sessions ([#146](https://github.com/Akshayykadam/PixelBoard/issues/146), PR [#165](https://github.com/Akshayykadam/PixelBoard/pull/165) by Francisco Valentim Castilho).
 * **Speech Diff Preservation for Voice Edits**: Correctly retains speech diffs for voice replacements and mid-sentence voice commands (such as *"replace X with Y"*), preventing accidental text overwrites ([#167](https://github.com/Akshayykadam/PixelBoard/issues/167)).
 * **Strict Language Enforcement & Anti-Drift**: Disabled proactive parallel ASR and seamless fallback to prevent voice recognition from unintentionally switching languages or drifting to similar locales (e.g. Czech &rarr; Slovak) ([#154](https://github.com/Akshayykadam/PixelBoard/issues/154)).
@@ -15,7 +18,12 @@ PixelBoard v1.3.5 delivers critical stability, lifecycle, and voice dictation en
 
 ---
 
-## What's New in v1.3.5
+## What's New in v1.3.6
+
+### 🛠️ Stability & Bug Fixes
+- **Advanced Settings Crash Resolution**: Fully resolved the crash when opening Advanced Settings (`GboardPatchesSettingsActivity`). Rebuilt extension runtime with all 1,447 classes including `R`, `R$string`, `R$color`, and `R$drawable`.
+- **Candidate Suggestions Reordering**: Integrated candidate suggestions reordering for the suggestion strip (`reorderCandidatesForStrip`).
+- **Haptic Feedback Hardening**: Safe invocation wrapper (`performHapticFeedback`) avoiding NPE on unsupported device drivers or custom system themes.
 
 ### 🎙️ Gemini Rambler Natural Voice Dictation
 - **Screen Rotation Grace Period**: Device rotation triggers Gboard to destroy and re-create its input method data, deactivating extensions for ~80ms. PixelBoard now provides a 1.5s grace period during display rotation, keeping voice typing alive without interrupting your dictation flow ([#146](https://github.com/Akshayykadam/PixelBoard/issues/146), PR [#165](https://github.com/Akshayykadam/PixelBoard/pull/165)).
@@ -26,7 +34,7 @@ PixelBoard v1.3.5 delivers critical stability, lifecycle, and voice dictation en
 
 ### 🤖 AI Writing Assistant
 - **Server Connectivity & Timeout Repair**: Fixed an issue where writing tools timeout and prompt templates were improperly evaluated (*"cannot connect to server"*), restoring reliable Google Gboard server backend connectivity for Rephrase, Proofreading, and Tone adjustments (*Professional*, *Casual*, *Concise*, *Emotive*).
-- **Direct Boot & Secure Storage Safety**: Added user unlock state checks (`UserManager.isUserUnlocked`) to avoid premature preference reads or crashes during direct boot before initial device unlock.
+- **Direct Boot & Secure Storage Safety**: Added user unlock state checks (`UserManager.isUserUnlocked`) to avoid premature preference reads or crashes during direct boot before initial unlock.
 
 ### 📦 Packaging, Platform & Quality of Life
 - **Morphe Manager Out-of-the-Box Detection**: Bundled compiled `classes.dex` in the patch bundle root via `:patches:buildAndroid`, resolving the issue where Morphe Manager displayed 0 patches.
@@ -52,24 +60,25 @@ Special thanks to our community contributors:
 
 | Asset | Type | Size | Description |
 | :--- | :--- | :--- | :--- |
-| [**PixelBoard-1.3.5.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.5/PixelBoard-1.3.5.apk) | **Signed APK** *(Recommended)* | ~122 MB | **Ready to install.** Signed stable APK with all features enabled (v18.6.3 base, side-by-side coexistence). |
-| [**patches-1.3.5.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.5/patches-1.3.5.mpp) | **Morphe Patch Bundle** | ~1.7 MB | Standalone patch bundle (v1.3.5) for Morphe Manager. ⚠️ **Strictly requires Gboard version 18.6.3.100** (`18.6.3.1002251336-release-arm64-v8a`). Older versions like 18.5 are unsupported. |
+| [**PixelBoard-1.3.6.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk) | **Signed APK** *(Recommended)* | ~122 MB | **Ready to install.** Signed stable APK with all features enabled (v18.6.3 base, side-by-side coexistence). |
+| [**patches-1.3.6.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/patches-1.3.6.mpp) | **Morphe Patch Bundle** | ~1.7 MB | Standalone patch bundle (v1.3.6) for Morphe Manager. ⚠️ **Strictly requires Gboard version 18.6.3.100** (`18.6.3.1002251336-release-arm64-v8a`). Older versions like 18.5 are unsupported. |
 
 ---
 
 ## Installation
 
 ### Option 1: Direct APK Installation (Recommended)
-1. Download [**PixelBoard-1.3.5.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.5/PixelBoard-1.3.5.apk) directly to your Android device.
+1. Download [**PixelBoard-1.3.6.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk) directly to your Android device.
 2. Tap the downloaded APK in your file manager or browser downloads.
 3. Allow installation from unknown sources if prompted, and complete installation.
 4. Enable PixelBoard in **Settings > System > Languages & input > On-screen keyboard**.
 
 ### Option 2: ADB Sideload
 ```bash
-adb install -r PixelBoard-1.3.5.apk
+adb install -r PixelBoard-1.3.6.apk
 adb shell am force-stop com.akshaykadam.pixelboard
 ```
+
 
 ### Option 3: Patch via Morphe Manager
 Add the custom patch source in Morphe Manager:
