@@ -26,78 +26,6 @@
   </a>
 </p>
 
-<p>
-  <sub><b>Recommended:</b> Tap <b>1-Click Download (APK)</b> above for the pre-built, signed APK (no root required, installs alongside stock Gboard). Use the <b>Morphe Patch</b> only if patching manually via Morphe Manager on Gboard <b>v18.6.3.100</b>.</sub>
-</p>
-
-<p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk"> <b>⬇️ Direct Download APK (v1.3.6)</b></a> &nbsp;&bull;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/latest/download/PixelBoard.apk"> <b>⬇️ Latest APK (Direct)</b></a> &nbsp;&bull;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/patches-1.3.6.mpp"> <b>📦 Morphe Patch (v1.3.6 .mpp)</b></a> &nbsp;&bull;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.6"> <b>Release Notes</b></a> &nbsp;&bull;&nbsp;
-  <a href="#installation-guide"> <b>Installation Guide</b></a> &nbsp;&bull;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases"> <b>All Releases</b></a>
-</p>
-
-</div>
-
----
-
-<a id="release-assets"></a>
-## 📥 1-Click Download & Release Assets (v1.3.6 / Gboard v18.6.3.100)
-
-| Package | Type | Size | SHA-256 Checksum | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| [**PixelBoard-1.3.6.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk) | **Signed APK** *(Recommended)* | ~122 MB | `862ff3a7c277f1e5d6cc2655793a78ad3bfa312e99ebbda60cada4bf918b5760` | **1-Click Ready to install.** Pre-built, signed APK with all mods enabled. Installs side-by-side with stock Gboard (`com.akshaykadam.pixelboard`). Base Gboard v18.6.3.100. |
-| [**PixelBoard.apk**](https://github.com/Akshayykadam/PixelBoard/releases/latest/download/PixelBoard.apk) | **Latest Signed APK** | ~122 MB | `862ff3a7c277f1e5d6cc2655793a78ad3bfa312e99ebbda60cada4bf918b5760` | Direct link to the latest stable APK release. |
-| [**patches-1.3.6.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/patches-1.3.6.mpp) | **Morphe Patch Bundle** | ~1.7 MB | `7ade07bb79d1b9c8dcdb777ac72350c01b799c9407683924f98984304ffddf16` | Standalone patch bundle for [Morphe Manager](#option-c-patch-via-morphe-manager-on-device-patcher) with verified v1.3.6 manifest. <br>**⚠️ Note:** Strictly for Gboard version **18.6.3.100** (`18.6.3.1002251336-release-arm64-v8a`). |
-| [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) | **Raw GitHub Patch Bundle** | ~1.7 MB | `7ade07bb79d1b9c8dcdb777ac72350c01b799c9407683924f98984304ffddf16` | Direct raw URL from main branch for on-device patchers. |
-
-### 🌟 What's New in v1.3.6
-
-- **Candidate Suggestion Strip Restored**: Fixed an issue where the candidate suggestions strip would appear blank. Corrected method signatures in `LatinFixedCountCandidatesHolderView.D` bytecode hooks to maintain continuous candidate evaluation.
-- **Emoji Right Slot Placement**: Refined candidate slot index assignment (`candidate.l = i`). Primary word auto-completions stay centrally in **Slot 1 (Center)**, while contextual emojis are placed in **Slot 2 (Right)** without displacing word predictions or creating empty gaps.
-- **Morphe Manager v1.3.6 Manifest Sync**: Corrected `META-INF/MANIFEST.MF` inside both `PixelBoard.mpp` and `patches-1.3.6.mpp` so Morphe Manager displays `Version: 1.3.6` (resolving issue where it previously displayed `1.3.5`).
-- **Advanced Settings Crash Resolution**: Restored all extension Android resource `R` classes (`R`, `R$string`, `R$color`, `R$drawable`) in extension DEX runtime, preventing `NoClassDefFoundError` crashes when launching Advanced Settings (`GboardPatchesSettingsActivity`).
-- **Safe Preference Hook & Haptic Feedback**: Hardened `System.identityHashCode` invocations in preference hooks with null guards and wrapped `performHapticFeedback` across devices and custom system themes.
-- **Android 17 / Pixel 8 Pro Tested & Verified**: Thoroughly tested and verified running smoothly on Android 10 through Android 17 (tested on Google Pixel 8 Pro `husky`).
-- **Retained All v1.3.5 Features**: Screen rotation grace period for Rambler voice dictation, speech diff preservation, strict language enforcement, duplicate text elimination, 18.6.3 native split readiness check, 24-hour clipboard retention, and 100-item cap.
-
-#### 🎙️ Gemini Rambler Natural Voice Dictation
-- **Screen Rotation Grace Period**: Maintains active Rambler voice dictation across device display orientation changes by introducing a 1.5s grace period during display rotation, preventing sessions from abruptly aborting ([#146](https://github.com/Akshayykadam/PixelBoard/issues/146), PR [#165](https://github.com/Akshayykadam/PixelBoard/pull/165) by Francisco Valentim Castilho).
-- **Preserve Speech Diff for Mid-Sentence Voice Edits**: Retains speech diffs for voice replacements and mid-sentence voice commands (such as *"replace X with Y"*), word edits in respoken phrases, and mid-sentence cursor placements without overwriting surrounding compositions ([#167](https://github.com/Akshayykadam/PixelBoard/issues/167)).
-- **Strict Language Enforcement & Anti-Drift**: Disabled proactive parallel ASR and seamless fallback in Rambler stock policy to prevent voice dictation from unintentionally switching languages or drifting to similar locales (e.g., Czech &rarr; Slovak) ([#154](https://github.com/Akshayykadam/PixelBoard/issues/154)).
-- **Eliminate Text Duplication on Dictation Start**: Fixed an issue where starting dictation in an editor containing pre-existing text or recently pasted clipboard items would duplicate text at the cursor ([#166](https://github.com/Akshayykadam/PixelBoard/issues/166)).
-- **Native Split Readiness Gate Check for Gboard 18.6.3**: Added native library readiness gate verification on split components for Gboard 18.6.3 (`Lsmi;`, `Locf;`), ensuring smooth and stable JNI initialization on fused and split APKs ([#168](https://github.com/Akshayykadam/PixelBoard/issues/168)).
-
-#### 🤖 AI Writing Assistant
-- **Server Connectivity & Timeout Repair**: Repaired request timeout and prompt template evaluation in `GboardAiWritingToolsRuntime`, eliminating *"cannot connect to server"* errors and restoring reliable Rephrase, Proofreading, and Tone adjustments (*Professional*, *Casual*, *Concise*, *Emotive*) via Google's Gboard server backend.
-- **Screen Rotation & 180° Flip Grace Period for Voice Dictation**: Maintains continuous voice typing across device orientation changes and 180° flips with a 1000ms baseline delay and 2.5s rotation grace period ([#146](https://github.com/Akshayykadam/PixelBoard/issues/146), [#147](https://github.com/Akshayykadam/PixelBoard/issues/147)).
-- **Restored "Fix it" Grammar Chips & Bilingual Accuracy ([#124](https://github.com/Akshayykadam/PixelBoard/issues/124))**: Fixed package allowlist matching (`proofread_supported_apps = "*"`) and zeroed user history threshold (`0.0d`) to ensure grammar proofread chips appear globally and bilingual suggestions are unbiased.
-- **Fixed Full Paragraph Rewriting & Paste Auto-Modification ([#138](https://github.com/Akshayykadam/PixelBoard/issues/138))**: Enforced 2000-word limit and disabled partial selection on long input so entire paragraphs are rewritten. Disabled `auto_correct_with_replace_text` to prevent unwanted auto-edits on paste.
-- **Fixed Quick Insert Empty Submenus & Contacts ([#170](https://github.com/Akshayykadam/PixelBoard/issues/170))**: Disabled buggy phenotype features (`super_insert_contacts`, `super_insert_browsing_history_results`, `super_insert_nesta_results`) to ensure Quick Insert operates smoothly without empty submenus or crashes.
-- **Seamless Device Rotation in Gmail & Landscape Layout**: Disabled `truncate_text_after_cursor_in_gmail_if_no_content_before_cursor` and enabled landscape V2 layout to keep Writing Tools active during orientation changes in Gmail and WebView editors.
-- **Direct Boot & Secure Storage Safety**: Added user unlock state checks (`UserManager.isUserUnlocked`) to avoid premature preference reads or crashes during direct boot before initial device unlock.
-
-#### 📦 Packaging, Platform & Quality of Life
-- **Morphe Manager Patch Bundle DEX Packaging**: Included `classes.dex` directly in the root of the `.mpp` patch bundle via `:patches:buildAndroid` so Morphe Manager detects and loads all 4 patches out-of-the-box (resolving "0 patches found").
-- **Android 10+ (API 29) Minimum SDK Compatibility**: Clamped `minSdkVersion` in the package manifest to API 29, enabling full installation and coexistence on Android 10 and Android 11 devices without package parser errors.
-- **Refined Softkey Label Sanitizer**: Cleaned up the symbol key label patch to focus strictly on `AutoCenterScaleTextView` keycap rendering, removing unnecessary input connection hooks to prevent text insertion side-effects.
-- **Restored 'Show in app list' Launcher Icon Toggle**: Fixed an issue where the *"Show in app list"* preference toggle under Gboard Settings &rarr; Preferences was hidden on Android 10+ devices for non-system apps. Users can now freely choose whether to display or hide the PixelBoard app icon in their launcher/app drawer.
-- **Resolved Persistent TTS Download Loop & High CPU on Vivo / Android 17 ([#178](https://github.com/Akshayykadam/PixelBoard/issues/178))**: Updated 18.6.3 obfuscation mapping for `LanguageDownloadQueue` (`Lsrp;`) in `GboardAdvancedVoice1831LanguageDownloadGuardPatch.kt` to prevent battery drain and infinite download retry loops with `com.google.android.tts`.
-- **Restored Rambler Stop "X" Key & Expanded Grammar Scope ([#173](https://github.com/Akshayykadam/PixelBoard/issues/173))**: Added 18.6.3 Rambler toolbar header targets (`Lfjo;`, `Lfio;`, `Lfjk;`) to properly place the minimize key and keep the cancel "X" button visible. Enabled `jetson_enable_cursor_awareness` so grammar/punctuation correction operates on text before and after the cursor.
-- **Fixed Multi-Word Selection Shift Case-Cycling ([#158](https://github.com/Akshayykadam/PixelBoard/issues/158))**: Removed phenotype enforcement of `pk_auto_capitalization_use_auto_correction`, restoring multi-word selection cycling through lowercase, Title Case, and UPPERCASE on Shift tap.
-- **Fixed Multi-Word Swipe Typing Replacement ([#113](https://github.com/Akshayykadam/PixelBoard/issues/113))**: Removed phenotype enforcement of `auto_correct_with_replace_text`, allowing multi-word selections to be replaced cleanly by swipe typing without failing or forcing all-caps.
-- **Fixed Microsoft Word 365 Dictation Cursor Desynchronization ([#112](https://github.com/Akshayykadam/PixelBoard/issues/112))**: Added Word/Office editor detection in Rambler dictation runtime, bypassing diff deletion to prevent Word's custom C++ editor canvas from resetting the cursor to document offset (0, 0).
-- **Fixed Honor MagicOS / EMUI Keypress Haptics ([#7](https://github.com/Akshayykadam/PixelBoard/issues/7))**: Added `GboardKeyboardHapticPatch.kt` to pass `FLAG_IGNORE_GLOBAL_SETTING` (0x1) to `performHapticFeedback`, allowing keypress vibrations to work according to in-app settings even when system-wide vibration is disabled on Honor and Huawei devices.
-- **Base App Compatibility**: Full support and verification for Gboard v18.6.3.100 Release (`18.6.3.1002251336-release-arm64-v8a`).
-
----
-
-## Visual Tour & Screenshots
-
-<div align="center">
-  <img src="docs/images/showcase.png" alt="PixelBoard Feature Showcase - Rambler Voice Typing, AI Writing Tools & Advanced Settings" width="100%" />
 </div>
 
 ---
@@ -110,17 +38,25 @@ PixelBoard is engineered with an independent coexistence package ID (`com.akshay
 
 ---
 
+## Screenshots
+
+<div align="center">
+  <img src="docs/images/showcase.png" alt="PixelBoard Feature Showcase - Rambler Voice Typing, AI Writing Tools & Advanced Settings" width="100%" />
+</div>
+
+---
+
 ## Key Features
 
-- 🎙️ **Gemini "Rambler" Natural Voice Typing**: Speaks naturally by filtering out stutters and filler words (*"um"*, *"ah"*), auto-corrects self-corrections on the fly, auto-punctuates sentences, and includes an ergonomically minimizable voice toolbar.
-- 🤖 **In-Line AI Writing Assistant**: One-tap proofreading, grammar fixes via interactive suggestion chips, and quick tone rewrite (*Professional*, *Casual*, *Concise*, *Emotive*) across every application.
-- 🔄 **In-App Updater**: Built-in update checker directly inside Settings to check for new releases, view changelogs, and download & install the latest PixelBoard APKs seamlessly.
-- 📋 **Extended Clipboard Retention**: Customizable retention duration (1 hour, 24 hours, 7 days, 30 days, or Never) with recent unpinned history expanded to 100 clips, floating screenshot chips, and reliable clipboard sync on Samsung One UI & Vivo.
-- ✍️ **Modern Spell Checker & Grammar Chips**: Interactive clickable suggestion chips, grammar checks, and native red squiggly underlines on misspelled words across all apps.
-- 📷 **Scan Text (Camera OCR)**: Direct camera viewfinder tool in the toolbar to capture and extract text directly at your cursor from real-world documents.
-- 🎨 **Material 3 Expressive Styling**: Pill-shaped rounded keycaps (Belka UI), Google Sans Flex variable typography, and restored vibrant emoji scaling with dedicated emoji tabs.
-- ↩️ **Proactive Suggestion Strip Undo**: 1-tap Undo button right in the suggestion strip to instantly reverse unwanted autocorrections or accidental text deletions.
-- 🛡️ **Side-by-Side Coexistence**: Installs as an independent package (`com.akshaykadam.pixelboard`) alongside your stock keyboard with bypassed signature verification.
+- **Gemini "Rambler" Natural Voice Typing**: Speaks naturally by filtering out stutters and filler words (*"um"*, *"ah"*), auto-corrects self-corrections on the fly, auto-punctuates sentences, and includes an ergonomically minimizable voice toolbar.
+- **In-Line AI Writing Assistant**: One-tap proofreading, grammar fixes via interactive suggestion chips, and quick tone rewrite (*Professional*, *Casual*, *Concise*, *Emotive*) across every application.
+- **In-App Updater**: Built-in update checker directly inside Settings to check for new releases, view changelogs, and download & install the latest PixelBoard APKs seamlessly.
+- **Extended Clipboard Retention**: Customizable retention duration (1 hour, 24 hours, 7 days, 30 days, or Never) with recent unpinned history expanded to 100 clips, floating screenshot chips, and reliable clipboard sync on Samsung One UI & Vivo.
+- **Modern Spell Checker & Grammar Chips**: Interactive clickable suggestion chips, grammar checks, and native red squiggly underlines on misspelled words across all apps.
+- **Scan Text (Camera OCR)**: Direct camera viewfinder tool in the toolbar to capture and extract text directly at your cursor from real-world documents.
+- **Material 3 Expressive Styling**: Pill-shaped rounded keycaps (Belka UI), Google Sans Flex variable typography, and restored vibrant emoji scaling with dedicated emoji tabs.
+- **Proactive Suggestion Strip Undo**: 1-tap Undo button right in the suggestion strip to instantly reverse unwanted autocorrections or accidental text deletions.
+- **Side-by-Side Coexistence**: Installs as an independent package (`com.akshaykadam.pixelboard`) alongside your stock keyboard with bypassed signature verification.
 
 > [!NOTE]
 > **Google Pixel Device Support**: Advanced on-device inference (**Private AICore / Astrea**) is available **only on Google Pixel devices**. Core **Rambler Natural Voice Typing**, **AI Writing Assistant**, proofreading, and tone rewrite work across all Android devices.
