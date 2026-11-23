@@ -24,10 +24,10 @@ public final class GboardLanguageDownloadGuardTest {
     }
 
     @Test
-    public void languagesAndSourcesAreTrackedIndependently() {
+    public void languagesAreTrackedAcrossSources() {
         Assert.assertFalse(GboardLanguageDownloadGuard.shouldSkip("en-US", "A"));
         Assert.assertFalse(GboardLanguageDownloadGuard.shouldSkip("it-IT", "A"));
-        Assert.assertFalse(GboardLanguageDownloadGuard.shouldSkip("en-US", "B"));
+        Assert.assertTrue(GboardLanguageDownloadGuard.shouldSkip("en-US", "B"));
         Assert.assertTrue(GboardLanguageDownloadGuard.shouldSkip("en-US", "A"));
     }
 

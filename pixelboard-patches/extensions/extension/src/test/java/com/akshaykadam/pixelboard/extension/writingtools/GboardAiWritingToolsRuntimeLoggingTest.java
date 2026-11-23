@@ -499,20 +499,24 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE));
         Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_TWO_STAGE_DECODER));
-        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_ENABLE_SPACE_TRANSPOSITION_POST_CORRECTION));
-        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_ENABLE_PK_SPATIAL_MODEL_FEATURES));
-        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_ENABLE_PK_AUTO_CORRECTION_TRIGGER_PREDICTOR));
-        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_ENABLE_POST_CORRECTION_TRIGGER_PREDICTOR));
-        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT));
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SPACE_TRANSPOSITION_POST_CORRECTION));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_PK_SPATIAL_MODEL_FEATURES));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_PK_AUTO_CORRECTION_TRIGGER_PREDICTOR));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_POST_CORRECTION_TRIGGER_PREDICTOR));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS));
         Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_IMMEDIATELY_END_DICTATION_ON_KEYBOARD_HIDDEN));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_POPULATE_SCORE_FOR_UNMATCHED_LITERAL_CANDIDATE));
 
         // Scan Text (OCR Camera Input) flags
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
@@ -651,23 +655,23 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     }
 
     @Test
-    public void intendedOovMinCountEnforcesTwoAndLogsDiagnostics() throws Exception {
+    public void intendedOovMinCountEnforcesOneAndLogsDiagnostics() throws Exception {
         IntendedOovMinCountFlagReceiver receiver = new IntendedOovMinCountFlagReceiver();
 
         ShadowLog.clear();
         Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
                 receiver, Long.valueOf(4L));
-        Assert.assertEquals(Long.valueOf(2L), enforced);
+        Assert.assertEquals(Long.valueOf(1L), enforced);
         Assert.assertEquals(1L, warningCount(
-                "flag=intended_oov_min_count, original=Long(4), enforced=Long(2)"));
+                "flag=intended_oov_min_count, original=Long(4), enforced=Long(1)"));
 
-        // Already 2L -> no duplicate log
+        // Already 1L -> no duplicate log
         ShadowLog.clear();
         Object unchanged = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
-                receiver, Long.valueOf(2L));
-        Assert.assertEquals(Long.valueOf(2L), unchanged);
+                receiver, Long.valueOf(1L));
+        Assert.assertEquals(Long.valueOf(1L), unchanged);
         Assert.assertEquals(0L, warningCount(
-                "flag=intended_oov_min_count, original=Long(2), enforced=Long(2)"));
+                "flag=intended_oov_min_count, original=Long(1), enforced=Long(1)"));
 
         // Non-Long is preserved
         String nonLong = "not_a_long";

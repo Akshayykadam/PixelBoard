@@ -33,7 +33,7 @@ public final class GboardRamblerRotationGrace {
     private static final String LOG_PREFIX = "[rambler-rotation-grace] ";
 
     /** Baseline delay Gboard waits before stopping Rambler, preventing timing races on flips/rotations. */
-    static final long BASELINE_DEACTIVATION_DELAY_MS = 1000L;
+    static final long BASELINE_DEACTIVATION_DELAY_MS = 0L;
     /** Grace Gboard waits before stopping Rambler; reactivation after a rotation takes ~80 ms. */
     static final long DEACTIVATION_GRACE_MS = 2500L;
     /** How long after a display change a deactivation still counts as part of the rotation. */

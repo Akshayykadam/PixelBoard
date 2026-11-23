@@ -23,7 +23,7 @@ public final class GboardLanguageDownloadGuard {
     public static boolean shouldSkip(String languageTag, Object source) {
         try {
             return languageTag != null
-                    && REQUESTED.putIfAbsent(languageTag + '|' + source, Boolean.TRUE) != null;
+                    && REQUESTED.putIfAbsent(languageTag, Boolean.TRUE) != null;
         } catch (Throwable ignored) {
             return false;
         }

@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import android.content.Context;
 import android.text.TextPaint;
 import android.widget.TextView;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -14,6 +16,12 @@ import org.robolectric.RuntimeEnvironment;
 
 @RunWith(RobolectricTestRunner.class)
 public class GboardCandidateEmojiRuntimeTest {
+
+    @Before
+    @After
+    public void tearDown() {
+        GboardCandidateEmojiRuntime.resetStateForTest();
+    }
 
     @Test
     public void testContainsEmoji_emptyAndNull() {
@@ -83,10 +91,16 @@ public class GboardCandidateEmojiRuntimeTest {
     public static class TestCandidate {
         public final CharSequence a;
         public int l;
+        public boolean g;
 
         public TestCandidate(CharSequence a, int l) {
+            this(a, l, false);
+        }
+
+        public TestCandidate(CharSequence a, int l, boolean g) {
             this.a = a;
             this.l = l;
+            this.g = g;
         }
     }
 
@@ -163,5 +177,42 @@ public class GboardCandidateEmojiRuntimeTest {
         assertEquals(2, candidates.size());
         assertEquals("😂", candidates.get(0).a.toString());
         assertEquals("🤣", candidates.get(1).a.toString());
+    }
+
+    @Test
+    public void testProtectedDictionaryWordClearsAutoCorrectionOnSuggestions() {
+        TestHolderView holderView = new TestHolderView();
+        GboardCandidateEmojiRuntime.registerProtectedWordForTest("ig");
+
+        java.util.List<TestCandidate> candidates = new java.util.ArrayList<>();
+        candidates.add(new TestCandidate("ig", 0, false));
+        candidates.add(new TestCandidate("if", 1, true));
+
+        GboardCandidateEmojiRuntime.reorderCandidatesForStrip(holderView, candidates);
+
+        assertEquals(2, candidates.size());
+        assertEquals("ig", candidates.get(0).a.toString());
+        assertFalse(candidates.get(0).g);
+
+        assertEquals("if", candidates.get(1).a.toString());
+        assertFalse(candidates.get(1).g);
+    }
+
+    @Test
+    public void testUnprotectedWordPreservesAutoCorrection() {
+        TestHolderView holderView = new TestHolderView();
+
+        java.util.List<TestCandidate> candidates = new java.util.ArrayList<>();
+        candidates.add(new TestCandidate("teh", 0, false));
+        candidates.add(new TestCandidate("the", 1, true));
+
+        GboardCandidateEmojiRuntime.reorderCandidatesForStrip(holderView, candidates);
+
+        assertEquals(2, candidates.size());
+        assertEquals("teh", candidates.get(0).a.toString());
+        assertFalse(candidates.get(0).g);
+
+        assertEquals("the", candidates.get(1).a.toString());
+        assertTrue(candidates.get(1).g);
     }
 }
