@@ -98,7 +98,7 @@ public final class GboardRambler1803StockPolicyTest {
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.ENABLE_JETSON_IN_TOOLBAR_FLAG,
                         Boolean.FALSE));
-        Assert.assertSame(Boolean.TRUE,
+        Assert.assertSame(Boolean.FALSE,
                 GboardRambler1803StockPolicy.maybeForceStockRouteValue(
                         GboardRambler1803StockPolicy.JETSON_ENABLE_CURSOR_AWARENESS_FLAG,
                         Boolean.FALSE));
@@ -112,7 +112,7 @@ public final class GboardRambler1803StockPolicyTest {
         Assert.assertTrue(
                 GboardRambler1803StockPolicy.isTargetFlagName(
                         GboardRambler1803StockPolicy.CONFIG_AGENTIC_DICTATION_FLAG));
-        Assert.assertTrue(
+        Assert.assertFalse(
                 GboardRambler1803StockPolicy.isTargetFlagName(
                         GboardRambler1803StockPolicy.JETSON_ENABLE_CURSOR_AWARENESS_FLAG));
         Assert.assertTrue(

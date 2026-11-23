@@ -499,19 +499,19 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE));
         Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_TWO_STAGE_DECODER));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_ENABLE_SPACE_TRANSPOSITION_POST_CORRECTION));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_ENABLE_PK_SPATIAL_MODEL_FEATURES));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_ENABLE_PK_AUTO_CORRECTION_TRIGGER_PREDICTOR));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_ENABLE_POST_CORRECTION_TRIGGER_PREDICTOR));
-        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS));
         Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
-                GboardAiWritingToolsRuntime.FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT));
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SPACE_TRANSPOSITION_POST_CORRECTION));
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_PK_SPATIAL_MODEL_FEATURES));
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_PK_AUTO_CORRECTION_TRIGGER_PREDICTOR));
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_POST_CORRECTION_TRIGGER_PREDICTOR));
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT));
+        Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK));
 
         // Scan Text (OCR Camera Input) flags

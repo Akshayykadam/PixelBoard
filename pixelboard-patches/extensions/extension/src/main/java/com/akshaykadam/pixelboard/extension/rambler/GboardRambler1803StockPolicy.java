@@ -64,8 +64,7 @@ public final class GboardRambler1803StockPolicy {
                     AGENTIC_DICTATION_NEW_GI_MOTION_FLAG,
                     ENABLE_JETSON_S3_QUOTA_EXPERIMENT_OVERRIDE_FLAG,
                     AGENTIC_DICTATION_DISABLE_PRE_SESSION_QUOTA_CHECK_FLAG,
-                    ENABLE_PCM_AUDIO_CACHING_FOR_OFFLINE_FALLBACK_FLAG,
-                    JETSON_ENABLE_CURSOR_AWARENESS_FLAG)));
+                    ENABLE_PCM_AUDIO_CACHING_FOR_OFFLINE_FALLBACK_FLAG)));
 
     private GboardRambler1803StockPolicy() {
     }

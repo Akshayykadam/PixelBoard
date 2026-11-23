@@ -16,6 +16,25 @@ public final class GboardPatchesSettingsProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        Context context = getContext();
+        if (context != null) {
+            try {
+                android.content.pm.PackageManager pm = context.getPackageManager();
+                android.content.ComponentName launcher = new android.content.ComponentName(
+                    context,
+                    "com.google.android.libraries.inputmethod.launcher.LauncherActivity"
+                );
+                int state = pm.getComponentEnabledSetting(launcher);
+                if (state == android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DEFAULT) {
+                    pm.setComponentEnabledSetting(
+                        launcher,
+                        android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                        android.content.pm.PackageManager.DONT_KILL_APP
+                    );
+                }
+            } catch (Throwable ignored) {
+            }
+        }
         return true;
     }
 

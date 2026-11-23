@@ -514,6 +514,11 @@ class GboardPackageRenameTransformTest {
         }
         assertEquals(PIXELBOARD_SETTINGS_TITLE, androidAttribute(settingsActivity, "label"))
 
+        val launcherActivity = elements(manifest, "activity").single { activity ->
+            androidAttribute(activity, "name") == "com.google.android.libraries.inputmethod.launcher.LauncherActivity"
+        }
+        assertEquals("false", androidAttribute(launcherActivity, "enabled"))
+
         settings.forEach { document ->
             assertEquals(PIXELBOARD_SETTINGS_TITLE, androidAttribute(document.documentElement, "title"))
         }
@@ -622,6 +627,11 @@ class GboardPackageRenameTransformTest {
             androidAttribute(activity, "name") == GBOARD_SETTINGS_ACTIVITY_CLASS
         }
         assertEquals(PIXELBOARD_SETTINGS_TITLE, androidAttribute(settingsActivity, "label"))
+
+        val launcherActivity = elements(manifest, "activity").single { activity ->
+            androidAttribute(activity, "name") == "com.google.android.libraries.inputmethod.launcher.LauncherActivity"
+        }
+        assertEquals("false", androidAttribute(launcherActivity, "enabled"))
 
         settings.forEach { document ->
             assertEquals(PIXELBOARD_SETTINGS_TITLE, androidAttribute(document.documentElement, "title"))

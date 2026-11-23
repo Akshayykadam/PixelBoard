@@ -332,6 +332,11 @@ internal fun applyPixelboardBranding(
     val manifest = manifestDocument.documentElement
     val application = manifest.childElements("application").firstOrNull() ?: return
 
+    val launcherActivity = application.childElements("activity").firstOrNull {
+        it.androidAttribute("name") == "com.google.android.libraries.inputmethod.launcher.LauncherActivity"
+    }
+    launcherActivity?.setAndroidAttribute("enabled", "false")
+
     val settingsActivity = application.childElements("activity").firstOrNull {
         it.androidAttribute("name") == GBOARD_SETTINGS_ACTIVITY_CLASS
     }

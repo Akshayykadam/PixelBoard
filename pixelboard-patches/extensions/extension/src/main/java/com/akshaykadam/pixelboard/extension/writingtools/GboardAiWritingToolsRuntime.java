@@ -480,11 +480,7 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_EMOJIFY_SETTINGS_OPTION.equals(flagName)
                 || FLAG_ENABLE_EMOJIFY_SHORTCUT_WHEN_FOLLOWED_BY_EMOJI.equals(flagName)
                 || FLAG_ENABLE_EMOJIFY_WHEN_TALKBACK_ON.equals(flagName)
-                || FLAG_ENABLE_SPACE_TRANSPOSITION_POST_CORRECTION.equals(flagName)
-                || FLAG_ENABLE_PK_SPATIAL_MODEL_FEATURES.equals(flagName)
-                || FLAG_ENABLE_PK_AUTO_CORRECTION_TRIGGER_PREDICTOR.equals(flagName)
-                || FLAG_ENABLE_POST_CORRECTION_TRIGGER_PREDICTOR.equals(flagName)
-                || FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS.equals(flagName)
+                || FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT.equals(flagName)
                 || FLAG_ENABLE_OCR.equals(flagName)
                 || FLAG_CONFIG_OCR.equals(flagName)
                 || FLAG_ENABLE_CAMERA_PERMISSION_OVERLAY.equals(flagName)
@@ -516,11 +512,7 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_EMOGEN_ENTRY_POINT.equals(flagName)
                 || FLAG_EMOGEN_FEATURE_ENABLED.equals(flagName)
                 || FLAG_EMOGEN_IN_ACCESS_POINTS.equals(flagName)
-                || FLAG_FIX_FIRST_AUTO_CORRECTION_COMMIT.equals(flagName)
-                || FLAG_LEARNING_FOR_EDITOR_WITHOUT_AUTO_CORRECTION.equals(flagName)
                 || FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS.equals(flagName)
-                || FLAG_ENABLE_REVERT_AUTO_CORRECT_ON_PK.equals(flagName)
-                || FLAG_TRY_INITIALIZE_DECODER_AFTER_LM_LOADS.equals(flagName)
                 || FLAG_ENABLE_AUTO_CORRECTION_STATS.equals(flagName)
                 || FLAG_ENABLE_CORRECTION_COMMIT_ANIMATION.equals(flagName);
     }
@@ -634,10 +626,6 @@ public final class GboardAiWritingToolsRuntime {
                     || FLAG_SIGNBOARD_MOVE_AP_PROMPT.equals(flagName)
                     || FLAG_USE_4C_IN_SIGNBOARD.equals(flagName)
                     || FLAG_ENABLE_EMOJIFY_MODEL.equals(flagName)
-                    || FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE.equals(flagName)
-                    || FLAG_ENABLE_TWO_STAGE_DECODER.equals(flagName)
-                    || FLAG_ENABLE_DECODER_RESPONSE_WAIT_WITHOUT_LOCK.equals(flagName)
-                    || FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT.equals(flagName)
                     || FLAG_WRITING_HELPER_ENABLE_PARTIAL_SELECTION_ON_LONG_INPUT.equals(flagName)
                     || FLAG_TRUNCATE_TEXT_AFTER_CURSOR_IN_GMAIL.equals(flagName)
                     || FLAG_SUPER_INSERT_CONTACTS.equals(flagName)
@@ -837,7 +825,6 @@ public final class GboardAiWritingToolsRuntime {
             return Boolean.TRUE;
         }
         if (FLAG_ENABLE_MODELESS_SMART_EDIT.equals(flagName)
-                || FLAG_AUTO_CORRECT_WITH_REPLACE_TEXT.equals(flagName)
                 || FLAG_WRITING_HELPER_ENABLE_PARTIAL_SELECTION_ON_LONG_INPUT.equals(flagName)
                 || FLAG_TRUNCATE_TEXT_AFTER_CURSOR_IN_GMAIL.equals(flagName)) {
             return Boolean.FALSE;
