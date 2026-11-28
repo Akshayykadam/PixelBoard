@@ -3687,8 +3687,18 @@ public final class GboardPatchesSettingsActivity extends Activity
         AccessibleRow row = buildBaseRow();
 
         Drawable icon = rowModel.getIconDrawable();
+        boolean trailingDownloadButton = false;
         if (icon == null && rowModel instanceof GboardPatchesSettingsContract.PrimaryCommandRow) {
-            icon = createSyncIcon(palette.accent);
+            CharSequence cmdTitle = rowModel.getTitle();
+            String titleStr = cmdTitle != null ? cmdTitle.toString() : "";
+            if (!rowModel.isAnimating()
+                    && (titleStr.startsWith("Update Available")
+                            || titleStr.startsWith("Download")
+                            || titleStr.startsWith("Install"))) {
+                trailingDownloadButton = true;
+            } else {
+                icon = createSyncIcon(palette.accent);
+            }
         }
         ImageView iconView = null;
         if (icon != null) {
@@ -3716,6 +3726,21 @@ public final class GboardPatchesSettingsActivity extends Activity
         View previewButton = buildPreviewButton(rowModel);
         if (previewButton != null) {
             row.addView(previewButton, trailingLayoutParams(dp(10)));
+        } else if (trailingDownloadButton) {
+            FrameLayout downloadBadge = new FrameLayout(this);
+            downloadBadge.setBackground(buildCardDrawable(
+                    blendAlpha(palette.accent, 0.12f),
+                    0,
+                    dp(20)));
+            ImageView dlIcon = new ImageView(this);
+            dlIcon.setImageDrawable(createDownloadIcon(palette.accent));
+            FrameLayout.LayoutParams dlIconParams = new FrameLayout.LayoutParams(dp(22), dp(22));
+            dlIconParams.gravity = Gravity.CENTER;
+            downloadBadge.addView(dlIcon, dlIconParams);
+            LinearLayout.LayoutParams badgeParams = trailingLayoutParams(dp(12));
+            badgeParams.width = dp(40);
+            badgeParams.height = dp(40);
+            row.addView(downloadBadge, badgeParams);
         }
         bindActionRowState(row, titleView, summaryView, null, rowModel.isEnabled());
         if (rowModel.isAnimating()) {
@@ -3770,6 +3795,72 @@ public final class GboardPatchesSettingsActivity extends Activity
             }
         }
         rowIconAnimators.clear();
+    }
+
+    private Drawable createDownloadIcon(int color) {
+        return new Drawable() {
+            private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            private final Path path = new Path();
+            {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(color);
+            }
+
+            @Override
+            public void draw(Canvas canvas) {
+                Rect bounds = getBounds();
+                int width = bounds.width() > 0 ? bounds.width() : dp(24);
+                int height = bounds.height() > 0 ? bounds.height() : dp(24);
+                canvas.save();
+                canvas.translate(bounds.left, bounds.top);
+                float scale = Math.min(width, height) / 24f;
+
+                path.reset();
+                // Arrow pointing down
+                path.moveTo(9f * scale, 3f * scale);
+                path.lineTo(15f * scale, 3f * scale);
+                path.lineTo(15f * scale, 9f * scale);
+                path.lineTo(19f * scale, 9f * scale);
+                path.lineTo(12f * scale, 16f * scale);
+                path.lineTo(5f * scale, 9f * scale);
+                path.lineTo(9f * scale, 9f * scale);
+                path.close();
+                // Bottom tray bar
+                path.moveTo(5f * scale, 18f * scale);
+                path.lineTo(19f * scale, 18f * scale);
+                path.lineTo(19f * scale, 20f * scale);
+                path.lineTo(5f * scale, 20f * scale);
+                path.close();
+
+                canvas.drawPath(path, paint);
+                canvas.restore();
+            }
+
+            @Override
+            public int getIntrinsicWidth() {
+                return dp(24);
+            }
+
+            @Override
+            public int getIntrinsicHeight() {
+                return dp(24);
+            }
+
+            @Override
+            public void setAlpha(int alpha) {
+                paint.setAlpha(alpha);
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter colorFilter) {
+                paint.setColorFilter(colorFilter);
+            }
+
+            @Override
+            public int getOpacity() {
+                return PixelFormat.TRANSLUCENT;
+            }
+        };
     }
 
     private Drawable createSyncIcon(int color) {
@@ -3851,19 +3942,68 @@ public final class GboardPatchesSettingsActivity extends Activity
     }
 
     private View createStatusBlockView(GboardPatchesSettingsContract.StatusBlock block) {
-        LinearLayout card = buildSectionContainer(false);
-        card.setBackground(buildCardDrawable(
-                toneBackground(block.getTone()),
-                palette.surfaceStroke,
-                dp(20)));
-        TextView titleView = buildSectionTitle(block.getTitle());
+        LinearLayout container = buildSectionContainer(false);
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            card.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
+        int bgColor = block.getTone() == GboardPatchesSettingsContract.StatusTone.WARNING
+                ? toneBackground(block.getTone())
+                : palette.surfaceAlt;
+        card.setBackground(buildCardDrawable(bgColor, 0, dp(24)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            card.setClipToOutline(true);
+        }
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        cardParams.leftMargin = dp(16);
+        cardParams.rightMargin = dp(16);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            cardParams.setMarginStart(dp(16));
+            cardParams.setMarginEnd(dp(16));
+        }
+        cardParams.topMargin = dp(8);
+        cardParams.bottomMargin = dp(8);
+        card.setLayoutParams(cardParams);
+        card.setPadding(dp(20), dp(16), dp(20), dp(16));
+
+        TextView titleView = new TextView(this);
+        titleView.setText(block.getTitle());
+        titleView.setTextColor(palette.textPrimary);
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f);
+        titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        titleView.setGravity(Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            titleView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
         if (block.getTone() == GboardPatchesSettingsContract.StatusTone.WARNING) {
             titleView.setContentDescription(
                     text(R.string.gboard_patches_warning_label) + ": " + block.getTitle());
         }
         card.addView(titleView);
-        card.addView(buildSectionSummary(block.getSummary(), false));
-        return card;
+
+        if (block.getSummary() != null && !block.getSummary().isEmpty()) {
+            TextView summaryView = new TextView(this);
+            summaryView.setText(block.getSummary());
+            summaryView.setTextColor(palette.textSecondary);
+            summaryView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
+            summaryView.setLineSpacing(dp(2), 1.15f);
+            summaryView.setGravity(Gravity.START);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                summaryView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            }
+            LinearLayout.LayoutParams summaryParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            summaryParams.topMargin = dp(4);
+            card.addView(summaryView, summaryParams);
+        }
+
+        container.addView(card);
+        return container;
     }
 
     private View createChangelogSectionView(GboardPatchesSettingsContract.Section section) {
@@ -3901,7 +4041,7 @@ public final class GboardPatchesSettingsActivity extends Activity
         card.setLayoutParams(cardParams);
         card.setPadding(dp(20), dp(20), dp(20), dp(20));
 
-        // --- 1. HEADER (Clean text, no emoji, no tag pills) ---
+        // --- 1. HEADER (Normal typography, no accent highlight) ---
         TextView categoryLabel = new TextView(this);
         categoryLabel.setText("WHAT'S NEW");
         categoryLabel.setTextColor(palette.accent);
@@ -3916,7 +4056,7 @@ public final class GboardPatchesSettingsActivity extends Activity
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         card.addView(categoryLabel, catParams);
 
-        // Main Title (e.g. "PixelBoard v1.3.4")
+        // Main Title (e.g. "PixelBoard v1.3.7")
         TextView titleView = new TextView(this);
         String displayTitle = section.getTitle();
         if (displayTitle == null || displayTitle.isEmpty()) {
@@ -3924,8 +4064,8 @@ public final class GboardPatchesSettingsActivity extends Activity
         }
         titleView.setText(displayTitle);
         titleView.setTextColor(palette.textPrimary);
-        titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
-        titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f);
+        titleView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
         titleView.setGravity(Gravity.START);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             titleView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
@@ -4004,18 +4144,45 @@ public final class GboardPatchesSettingsActivity extends Activity
                 continue;
             }
 
-            // Regular Highlight Row
+            // Regular Highlight Row with bullet dot
+            LinearLayout itemRow = new LinearLayout(this);
+            itemRow.setOrientation(LinearLayout.HORIZONTAL);
+            itemRow.setGravity(Gravity.START | Gravity.TOP);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                itemRow.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            }
+            LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            itemParams.bottomMargin = isLast ? 0 : dp(16);
+            itemRow.setLayoutParams(itemParams);
+
+            TextView bulletView = new TextView(this);
+            bulletView.setText("•");
+            bulletView.setTextColor(palette.textPrimary);
+            bulletView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
+            bulletView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
+            LinearLayout.LayoutParams bulletParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                bulletParams.setMarginEnd(dp(8));
+            } else {
+                bulletParams.rightMargin = dp(8);
+            }
+            itemRow.addView(bulletView, bulletParams);
+
             LinearLayout itemBlock = new LinearLayout(this);
             itemBlock.setOrientation(LinearLayout.VERTICAL);
             itemBlock.setGravity(Gravity.START);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 itemBlock.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
             }
-            LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            itemParams.bottomMargin = isLast ? 0 : dp(16);
-            itemBlock.setLayoutParams(itemParams);
+            LinearLayout.LayoutParams blockParams = new LinearLayout.LayoutParams(
+                    0,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    1f);
+            itemBlock.setLayoutParams(blockParams);
 
             // Item Title
             String rawTitle = item.getTitle() != null ? item.getTitle().toString() : "";
@@ -4029,8 +4196,8 @@ public final class GboardPatchesSettingsActivity extends Activity
             TextView itemTitleView = new TextView(this);
             itemTitleView.setText(cleanTitle);
             itemTitleView.setTextColor(palette.textPrimary);
-            itemTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
-            itemTitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+            itemTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
+            itemTitleView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
             itemTitleView.setGravity(Gravity.START);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 itemTitleView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
@@ -4059,7 +4226,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 itemBlock.addView(descView, descParams);
             }
 
-            card.addView(itemBlock);
+            itemRow.addView(itemBlock);
+            card.addView(itemRow);
         }
 
         container.addView(card);

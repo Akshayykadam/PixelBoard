@@ -102,55 +102,37 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
             releaseInfo = updateManager.getCachedReleaseInfo(context);
         }
         PixelBoardUpdateManager.Status status = updateManager.getCurrentStatus();
+        if (status == PixelBoardUpdateManager.Status.IDLE
+                && releaseInfo != null
+                && releaseInfo.isNewerThan(installedVersion)) {
+            status = PixelBoardUpdateManager.Status.UPDATE_AVAILABLE;
+        }
 
         List<GboardPatchesSettingsContract.StatusBlock> statusBlocks = new ArrayList<>();
         List<GboardPatchesSettingsContract.Section> sections = new ArrayList<>();
 
-        // 1. Build Status Block matching Material 3 tones
-        switch (status) {
-            case UPDATE_AVAILABLE:
-                String updateTitle = releaseInfo != null
-                        ? "Update Available: v" + releaseInfo.getVersion()
-                        : GboardSettingsText.get(context, R.string.gboard_patches_update_status_available_title);
-                String updateSummary = releaseInfo != null
-                        ? "PixelBoard v" + releaseInfo.getVersion() + " is ready for download ("
-                                + releaseInfo.getFormattedFileSize() + ").\nPublished: "
-                                + releaseInfo.getFormattedDate()
-                        : GboardSettingsText.get(context, R.string.gboard_patches_update_status_available_summary);
-                statusBlocks.add(new GboardPatchesSettingsContract.StatusBlock(
-                        updateTitle,
-                        updateSummary,
-                        GboardPatchesSettingsContract.StatusTone.INFO));
-                break;
-            case ERROR:
-                String errorSummary = updateManager.getLastErrorMessage().isEmpty()
-                        ? GboardSettingsText.get(context, R.string.gboard_patches_update_status_error_summary)
-                        : (updateManager.getLastErrorMessage() + "\nYou can still download releases directly via browser.");
-                statusBlocks.add(new GboardPatchesSettingsContract.StatusBlock(
-                        GboardSettingsText.get(context, R.string.gboard_patches_update_status_error_title),
-                        errorSummary,
-                        GboardPatchesSettingsContract.StatusTone.WARNING));
-                break;
-            case DOWNLOADING:
-            case DOWNLOAD_COMPLETED:
-            case UP_TO_DATE:
-            case CHECKING:
-            case IDLE:
-            default:
-                // No top status box when downloading, downloaded, up to date, or idle to keep UI clean and uncluttered
-                break;
+        // 1. Build Status Block only for errors (update & download status live directly in the Actions row)
+        if (status == PixelBoardUpdateManager.Status.ERROR) {
+            String errorSummary = updateManager.getLastErrorMessage().isEmpty()
+                    ? GboardSettingsText.get(context, R.string.gboard_patches_update_status_error_summary)
+                    : (updateManager.getLastErrorMessage() + "\nYou can still download releases directly via browser.");
+            statusBlocks.add(new GboardPatchesSettingsContract.StatusBlock(
+                    GboardSettingsText.get(context, R.string.gboard_patches_update_status_error_title),
+                    errorSummary,
+                    GboardPatchesSettingsContract.StatusTone.WARNING));
         }
 
         // 2. Actions Section
         List<GboardPatchesSettingsContract.Row> actionRows = new ArrayList<>();
         final ReleaseInfo targetRelease = releaseInfo;
         if (status == PixelBoardUpdateManager.Status.UPDATE_AVAILABLE && targetRelease != null) {
+            String updateTitle = "Update Available: v" + targetRelease.getVersion();
             String downloadSummary = targetRelease.hasApkAsset()
-                    ? ("Download " + targetRelease.getApkFileName() + " (" + targetRelease.getFormattedFileSize() + ") directly from Git")
+                    ? (targetRelease.getFormattedFileSize() + " • Published: " + targetRelease.getFormattedDate())
                     : "Open release page on GitHub";
 
             actionRows.add(new GboardPatchesSettingsContract.PrimaryCommandRow(
-                    GboardSettingsText.get(context, R.string.gboard_patches_update_action_download),
+                    updateTitle,
                     downloadSummary,
                     true,
                     () -> {
@@ -169,9 +151,16 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
                     true,
                     () -> PixelBoardUpdateManager.openReleasePage(context, targetRelease.getHtmlUrl())));
         } else if (status == PixelBoardUpdateManager.Status.DOWNLOADING) {
+            int pct = updateManager.getDownloadProgressPercent();
+            long dlBytes = updateManager.getDownloadedBytes();
+            long totBytes = updateManager.getTotalBytes();
+            String rowTitle = pct >= 0 ? ("Downloading Update… " + pct + "%") : "Downloading Update…";
+            String rowSummary = totBytes > 0L
+                    ? (formatMb(dlBytes) + " / " + formatMb(totBytes) + " downloaded")
+                    : "Download is in progress…";
             actionRows.add(new GboardPatchesSettingsContract.PrimaryCommandRow(
-                    "Downloading Update…",
-                    "Download is in progress. Check notification panel for status.",
+                    rowTitle,
+                    rowSummary,
                     false,
                     null,
                     true));
@@ -400,6 +389,13 @@ public final class PixelBoardUpdateFeature implements GboardPatchesSettingsContr
             long days = diff / 86400000L;
             return days + (days == 1 ? " day ago" : " days ago");
         }
+    }
+
+    private static String formatMb(long bytes) {
+        if (bytes <= 0L) {
+            return "0.0 MB";
+        }
+        return String.format(java.util.Locale.US, "%.1f MB", bytes / (1024.0 * 1024.0));
     }
 
     private static String getDefaultChangelog() {

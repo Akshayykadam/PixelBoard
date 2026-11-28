@@ -103,6 +103,9 @@ public final class PixelBoardUpdateManager {
     private ReleaseInfo currentReleaseInfo;
     private String lastErrorMessage = "";
     private BroadcastReceiver downloadReceiver;
+    private volatile int downloadProgressPercent = -1;
+    private volatile long downloadedBytes = 0L;
+    private volatile long totalBytes = 0L;
 
     private PixelBoardUpdateManager() {
     }
@@ -142,6 +145,18 @@ public final class PixelBoardUpdateManager {
 
     public void setLastDownloadedApkUri(Uri uri) {
         this.lastDownloadedApkUri = uri;
+    }
+
+    public int getDownloadProgressPercent() {
+        return downloadProgressPercent;
+    }
+
+    public long getDownloadedBytes() {
+        return downloadedBytes;
+    }
+
+    public long getTotalBytes() {
+        return totalBytes;
     }
 
     public static SharedPreferences preferences(Context context) {
@@ -354,12 +369,17 @@ public final class PixelBoardUpdateManager {
             }
 
             currentStatus = Status.DOWNLOADING;
+            downloadProgressPercent = 0;
+            downloadedBytes = 0L;
+            totalBytes = releaseInfo.getApkSizeBytes();
             Toast.makeText(activity, "Downloading PixelBoard v" + releaseInfo.getVersion() + "...", Toast.LENGTH_SHORT).show();
             if (onStateChanged != null) {
                 onStateChanged.run();
             }
 
-            registerDownloadReceiver(activity.getApplicationContext(), downloadId, onStateChanged);
+            Context appContext = activity.getApplicationContext();
+            registerDownloadReceiver(appContext, downloadId, onStateChanged);
+            startProgressPolling(appContext, downloadManager, downloadId, onStateChanged);
 
         } catch (Throwable throwable) {
             Log.w(TAG, "Failed to enqueue APK download", throwable);
@@ -440,6 +460,74 @@ public final class PixelBoardUpdateManager {
                     downloadReceiver,
                     new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         }
+    }
+
+    private void startProgressPolling(
+            Context appContext,
+            DownloadManager downloadManager,
+            long targetDownloadId,
+            Runnable onStateChanged) {
+        Looper mainLooper = Looper.getMainLooper();
+        if (mainLooper == null || downloadManager == null) {
+            return;
+        }
+        Handler handler = new Handler(mainLooper);
+        Runnable poller = new Runnable() {
+            @Override
+            public void run() {
+                if (currentStatus != Status.DOWNLOADING) {
+                    return;
+                }
+                DownloadManager.Query query = new DownloadManager.Query();
+                query.setFilterById(targetDownloadId);
+                try (Cursor cursor = downloadManager.query(query)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int bytesIdx = cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
+                        int totalIdx = cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
+                        int statusIdx = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+
+                        long bytes = bytesIdx >= 0 ? cursor.getLong(bytesIdx) : 0L;
+                        long total = totalIdx >= 0 ? cursor.getLong(totalIdx) : 0L;
+                        int dmStatus = statusIdx >= 0 ? cursor.getInt(statusIdx) : 0;
+
+                        if (total <= 0L && currentReleaseInfo != null) {
+                            total = currentReleaseInfo.getApkSizeBytes();
+                        }
+                        int pct = total > 0L ? (int) Math.min(100L, (bytes * 100L) / total) : -1;
+                        boolean changed = pct != downloadProgressPercent || bytes != downloadedBytes;
+                        downloadedBytes = bytes;
+                        totalBytes = total;
+                        downloadProgressPercent = pct;
+
+                        if (dmStatus == DownloadManager.STATUS_SUCCESSFUL) {
+                            downloadProgressPercent = 100;
+                            Uri apkUri = downloadManager.getUriForDownloadedFile(targetDownloadId);
+                            currentStatus = Status.DOWNLOAD_COMPLETED;
+                            lastDownloadedApkUri = apkUri;
+                            if (onStateChanged != null) {
+                                onStateChanged.run();
+                            }
+                            return;
+                        } else if (dmStatus == DownloadManager.STATUS_FAILED) {
+                            currentStatus = Status.ERROR;
+                            lastErrorMessage = "Download failed";
+                            if (onStateChanged != null) {
+                                onStateChanged.run();
+                            }
+                            return;
+                        }
+                        if (changed && onStateChanged != null) {
+                            onStateChanged.run();
+                        }
+                    }
+                } catch (Throwable ignored) {
+                }
+                if (currentStatus == Status.DOWNLOADING) {
+                    handler.postDelayed(this, 500L);
+                }
+            }
+        };
+        handler.postDelayed(poller, 500L);
     }
 
     /**
