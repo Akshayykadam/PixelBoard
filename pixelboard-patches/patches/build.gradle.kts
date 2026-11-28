@@ -200,10 +200,15 @@ tasks {
 
     val mppJar = named<Jar>("jar") {
         dependsOn(verifyGboardCapabilityWiring)
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
     named<ProcessResources>("processResources") {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+
+    withType<org.gradle.api.tasks.bundling.Zip>().configureEach {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
     named<Test>("test") {
