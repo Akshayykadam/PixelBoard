@@ -2,7 +2,9 @@ import java.io.File
 import javax.inject.Inject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.language.jvm.tasks.ProcessResources
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.InputFile
@@ -198,6 +200,10 @@ tasks {
 
     val mppJar = named<Jar>("jar") {
         dependsOn(verifyGboardCapabilityWiring)
+    }
+
+    named<ProcessResources>("processResources") {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 
     named<Test>("test") {
