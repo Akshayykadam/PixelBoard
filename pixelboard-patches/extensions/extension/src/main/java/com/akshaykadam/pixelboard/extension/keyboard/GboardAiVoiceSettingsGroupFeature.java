@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.akshaykadam.pixelboard.extension.R;
 import com.akshaykadam.pixelboard.extension.advancedvoice.GboardAdvancedVoiceSettingsFeature;
+import com.akshaykadam.pixelboard.extension.rambler.GboardRamblerVoiceSettingsFeature;
 import com.akshaykadam.pixelboard.extension.settings.GboardFeatureGroup;
 import com.akshaykadam.pixelboard.extension.settings.GboardPatchesSettingsContract;
 import com.akshaykadam.pixelboard.extension.settings.GboardSettingsText;
@@ -36,7 +37,8 @@ public final class GboardAiVoiceSettingsGroupFeature
                         R.string.gboard_patches_group_keyboard_empty_summary),
                 Arrays.asList(
                         new GboardAiWritingToolsSettingsFeature(context),
-                        new GboardAdvancedVoiceSettingsFeature(context)));
+                        new GboardAdvancedVoiceSettingsFeature(context),
+                        new GboardRamblerVoiceSettingsFeature(context)));
     }
 
     @Override

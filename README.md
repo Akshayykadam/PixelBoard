@@ -5,8 +5,8 @@
 **Supercharged Gboard Mod featuring Google Pixel 11 series's Rambler Voice Typing & AI Writing Assistant [No Root].**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.6">
-    <img src="https://img.shields.io/badge/Release-v1.3.6-8A2BE2?style=flat-square&logo=github&logoColor=white" alt="Latest Release"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.7">
+    <img src="https://img.shields.io/badge/Release-v1.3.7-8A2BE2?style=flat-square&logo=github&logoColor=white" alt="Latest Release"/>
   </a>
   <img src="https://img.shields.io/badge/Android-10%20to%2017-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android Support"/>
   <img src="https://img.shields.io/badge/Architecture-arm64--v8a-blue?style=flat-square" alt="Arch Support"/>
@@ -17,12 +17,12 @@
 
 <!-- Primary Action: 1-Click Direct Download Links -->
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk">
-    <img src="https://img.shields.io/badge/⚡_1--Click_Download_(APK)-v1.3.6_(122_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="44" alt="Download Ready-to-Install APK"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.7/PixelBoard-1.3.7.apk">
+    <img src="https://img.shields.io/badge/⚡_1--Click_Download_(APK)-v1.3.7_(121_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="44" alt="Download Ready-to-Install APK"/>
   </a>
   &nbsp;&nbsp;
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/patches-1.3.6.mpp">
-    <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.3.6_(1.7_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="44" alt="Download Morphe Patch Bundle"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.7/patches-1.3.7.mpp">
+    <img src="https://img.shields.io/badge/📦_Morphe_Patch_(.mpp)-v1.3.7_(1.1_MB)-2979FF?style=for-the-badge&logo=android&logoColor=white" height="44" alt="Download Morphe Patch Bundle"/>
   </a>
 </p>
 
@@ -127,7 +127,7 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ## Installation Guide
 
 ### Option A: Direct Download on Your Phone (Easiest)
-1. Download [**PixelBoard Stable APK (v1.3.6, 122 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk) (or view the [**v1.3.6 Release Page**](https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.6)).
+1. Download [**PixelBoard Stable APK (v1.3.7, 121 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.7/PixelBoard-1.3.7.apk) (or view the [**v1.3.7 Release Page**](https://github.com/Akshayykadam/PixelBoard/releases/tag/1.3.7)).
 2. Tap the downloaded `.apk` in your notification drawer or Downloads folder.
 3. If prompted, toggle **"Allow from this source"** and tap **Install**.
 4. Enable PixelBoard in **Settings > System > Languages & input > On-screen keyboard**.
@@ -135,16 +135,16 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ### Option B: Sideload via ADB (For Developers)
 Connect your Android phone via USB with USB Debugging enabled:
 ```bash
-adb install -r PixelBoard-1.3.6.apk
+adb install -r PixelBoard-1.3.7.apk
 adb shell am force-stop com.akshaykadam.pixelboard
 ```
-*(If building from source locally, use `adb install -r output/PixelBoard-1.3.6.apk`)*
+*(If building from source locally, use `adb install -r output/PixelBoard-1.3.7.apk`)*
 
 ### Option C: Patch via Morphe Manager (On-Device Patcher)
 You can patch your stock Gboard APK directly on your phone using **Morphe Manager**:
 1. Install **Morphe Manager** on your Android device.
 2. Get the two required files:
-   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.3.6.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/patches-1.3.6.mpp))
+   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.3.7.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.7/patches-1.3.7.mpp))
    - **Stock Base APK**: Download the official base bundle from [**APKMirror (Gboard v18.6.3.100 Release)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-6-3-1002251336-release/).
 3. In Morphe Manager, select **Storage**, choose the stock Gboard APK, and load `PixelBoard.mpp` as the patch source.
 4. Tap **Patch** and then **Install**!
@@ -200,7 +200,7 @@ GBoardMod/
 | **Root Required** | **No** (Standalone side-by-side coexistence) |
 
 > [!CAUTION]
-> **Gboard Version Dependency**: The patch bundle is engineered specifically for **Gboard v18.6.3.100**. Patching Gboard 18.5 or older will cause flag evaluation hooks (`Lodf.g`) and resource bindings to miss, leaving all mods inactive. Always ensure you are patching stock Gboard `18.6.3.1002251336-release-arm64-v8a` or directly download the pre-patched, ready-to-use [**PixelBoard-1.3.6.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.6/PixelBoard-1.3.6.apk).
+> **Gboard Version Dependency**: The patch bundle is engineered specifically for **Gboard v18.6.3.100**. Patching Gboard 18.5 or older will cause flag evaluation hooks (`Lodf.g`) and resource bindings to miss, leaving all mods inactive. Always ensure you are patching stock Gboard `18.6.3.1002251336-release-arm64-v8a` or directly download the pre-patched, ready-to-use [**PixelBoard-1.3.7.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/1.3.7/PixelBoard-1.3.7.apk).
 
 > [!NOTE]
 > **Google Pixel Device Support**: Advanced on-device inference (**Private AICore / Astrea**) is available **only on Google Pixel devices**. Core **Rambler Natural Voice Typing**, **AI Writing Assistant**, proofreading, and tone rewrite work across all Android devices.

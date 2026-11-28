@@ -7,12 +7,16 @@
  */
 package com.akshaykadam.pixelboard.extension.rambler;
 
+import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Runtime interceptor for Rambler Agentic Dictation voice text results.
@@ -29,8 +33,88 @@ import java.util.Locale;
 public final class GboardRamblerDictationRuntime {
 
     private static final String TAG = "PixelBoardDictation";
+    private static final String KEY_USER_PREFERENCES = "user_preferences";
+    private static final Pattern INSTRUCTION_TAG_PATTERN =
+            Pattern.compile("(?i)</?(user_instruction|custom_instruction)[^>]*>");
+    private static final String CUSTOM_INSTRUCTION_WRAPPER =
+            "Extremely important!!!:\n"
+                    + "<custom_instruction>\n"
+                    + "The text between <user_instruction> and </user_instruction> contains "
+                    + "user-defined preferences for dictation text output.\n"
+                    + "Rules:\n"
+                    + "1. Scope: Apply only to dictation text preferences (e.g., verbatim fidelity, "
+                    + "spelling, grammar, language and script conventions, vocabulary, formatting, "
+                    + "punctuation, casing, and tone).\n"
+                    + "2. Conditions & Grounding: Apply strictly when relevant to the spoken input "
+                    + "and active context.\n"
+                    + "3. Priority: Customizes dictation styling, verbatim fidelity, and script conventions.\n\n"
+                    + "<user_instruction>\n%s\n</user_instruction>\n</custom_instruction>\n";
 
     private GboardRamblerDictationRuntime() {
+    }
+
+    /**
+     * Injects PixelBoard verbatim / custom dictation instructions and Indic script preferences
+     * into Rambler's session bundle ("user_preferences" -> S3 user_preferences header).
+     */
+    public static Bundle applyDictationPreferences(Object extension, Bundle bundle) {
+        if (bundle == null) {
+            return null;
+        }
+        try {
+            Context context = resolveExtensionContext(extension);
+            if (context == null) {
+                context = GboardRambler1803OfficialSelectionRuntime.applicationContext();
+            }
+            boolean verbatimMode = GboardRamblerSettings.isVerbatimModeEnabled(context);
+            String customInstruction = GboardRamblerSettings.readCustomInstruction(context);
+            String indicInstruction =
+                    GboardRamblerVoiceScriptRuntime.buildActiveIndicScriptInstruction(context);
+
+            List<String> directives = new ArrayList<String>(3);
+            if (verbatimMode) {
+                directives.add(GboardRamblerSettings.STRICT_VERBATIM_INSTRUCTION);
+            }
+            if (indicInstruction != null && !indicInstruction.isEmpty()) {
+                directives.add(indicInstruction);
+            }
+            if (customInstruction != null && !customInstruction.isEmpty()) {
+                String sanitized = INSTRUCTION_TAG_PATTERN.matcher(customInstruction)
+                        .replaceAll("")
+                        .trim();
+                if (!sanitized.isEmpty()) {
+                    directives.add(sanitized);
+                }
+            }
+            if (directives.isEmpty()) {
+                return bundle;
+            }
+
+            String combinedDirective = String.join("\n", directives);
+            ArrayList<String> userPrefs = bundle.getStringArrayList(KEY_USER_PREFERENCES);
+            ArrayList<String> updated = userPrefs != null
+                    ? new ArrayList<String>(userPrefs)
+                    : new ArrayList<String>(2);
+
+            boolean replacedExisting = false;
+            for (int i = 0; i < updated.size(); i++) {
+                String existing = updated.get(i);
+                if (existing != null && existing.contains("</user_instruction>")) {
+                    updated.set(i, existing.replace(
+                            "</user_instruction>",
+                            "\n" + combinedDirective + "\n</user_instruction>"));
+                    replacedExisting = true;
+                    break;
+                }
+            }
+            if (!replacedExisting) {
+                updated.add(String.format(Locale.ROOT, CUSTOM_INSTRUCTION_WRAPPER, combinedDirective));
+            }
+            bundle.putStringArrayList(KEY_USER_PREFERENCES, updated);
+        } catch (Throwable t) {
+            Log.w(TAG, "Failed to apply dictation user_preferences", t);
+        }
+        return bundle;
     }
 
     /**
@@ -170,6 +254,28 @@ public final class GboardRamblerDictationRuntime {
                 // Intent 3 = INTENT_REWRITE (Contextual commands e.g. "Fix grammar", "Translate to...").
                 // Intent 4 = INTENT_COMPOSE (AI answers to prompts / questions).
                 // Intent 5 = INTENT_RAMBLE.
+
+                Context extContext = resolveExtensionContext(extension);
+                if (extContext == null) {
+                    extContext = GboardRambler1803OfficialSelectionRuntime.applicationContext();
+                }
+                boolean verbatimMode = GboardRamblerSettings.isVerbatimModeEnabled(extContext);
+                String lower = transcript != null ? transcript.trim().toLowerCase(Locale.ROOT) : "";
+                boolean explicitCommand = intent == 1 || intent == 2
+                        || (selectedText != null && !selectedText.trim().isEmpty())
+                        || isEditCommand(lower) || isRewriteCommand(lower);
+
+                // In Verbatim Dictation Mode (Issue #193), always prefer the unedited full_transcript
+                // when provided by S3/Lite unless the user issued an explicit edit/rewrite command.
+                if (verbatimMode && !explicitCommand && !transcript.isEmpty()
+                        && (intent == 0 || intent == 3 || intent == 4 || intent == 5)) {
+                    spanText = transcript;
+                    textSpanField.set(span, transcript);
+                    intentField.setInt(action, 0);
+                    clearDiffField(action);
+                    intent = 0;
+                    continue;
+                }
 
                 // Restore verbatim transcript for INTENT_COMPOSE (4) where the backend
                 // generated an AI prompt/question answer rather than transcribing speech.
@@ -427,6 +533,23 @@ public final class GboardRamblerDictationRuntime {
         } catch (Throwable ignored) {
         }
         return false;
+    }
+
+    private static Context resolveExtensionContext(Object extension) {
+        if (extension == null) {
+            return null;
+        }
+        try {
+            Field bField = findField(extension.getClass(), "b");
+            if (bField != null) {
+                Object val = bField.get(extension);
+                if (val instanceof Context) {
+                    return (Context) val;
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+        return null;
     }
 
     private static Field findField(Class<?> clazz, String fieldName) {

@@ -25,9 +25,12 @@ import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipbo
 import com.akshaykadam.pixelboard.patches.gboard.features.spellchecker.gboardSpellCheckerChipsPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.accessibility.gboardFeaturesMenuAccessibilityPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRamblerDictationPromptFixPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRamblerLocaleScriptFixPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.rambler.gboardRamblerMinimizeKeyPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.keyboard.gboardKeyboardSymbolKeyLabelPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.keyboard.gboardKeyboardHapticPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.keyboard.gboardKeyboardSelectionCapsPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.keyboard.gboardKeyboardPopupGuardPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.launchericon.gboardLauncherIconVisibilityPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.language.gboardLanguageCycleDedupePatch
 
@@ -47,9 +50,12 @@ internal val gboardPatchesSettingsPatch = resourcePatch(
         gboardSpellCheckerChipsPatch,
         gboardFeaturesMenuAccessibilityPatch,
         gboardRamblerDictationPromptFixPatch,
+        gboardRamblerLocaleScriptFixPatch,
         gboardRamblerMinimizeKeyPatch,
         gboardKeyboardSymbolKeyLabelPatch,
         gboardKeyboardHapticPatch,
+        gboardKeyboardSelectionCapsPatch,
+        gboardKeyboardPopupGuardPatch,
         gboardLauncherIconVisibilityPatch,
         gboardLanguageCycleDedupePatch,
     )

@@ -49,6 +49,8 @@ public final class GboardRambler1803StockPolicy {
             "agentic_dictation_enable_proactive_parallel_asr";
     public static final String AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG =
             "agentic_dictation_deactivation_delay_ms";
+    public static final String JETSON_LITE_SKIP_CLEANUP_BYTE_THRESHOLD_FLAG =
+            "jetson_lite_skip_cleanup_byte_threshold";
     public static final String AD_ACTIVATION_TYPE_FLAG = "ad_activation_type";
 
     private static final Set<String> AGENTIC_FEATURE_FLAGS = Collections.unmodifiableSet(
@@ -94,6 +96,13 @@ public final class GboardRambler1803StockPolicy {
                     ? Long.valueOf(GboardRamblerRotationGrace.deactivationDelayMs())
                     : originalResult;
         }
+        if (JETSON_LITE_SKIP_CLEANUP_BYTE_THRESHOLD_FLAG.equals(flagName)) {
+            return originalResult instanceof Long
+                            && GboardRamblerSettings.isVerbatimModeEnabled(
+                                    GboardRambler1803OfficialSelectionRuntime.applicationContext())
+                    ? Long.valueOf(Long.MAX_VALUE)
+                    : originalResult;
+        }
         // The AL toolbar replaces Gboard's stock collapse path: with it off, the Rambler
         // header shows the minimize key and the floating voice toolbar keeps the session.
         if (ENABLE_RAMBLER_AL_TOOLBAR_FLAG.equals(flagName)) {
@@ -120,7 +129,8 @@ public final class GboardRambler1803StockPolicy {
                 || AD_ACTIVATION_TYPE_FLAG.equals(flagName)
                 || AGENTIC_DICTATION_ENABLE_PROACTIVE_PARALLEL_ASR_FLAG.equals(flagName)
                 || AGENTIC_DICTATION_ENABLE_SEAMLESS_FALLBACK_FLAG.equals(flagName)
-                || AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName);
+                || AGENTIC_DICTATION_DEACTIVATION_DELAY_MS_FLAG.equals(flagName)
+                || JETSON_LITE_SKIP_CLEANUP_BYTE_THRESHOLD_FLAG.equals(flagName);
     }
 }
 

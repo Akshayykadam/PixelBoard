@@ -81,6 +81,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.VideoView;
 import com.akshaykadam.pixelboard.extension.advancedvoice.GboardAdvancedVoiceSettings;
+import com.akshaykadam.pixelboard.extension.rambler.GboardRamblerSettings;
 import com.akshaykadam.pixelboard.extension.writingtools.GboardAiWritingToolsSettings;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -3136,6 +3137,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 || GboardAiWritingToolsSettings.readAllKeyboardsEnabled(writingPrefs);
         boolean advancedVoiceEnabled = voicePrefs == null
                 || GboardAdvancedVoiceSettings.readEnabled(voicePrefs);
+        boolean ramblerEnabled = GboardRamblerSettings.isRamblerEnabled(context);
+        boolean verbatimModeEnabled = GboardRamblerSettings.isVerbatimModeEnabled(context);
         boolean roundedKeysEnabled = patchesPrefs == null
                 || GboardRoundedKeysSettings.readEnabled(patchesPrefs);
         boolean frequentEmojisEnabled = patchesPrefs != null
@@ -3143,10 +3146,10 @@ public final class GboardPatchesSettingsActivity extends Activity
         boolean skipDuplicateLanguagePairs = patchesPrefs != null
                 && GboardLanguageCycleSettings.readSkipDuplicatePairs(patchesPrefs);
 
-        List<GboardPatchesSettingsContract.Row> rows =
+        List<GboardPatchesSettingsContract.Row> writingToolsRows =
                 new ArrayList<GboardPatchesSettingsContract.Row>();
 
-        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+        writingToolsRows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_enabled_title),
                 GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_enabled_summary),
                 true,
@@ -3158,7 +3161,7 @@ public final class GboardPatchesSettingsActivity extends Activity
                     }
                 }));
 
-        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+        writingToolsRows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_all_keyboards_title),
                 GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_all_keyboards_summary),
                 aiWritingToolsEnabled,
@@ -3169,7 +3172,10 @@ public final class GboardPatchesSettingsActivity extends Activity
                     }
                 }));
 
-        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+        List<GboardPatchesSettingsContract.Row> ramblerRows =
+                new ArrayList<GboardPatchesSettingsContract.Row>();
+
+        ramblerRows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_advanced_voice_enabled_title),
                 GboardSettingsText.get(context, R.string.gboard_patches_advanced_voice_enabled_summary),
                 true,
@@ -3177,10 +3183,31 @@ public final class GboardPatchesSettingsActivity extends Activity
                 value -> {
                     if (voicePrefs != null) {
                         GboardAdvancedVoiceSettings.writeEnabled(voicePrefs, value);
+                        renderCurrentScreenSafely();
                     }
                 }));
 
-        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+        ramblerRows.add(new GboardPatchesSettingsContract.ToggleRow(
+                "Use Rambler AI Dictation",
+                "Route voice typing through Gemini Rambler. Turn off to use classic Gboard Voice Typing without AI rewriting or summarizing.",
+                advancedVoiceEnabled,
+                ramblerEnabled,
+                value -> {
+                    GboardRamblerSettings.writeRamblerEnabled(context, value);
+                    renderCurrentScreenSafely();
+                }));
+
+        ramblerRows.add(new GboardPatchesSettingsContract.ToggleRow(
+                "Verbatim Dictation Mode",
+                "Transcribe exact spoken words, repetitions, and sentence structure without summarizing, rephrasing, or dropping details.",
+                advancedVoiceEnabled && ramblerEnabled,
+                verbatimModeEnabled,
+                value -> GboardRamblerSettings.writeVerbatimModeEnabled(context, value)));
+
+        List<GboardPatchesSettingsContract.Row> uiRows =
+                new ArrayList<GboardPatchesSettingsContract.Row>();
+
+        uiRows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_rounded_keys_enabled_title),
                 GboardSettingsText.get(context, R.string.gboard_patches_rounded_keys_enabled_summary),
                 true,
@@ -3193,7 +3220,7 @@ public final class GboardPatchesSettingsActivity extends Activity
                     }
                 }));
 
-        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+        uiRows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_frequently_used_emojis_title),
                 GboardSettingsText.get(context, R.string.gboard_patches_frequently_used_emojis_summary),
                 true,
@@ -3205,7 +3232,7 @@ public final class GboardPatchesSettingsActivity extends Activity
                     }
                 }));
 
-        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+        uiRows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_language_cycle_skip_duplicates_title),
                 GboardSettingsText.get(context, R.string.gboard_patches_language_cycle_skip_duplicates_summary),
                 true,
@@ -3218,9 +3245,9 @@ public final class GboardPatchesSettingsActivity extends Activity
 
         List<GboardPatchesSettingsContract.Section> sections =
                 new ArrayList<GboardPatchesSettingsContract.Section>();
-        sections.add(new GboardPatchesSettingsContract.Section(
-                GboardSettingsText.get(context, R.string.gboard_patches_section_features),
-                rows));
+        sections.add(new GboardPatchesSettingsContract.Section("Writing Tools", writingToolsRows));
+        sections.add(new GboardPatchesSettingsContract.Section("Rambler & Voice", ramblerRows));
+        sections.add(new GboardPatchesSettingsContract.Section("UI & Keyboard", uiRows));
 
         return new GboardPatchesSettingsContract.Screen(
                 GboardSettingsText.get(context, R.string.gboard_patches_activity_title),
